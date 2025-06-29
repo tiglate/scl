@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{currency.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{currency.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/currencies/add}" class="btn btn-primary ms-2">[[#{currency.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${!currencies.empty || filter != null}" class="row">
+                <div th:replace="~{fragments/utils::searchFilter(object='currency')}" />
+                <div th:replace="~{fragments/utils::sorting(object='currency', sortOptions=${ {'id,ASC', 'isoCode,ASC', 'bacenCode,ASC'} }, columnClass='offset-lg-4')}" />
+            </div>
+            <div th:if="${currencies.empty}">[[#{currency.list.empty}]]</div>
+            <div th:if="${!currencies.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{currency.id.label}]]</th>
+                            <th scope="col">[[#{currency.isoCode.label}]]</th>
+                            <th scope="col">[[#{currency.bacenCode.label}]]</th>
+                            <th scope="col">[[#{currency.name.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="currency : ${currencies}">
+                            <td>[[${currency.id}]]</td>
+                            <td>[[${currency.isoCode}]]</td>
+                            <td>[[${currency.bacenCode}]]</td>
+                            <td>[[${currency.name}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/currencies/edit/{id}(id=${currency.id})}" class="btn btn-sm btn-secondary">[[#{currency.list.edit}]]</a>
+                                    <form th:action="@{/currencies/delete/{id}(id=${currency.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{currency.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:replace="~{fragments/utils::pagination()}" />
+        </div>
+    </body>
+</html>

@@ -1,0 +1,63 @@
+INSERT INTO fx_trade (
+    id,
+    trade_id,
+    trade_date,
+    value_date,
+    product,
+    buy_amount,
+    sell_amount,
+    investor_manager,
+    beneficiary,
+    purpose,
+    created_at,
+    updated_at,
+    exchange_rate,
+    counterparty_id
+) VALUES (
+    1500,
+    'Stet clita kasd.',
+    '2024-07-04T00:00:00',
+    '2024-07-04T00:00:00',
+    'FX_SPOT',
+    82.0008,
+    66.0008,
+    'Ut wisi enim.',
+    'Nulla facilisis.',
+    'EQ',
+    '2025-05-06T14:30:00',
+    '2025-05-06T14:30:00',
+    15.0008,
+    1200
+);
+
+INSERT INTO fx_trade (
+    id,
+    trade_id,
+    trade_date,
+    value_date,
+    product,
+    buy_amount,
+    sell_amount,
+    investor_manager,
+    beneficiary,
+    purpose,
+    created_at,
+    updated_at,
+    exchange_rate,
+    counterparty_id
+) VALUES (
+    1501,
+    'No sea takimata.',
+    '2024-07-05T00:00:00',
+    '2024-07-05T00:00:00',
+    'FX_SPOT',
+    81.0008,
+    65.0008,
+    'Nam liber tempor.',
+    'Et ea rebum.',
+    'EQ',
+    '2025-05-07T14:30:00',
+    '2025-05-07T14:30:00',
+    16.0008,
+    1201
+);

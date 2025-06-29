@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{passwordReset.complete.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <h1 class="mb-4">[[#{passwordReset.complete.headline}]]</h1>
+            <div th:replace="~{fragments/forms::globalErrors('passwordResetCompleteRequest')}" />
+            <form th:action="${requestUri}" method="post" novalidate="">
+                <input type="hidden" name="uid" th:value="${passwordResetCompleteRequest.uid}" />
+                <div th:replace="~{fragments/forms::inputRow(object='passwordResetCompleteRequest', field='newPassword', required=true, type='password')}" />
+                <input type="submit" th:value="#{passwordReset.complete.submit}" class="btn btn-primary mt-4" />
+            </form>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{documentType.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{documentType.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/documentTypes/add}" class="btn btn-primary ms-2">[[#{documentType.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${!documentTypes.empty || filter != null}" class="row">
+                <div th:replace="~{fragments/utils::searchFilter(object='documentType')}" />
+                <div th:replace="~{fragments/utils::sorting(object='documentType', sortOptions=${ {'id,ASC', 'name,ASC'} }, columnClass='offset-lg-4')}" />
+            </div>
+            <div th:if="${documentTypes.empty}">[[#{documentType.list.empty}]]</div>
+            <div th:if="${!documentTypes.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{documentType.id.label}]]</th>
+                            <th scope="col">[[#{documentType.name.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="documentType : ${documentTypes}">
+                            <td>[[${documentType.id}]]</td>
+                            <td>[[${documentType.name}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/documentTypes/edit/{id}(id=${documentType.id})}" class="btn btn-sm btn-secondary">[[#{documentType.list.edit}]]</a>
+                                    <form th:action="@{/documentTypes/delete/{id}(id=${documentType.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{documentType.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:replace="~{fragments/utils::pagination()}" />
+        </div>
+    </body>
+</html>

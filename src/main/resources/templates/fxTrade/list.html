@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{fxTrade.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{fxTrade.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/fxTrades/add}" class="btn btn-primary ms-2">[[#{fxTrade.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${!fxTrades.empty || filter != null}" class="row">
+                <div th:replace="~{fragments/utils::searchFilter(object='fxTrade')}" />
+                <div th:replace="~{fragments/utils::sorting(object='fxTrade', sortOptions=${ {'id,ASC', 'tradeId,ASC', 'tradeDate,ASC'} }, columnClass='offset-lg-4')}" />
+            </div>
+            <div th:if="${fxTrades.empty}">[[#{fxTrade.list.empty}]]</div>
+            <div th:if="${!fxTrades.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{fxTrade.id.label}]]</th>
+                            <th scope="col">[[#{fxTrade.tradeId.label}]]</th>
+                            <th scope="col">[[#{fxTrade.tradeDate.label}]]</th>
+                            <th scope="col">[[#{fxTrade.valueDate.label}]]</th>
+                            <th scope="col">[[#{fxTrade.product.label}]]</th>
+                            <th scope="col">[[#{fxTrade.buyAmount.label}]]</th>
+                            <th scope="col">[[#{fxTrade.sellAmount.label}]]</th>
+                            <th scope="col">[[#{fxTrade.investorManager.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="fxTrade : ${fxTrades}">
+                            <td>[[${fxTrade.id}]]</td>
+                            <td>[[${fxTrade.tradeId}]]</td>
+                            <td>[[${fxTrade.tradeDate}]]</td>
+                            <td>[[${fxTrade.valueDate}]]</td>
+                            <td>[[${fxTrade.product}]]</td>
+                            <td>[[${fxTrade.buyAmount}]]</td>
+                            <td>[[${fxTrade.sellAmount}]]</td>
+                            <td>[[${fxTrade.investorManager}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/fxTrades/edit/{id}(id=${fxTrade.id})}" class="btn btn-sm btn-secondary">[[#{fxTrade.list.edit}]]</a>
+                                    <form th:action="@{/fxTrades/delete/{id}(id=${fxTrade.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{fxTrade.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:replace="~{fragments/utils::pagination()}" />
+        </div>
+    </body>
+</html>

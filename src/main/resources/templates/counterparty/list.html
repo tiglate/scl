@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{counterparty.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{counterparty.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/counterparties/add}" class="btn btn-primary ms-2">[[#{counterparty.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${!counterparties.empty || filter != null}" class="row">
+                <div th:replace="~{fragments/utils::searchFilter(object='counterparty')}" />
+                <div th:replace="~{fragments/utils::sorting(object='counterparty', sortOptions=${ {'id,ASC', 'originId,ASC', 'longName,ASC'} }, columnClass='offset-lg-4')}" />
+            </div>
+            <div th:if="${counterparties.empty}">[[#{counterparty.list.empty}]]</div>
+            <div th:if="${!counterparties.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{counterparty.id.label}]]</th>
+                            <th scope="col">[[#{counterparty.originId.label}]]</th>
+                            <th scope="col">[[#{counterparty.longName.label}]]</th>
+                            <th scope="col">[[#{counterparty.shortName.label}]]</th>
+                            <th scope="col">[[#{counterparty.isActive.label}]]</th>
+                            <th scope="col">[[#{counterparty.createdAt.label}]]</th>
+                            <th scope="col">[[#{counterparty.updatedAt.label}]]</th>
+                            <th scope="col">[[#{counterparty.updatedBy.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="counterparty : ${counterparties}">
+                            <td>[[${counterparty.id}]]</td>
+                            <td>[[${counterparty.originId}]]</td>
+                            <td>[[${counterparty.longName}]]</td>
+                            <td>[[${counterparty.shortName}]]</td>
+                            <td>[[${counterparty.isActive}]]</td>
+                            <td>[[${counterparty.createdAt}]]</td>
+                            <td>[[${counterparty.updatedAt}]]</td>
+                            <td>[[${counterparty.updatedBy}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/counterparties/edit/{id}(id=${counterparty.id})}" class="btn btn-sm btn-secondary">[[#{counterparty.list.edit}]]</a>
+                                    <form th:action="@{/counterparties/delete/{id}(id=${counterparty.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{counterparty.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:replace="~{fragments/utils::pagination()}" />
+        </div>
+    </body>
+</html>
