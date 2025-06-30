@@ -63,4 +63,5 @@ mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=ludo.mentis.aci
 * [Webpack concepts](https://webpack.js.org/concepts/)  
 * [npm docs](https://docs.npmjs.com/)  
 * [Bootstrap docs](https://getbootstrap.com/docs/5.3/getting-started/introduction/)  
+* [Htmx in a nutshell](https://htmx.org/docs/)  
 * [Learn Spring Boot with Thymeleaf](https://www.wimdeblauwe.com/books/taming-thymeleaf/)  

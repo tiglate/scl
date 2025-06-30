@@ -2,7 +2,7 @@ package ludo.mentis.aciem.scl.service;
 
 import java.util.List;
 import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.model.FormsSecurityConfigUserDetails;
+import ludo.mentis.aciem.scl.model.FormsUserDetails;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class FormsSecurityConfigUserDetailsService implements UserDetailsService
     }
 
     @Override
-    public FormsSecurityConfigUserDetails loadUserByUsername(final String username) {
+    public FormsUserDetails loadUserByUsername(final String username) {
         final User user = userRepository.findByUsernameIgnoreCase(username);
         if (user == null) {
             log.warn("user not found: {}", username);
@@ -35,7 +35,7 @@ public class FormsSecurityConfigUserDetailsService implements UserDetailsService
                 .stream()
                 .map(roleRef -> new SimpleGrantedAuthority(roleRef.getCode()))
                 .toList();
-        return new FormsSecurityConfigUserDetails(user.getId(), username, user.getPassword(), authorities);
+        return new FormsUserDetails(user.getId(), username, user.getPassword(), authorities);
     }
 
 }

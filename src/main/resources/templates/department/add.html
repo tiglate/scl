@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Add Department</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('add', 'Add Department', 'departmentForm', @{/departments})}"></div>
+        <div th:replace="~{fragments/form-utils::globalErrors('department')}"></div>
+        <form th:action="${requestUri}" method="post" id="departmentForm">
+            <th:block th:replace="~{department/_form :: departmentForm('add', ${department})}"></th:block>
+        </form>
+    </div>
+</body>
+</html>

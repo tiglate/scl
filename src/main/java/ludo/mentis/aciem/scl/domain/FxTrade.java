@@ -1,19 +1,23 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import ludo.mentis.aciem.scl.model.FxTradePurpose;
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.math.BigDecimal;
 
 
+@Audited
 @Entity
+@Table(name = "tb_fx_trade")
+@EntityListeners(AuditingEntityListener.class)
 public class FxTrade extends Trade {
+
+    @Id
+    @Column(name = "id_fx_trade", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(precision = 20, scale = 6)
     private BigDecimal buyAmount;
@@ -31,26 +35,28 @@ public class FxTrade extends Trade {
     @Enumerated(EnumType.STRING)
     private FxTradePurpose purpose;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
     @Column(precision = 20, scale = 10)
     private BigDecimal exchangeRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "buy_currency_id")
+    @JoinColumn(name = "id_buy_currency")
     private Currency buyCurrency;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sell_currency_id")
+    @JoinColumn(name = "id_sell_currency")
     private Currency sellCurrency;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by_id")
+    @JoinColumn(name = "id_updated_by")
     private User updatedBy;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
     public BigDecimal getBuyAmount() {
         return buyAmount;
@@ -90,22 +96,6 @@ public class FxTrade extends Trade {
 
     public void setPurpose(final FxTradePurpose purpose) {
         this.purpose = purpose;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(final LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public BigDecimal getExchangeRate() {

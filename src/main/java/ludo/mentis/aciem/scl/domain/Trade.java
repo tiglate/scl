@@ -1,36 +1,16 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.SequenceGenerator;
-import java.time.LocalDate;
+import jakarta.persistence.*;
 import ludo.mentis.aciem.scl.model.Product;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 
 @MappedSuperclass
 public abstract class Trade {
-
-    @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
-    private Long id;
 
     @Column
     private String tradeId;
@@ -46,16 +26,16 @@ public abstract class Trade {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "counterparty_id", nullable = false)
+    @JoinColumn(name = "id_counterparty", nullable = false)
     private Counterparty counterparty;
 
-    public Long getId() {
-        return id;
-    }
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime2")
+    private OffsetDateTime createdAt;
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime2")
+    private OffsetDateTime updatedAt;
 
     public String getTradeId() {
         return tradeId;
@@ -95,6 +75,24 @@ public abstract class Trade {
 
     public void setCounterparty(final Counterparty counterparty) {
         this.counterparty = counterparty;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @SuppressWarnings("unused")
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @SuppressWarnings("unused")
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

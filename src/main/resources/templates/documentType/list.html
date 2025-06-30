@@ -34,7 +34,7 @@
                                 <div class="float-end text-nowrap">
                                     <a th:href="@{/documentTypes/edit/{id}(id=${documentType.id})}" class="btn btn-sm btn-secondary">[[#{documentType.list.edit}]]</a>
                                     <form th:action="@{/documentTypes/delete/{id}(id=${documentType.id})}"
-                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-secondary">[[#{documentType.list.delete}]]</button>
                                     </form>
                                 </div>

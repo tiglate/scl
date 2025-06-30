@@ -1,13 +1,12 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
+
 import java.sql.Blob;
 
 
 @Entity
+@Table(name = "tb_file_content")
 public class FileContent {
 
     @Id

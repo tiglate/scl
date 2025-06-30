@@ -55,7 +55,7 @@ public class CounterpartyController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('" + UserRoles.COUNTERPARTY_READ + "', '" + UserRoles.COUNTERPARTY_WRITE + "')")
+    @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.COUNTERPARTY_READ + "', '" + UserRoles.COUNTERPARTY_WRITE + "')")
     public String list(@RequestParam(name = "filter", required = false) final String filter,
             @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable,
             final Model model) {

@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
-public class FormsSecurityConfigSecurityConfig {
+public class FormsSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {

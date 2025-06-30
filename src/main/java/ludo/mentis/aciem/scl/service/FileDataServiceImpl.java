@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileDataServiceImpl implements FileDataService {
 
     private static final Logger log = LoggerFactory.getLogger(FileDataServiceImpl.class);
-    private static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+    public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
 
     private final FileContentRepository fileContentRepository;
 

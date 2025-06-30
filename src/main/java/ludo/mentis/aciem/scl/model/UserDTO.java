@@ -44,6 +44,11 @@ public class UserDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime resetStart;
 
+    @NotNull(groups = {OnCreate.class, OnUpdate.class})
+    private Integer departmentId;
+
+    private String departmentName;
+
     private List<Long> roles;
 
     public Long getId() {
@@ -116,6 +121,18 @@ public class UserDTO {
 
     public void setResetStart(final OffsetDateTime resetStart) {
         this.resetStart = resetStart;
+    }
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(final Integer departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
     }
 
     public List<Long> getRoles() {

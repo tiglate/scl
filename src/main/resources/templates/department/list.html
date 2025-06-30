@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Departments</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByNameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByNameDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByEmailLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByEmailDirection" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div class="d-flex flex-wrap mb-4">
+            <h1 class="flex-grow-1">Departments</h1>
+            <div>
+                <a class="btn btn-primary ms-2"
+                   th:href="@{/departments/add}"
+                   sec:authorize="hasAuthority('DEPARTMENT_WRITE')"><i class="bi-plus-circle"></i> Add</a>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Filters
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <form id="searchForm" th:action="${requestUri}" th:object="${departmentSearch}" method="get">
+                        <div class="row mb-3">
+                            <div class="col-md-5">
+                                <label for="txtName" class="form-label">Name</label>
+                                <input type="text" id="txtName" th:field="*{name}" class="form-control" />
+                            </div>
+                            <div class="col-md-7">
+                                <label for="txtEmail" class="form-label">E-mail</label>
+                                <input type="text" id="txtEmail" th:field="*{email}" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col d-flex justify-content-end">
+                                <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                       onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                                <input type="submit" value="Search" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Results
+            </div>
+            <div class="card-body">
+                <p class="card-text" th:if="${#lists.isEmpty(departments)}">No records were found</p>
+                <div th:if="${not #lists.isEmpty(departments)}" class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id', ${sortByIdLink}, ${sortByIdDirection}, 'id')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Name', ${sortByNameLink}, ${sortByNameDirection}, 'name')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('E-mail', ${sortByEmailLink}, ${sortByEmailDirection}, 'email')}"></th>
+                            <th><!-- --></th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                        <tr th:each="department : ${departments}">
+                            <td>[[${department.id}]]</td>
+                            <td>[[${department.name}]]</td>
+                            <td>[[${department.email}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/departments/view/{id}(id=${department.id})}"
+                                       class="btn btn-sm btn-secondary bi-eye"
+                                       title="View"></a>
+                                    <a th:href="@{/departments/edit/{id}(id=${department.id})}"
+                                       sec:authorize="hasAuthority('DEPARTMENT_WRITE')"
+                                       class="btn btn-sm btn-secondary bi-pencil-square"
+                                       title="Edit"></a>
+                                    <form th:action="@{/departments/delete/{id}(id=${department.id})}"
+                                          sec:authorize="hasAuthority('DEPARTMENT_WRITE')"
+                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <nav th:replace="~{fragments/form-utils::pagination()}"></nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

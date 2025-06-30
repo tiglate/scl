@@ -1,7 +1,7 @@
 package ludo.mentis.aciem.scl.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.cfg.MappingSettings;
 import org.hibernate.type.format.jackson.JacksonJsonFormatMapper;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
@@ -19,7 +19,7 @@ public class DomainConfig {
 
     @Bean
     public HibernatePropertiesCustomizer jsonFormatMapper(final ObjectMapper objectMapper) {
-        return properties -> properties.put(AvailableSettings.JSON_FORMAT_MAPPER, new JacksonJsonFormatMapper(objectMapper));
+        return properties -> properties.put(MappingSettings.JSON_FORMAT_MAPPER, new JacksonJsonFormatMapper(objectMapper));
     }
 
 }

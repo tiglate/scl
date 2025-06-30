@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>View Department</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('view', 'View Department', 'departmentForm', @{/departments})}"></div>
+        <th:block th:replace="~{department/_form :: departmentForm('view', ${department})}"></th:block>
+    </div>
+</body>
+</html>

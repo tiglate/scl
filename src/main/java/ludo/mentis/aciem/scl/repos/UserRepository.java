@@ -2,6 +2,8 @@ package ludo.mentis.aciem.scl.repos;
 
 import java.util.List;
 import java.util.UUID;
+
+import ludo.mentis.aciem.scl.domain.Department;
 import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.domain.User;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = "roles")
     User findByUsernameIgnoreCase(String username);
+
+    User findFirstByDepartment(Department department);
 
     User findByResetUID(UUID resetUID);
 

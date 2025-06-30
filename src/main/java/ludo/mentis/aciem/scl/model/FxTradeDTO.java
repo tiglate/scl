@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 
 public class FxTradeDTO {
@@ -39,10 +40,10 @@ public class FxTradeDTO {
     private FxTradePurpose purpose;
 
     @NotNull
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @NotNull
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Digits(integer = 20, fraction = 10)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -137,19 +138,19 @@ public class FxTradeDTO {
         this.purpose = purpose;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(final OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(final OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

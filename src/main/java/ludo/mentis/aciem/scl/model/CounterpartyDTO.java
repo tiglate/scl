@@ -3,6 +3,7 @@ package ludo.mentis.aciem.scl.model;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -23,10 +24,10 @@ public class CounterpartyDTO {
     private Boolean isActive;
 
     @NotNull
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @NotNull
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     private Long updatedBy;
 
@@ -72,19 +73,19 @@ public class CounterpartyDTO {
         this.isActive = isActive;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(final OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(final OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

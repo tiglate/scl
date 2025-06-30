@@ -64,7 +64,7 @@ public class FxSettlementController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('" + UserRoles.SETTLEMENT_READ + "', '" + UserRoles.SETTLEMENT_WRITE + "')")
+    @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.SETTLEMENT_READ + "', '" + UserRoles.SETTLEMENT_WRITE + "')")
     public String list(@RequestParam(name = "filter", required = false) final String filter,
             @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable,
             final Model model) {

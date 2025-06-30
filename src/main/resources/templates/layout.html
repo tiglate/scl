@@ -9,7 +9,7 @@
         <link th:if="${!isDevserver}" th:href="@{/css/bundle.css}" rel="stylesheet" />
         <script th:src="@{/js/bundle.js}" defer></script>
     </head>
-    <body>
+    <body hx-boost="true">
         <header class="bg-light">
             <div class="container">
                 <nav class="navbar navbar-light navbar-expand-md">
@@ -30,6 +30,7 @@
                                 <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" id="navbarEntitiesLink"
                                         aria-expanded="false">[[#{navigation.entities}]]</button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarEntitiesLink">
+                                    <li><a th:href="@{/departments}" class="dropdown-item">Departments</a></li>
                                     <li><a th:href="@{/users}" class="dropdown-item">[[#{user.list.headline}]]</a></li>
                                     <li><a th:href="@{/roles}" class="dropdown-item">[[#{role.list.headline}]]</a></li>
                                     <li><a th:href="@{/counterparties}" class="dropdown-item">[[#{counterparty.list.headline}]]</a></li>

@@ -8,12 +8,12 @@ import org.springframework.security.core.userdetails.User;
 /**
  * Extension of Spring Security User class to store additional data.
  */
-public class FormsSecurityConfigUserDetails extends User {
+public class FormsUserDetails extends User {
 
     private final Long id;
 
-    public FormsSecurityConfigUserDetails(final Long id, final String username, final String hash,
-            final Collection<? extends GrantedAuthority> authorities) {
+    public FormsUserDetails(final Long id, final String username, final String hash,
+                            final Collection<? extends GrantedAuthority> authorities) {
         super(username, hash, authorities);
         this.id = id;
     }

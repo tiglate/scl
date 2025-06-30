@@ -1,39 +1,26 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 import ludo.mentis.aciem.scl.model.Gender;
+import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
+@Audited
 @Entity
-@Table(name = "\"User\"")
+@Table(name = "tb_user")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @Column(name = "id_user", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -52,6 +39,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_department", nullable = false)
+    private Department department;
+
     @Column(nullable = false)
     private Boolean isActive;
 
@@ -63,11 +54,19 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "UserRole",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "roleId")
+            name = "tb_user_role",
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_role")
     )
     private Set<Role> roles;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime2")
+    private OffsetDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime2")
+    private OffsetDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -117,6 +116,14 @@ public class User {
         this.gender = gender;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(final Department department) {
+        this.department = department;
+    }
+
     public Boolean getIsActive() {
         return isActive;
     }
@@ -147,6 +154,24 @@ public class User {
 
     public void setRoles(final Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @SuppressWarnings("unused")
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @SuppressWarnings("unused")
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

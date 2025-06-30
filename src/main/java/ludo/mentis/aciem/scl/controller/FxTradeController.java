@@ -70,7 +70,7 @@ public class FxTradeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('" + UserRoles.TRADE_READ + "', '" + UserRoles.TRADE_WRITE + "')")
+    @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.TRADE_READ + "', '" + UserRoles.TRADE_WRITE + "')")
     public String list(@RequestParam(name = "filter", required = false) final String filter,
             @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable,
             final Model model) {

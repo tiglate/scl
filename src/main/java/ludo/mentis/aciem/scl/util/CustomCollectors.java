@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 public class CustomCollectors {
 
+    private CustomCollectors() {
+    }
+
     /**
      * Provide a Collector for collecting values from a stream into a LinkedHashMap,
      * thus keeping the order.

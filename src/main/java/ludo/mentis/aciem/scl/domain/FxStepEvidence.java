@@ -1,34 +1,23 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.*;
 import ludo.mentis.aciem.scl.model.FileData;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
 
 
+@Audited
 @Entity
+@Table(name = "tb_fx_step_evidence")
 public class FxStepEvidence {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @Column(name = "id_fx_step_evidence", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "nvarchar(max)", name = "\"file\"")
+    @Column(nullable = false, columnDefinition = "nvarchar(max)", name = "\"file\"")
     @JdbcTypeCode(SqlTypes.JSON)
     private FileData file;
 

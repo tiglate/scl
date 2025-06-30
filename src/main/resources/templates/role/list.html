@@ -36,7 +36,7 @@
                                 <div class="float-end text-nowrap">
                                     <a th:href="@{/roles/edit/{id}(id=${role.id})}" class="btn btn-sm btn-secondary">[[#{role.list.edit}]]</a>
                                     <form th:action="@{/roles/delete/{id}(id=${role.id})}"
-                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-secondary">[[#{role.list.delete}]]</button>
                                     </form>
                                 </div>

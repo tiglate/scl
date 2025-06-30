@@ -1,25 +1,28 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{home.index.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <h1 class="mb-4">[[#{home.index.headline}]]</h1>
-            <p class="mb-5">[(#{home.index.text})]</p>
-            <div class="col-md-4 mb-5">
-                <h4 class="mb-3">[[#{home.index.exploreEntities}]]</h4>
-                <div class="list-group">
-                    <a th:href="@{/users}" class="list-group-item list-group-item-action">[[#{user.list.headline}]]</a>
-                    <a th:href="@{/roles}" class="list-group-item list-group-item-action">[[#{role.list.headline}]]</a>
-                    <a th:href="@{/counterparties}" class="list-group-item list-group-item-action">[[#{counterparty.list.headline}]]</a>
-                    <a th:href="@{/currencies}" class="list-group-item list-group-item-action">[[#{currency.list.headline}]]</a>
-                    <a th:href="@{/fxTrades}" class="list-group-item list-group-item-action">[[#{fxTrade.list.headline}]]</a>
-                    <a th:href="@{/fxSettlements}" class="list-group-item list-group-item-action">[[#{fxSettlement.list.headline}]]</a>
-                    <a th:href="@{/documentTypes}" class="list-group-item list-group-item-action">[[#{documentType.list.headline}]]</a>
-                </div>
-            </div>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>[[#{home.index.headline}]]</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="mb-4">[[#{home.index.headline}]]</h1>
+    <p class="mb-5">[(#{home.index.text})]</p>
+    <div class="col-md-4 mb-5">
+        <h4 class="mb-3">[[#{home.index.exploreEntities}]]</h4>
+        <div class="list-group">
+            <a th:href="@{/departments}" class="list-group-item list-group-item-action">Departments</a>
+            <a th:href="@{/users}" class="list-group-item list-group-item-action">[[#{user.list.headline}]]</a>
+            <a th:href="@{/roles}" class="list-group-item list-group-item-action">[[#{role.list.headline}]]</a>
+            <a th:href="@{/counterparties}" class="list-group-item list-group-item-action">[[#{counterparty.list.headline}]]</a>
+            <a th:href="@{/currencies}" class="list-group-item list-group-item-action">[[#{currency.list.headline}]]</a>
+            <a th:href="@{/fxTrades}" class="list-group-item list-group-item-action">[[#{fxTrade.list.headline}]]</a>
+            <a th:href="@{/fxSettlements}" class="list-group-item list-group-item-action">[[#{fxSettlement.list.headline}]]</a>
+            <a th:href="@{/documentTypes}" class="list-group-item list-group-item-action">[[#{documentType.list.headline}]]</a>
         </div>
-    </body>
+    </div>
+</div>
+</body>
 </html>

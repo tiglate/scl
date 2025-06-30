@@ -1,38 +1,26 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import java.time.LocalDateTime;
-import java.util.Set;
+import jakarta.persistence.*;
 import ludo.mentis.aciem.scl.model.FxSettlementFailure;
+import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.Set;
 
 
+@Audited
 @Entity
+@Table(name = "tb_fx_settlement")
+@EntityListeners(AuditingEntityListener.class)
 public class FxSettlement {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @Column(name = "id_fx_settlement", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(length = 1000)
@@ -50,19 +38,27 @@ public class FxSettlement {
 
     @ManyToMany
     @JoinTable(
-            name = "FxSettlementSteps",
-            joinColumns = @JoinColumn(name = "fxSettlementId"),
-            inverseJoinColumns = @JoinColumn(name = "fxSettlementStepId")
+            name = "tb_fx_settlement_steps",
+            joinColumns = @JoinColumn(name = "id_fx_settlement"),
+            inverseJoinColumns = @JoinColumn(name = "id_fx_settlement_step")
     )
     private Set<FxSettlementStep> steps;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trade_id", nullable = false)
+    @JoinColumn(name = "id_fx_trade", nullable = false)
     private FxTrade trade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "completed_by_id")
+    @JoinColumn(name = "id_completed_by")
     private User completedBy;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime2")
+    private OffsetDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime2")
+    private OffsetDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -128,4 +124,23 @@ public class FxSettlement {
         this.completedBy = completedBy;
     }
 
+    @SuppressWarnings("unused")
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @SuppressWarnings("unused")
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @SuppressWarnings("unused")
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @SuppressWarnings("unused")
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
