@@ -52,7 +52,7 @@ window.resetForm = function(caller) {
 window.submitForm = function(caller) {
     const form = __getFormIdFromDataSet(caller);
     if (form != null) {
-        form.submit();
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     }
 };
 
