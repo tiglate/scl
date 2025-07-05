@@ -1,16 +1,18 @@
 package ludo.mentis.aciem.scl.service;
 
-import ludo.mentis.aciem.scl.model.RoleDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import ludo.mentis.aciem.scl.model.RoleDTO;
+import ludo.mentis.aciem.scl.util.ReferencedWarning;
 
 public interface RoleService {
 
-    Page<RoleDTO> findAll(String filter, Pageable pageable);
+    Page<RoleDTO> findAll(RoleDTO filter, Pageable pageable);
 
     RoleDTO get(Long id);
 
+    @SuppressWarnings("UnusedReturnValue")
     Long create(RoleDTO roleDTO);
 
     void update(Long id, RoleDTO roleDTO);
@@ -18,5 +20,7 @@ public interface RoleService {
     void delete(Long id);
 
     boolean codeExists(String code);
+
+    ReferencedWarning getReferencedWarning(Long id);
 
 }

@@ -1,49 +1,35 @@
 package ludo.mentis.aciem.scl.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.model.RoleDTO;
 import ludo.mentis.aciem.scl.repos.RoleRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import ludo.mentis.aciem.scl.util.ReferencedWarning;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
     public RoleServiceImpl(final RoleRepository roleRepository,
-            final UserRepository userRepository) {
+                           final UserRepository userRepository) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
     }
 
     @Override
-    public Page<RoleDTO> findAll(final String filter, final Pageable pageable) {
-        Page<Role> page;
-        if (filter != null) {
-            Long longFilter = null;
-            try {
-                longFilter = Long.parseLong(filter);
-            } catch (final NumberFormatException numberFormatException) {
-                // keep null - no parseable input
-            }
-            page = roleRepository.findAllById(longFilter, pageable);
-        } else {
-            page = roleRepository.findAll(pageable);
-        }
-        return new PageImpl<>(page.getContent()
-                .stream()
-                .map(role -> mapToDTO(role, new RoleDTO()))
-                .toList(),
-                pageable, page.getTotalElements());
+    public Page<RoleDTO> findAll(RoleDTO searchDTO, Pageable pageable) {
+        return roleRepository.findAllBySearchCriteria(
+                searchDTO.getCode(),
+                searchDTO.getDescription(),
+                pageable
+        );
     }
 
     @Override
@@ -55,8 +41,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Long create(final RoleDTO roleDTO) {
-        final Role role = new Role();
-        mapToEntity(roleDTO, role);
+        var role = mapToEntity(roleDTO);
         return roleRepository.save(role).getId();
     }
 
@@ -70,23 +55,24 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(final Long id) {
-        final Role role = roleRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        // remove many-to-many relations at owning side
-        userRepository.findAllByRoles(role)
-                .forEach(user -> user.getRoles().remove(role));
-        roleRepository.delete(role);
+        roleRepository.deleteById(id);
     }
 
     private RoleDTO mapToDTO(final Role role, final RoleDTO roleDTO) {
         roleDTO.setId(role.getId());
         roleDTO.setCode(role.getCode());
         roleDTO.setDescription(role.getDescription());
+        roleDTO.setCreatedAt(role.getCreatedAt());
+        roleDTO.setUpdatedAt(role.getUpdatedAt());
         return roleDTO;
     }
 
+    private Role mapToEntity(final RoleDTO roleDTO) {
+        return mapToEntity(roleDTO, new Role());
+    }
+
     private Role mapToEntity(final RoleDTO roleDTO, final Role role) {
-        role.setCode(roleDTO.getCode());
+        role.setCode(roleDTO.getCode() != null ? roleDTO.getCode().toUpperCase() : null);
         role.setDescription(roleDTO.getDescription());
         return role;
     }
@@ -94,6 +80,21 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public boolean codeExists(final String code) {
         return roleRepository.existsByCodeIgnoreCase(code);
+    }
+
+    @Override
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final var referencedWarning = new ReferencedWarning();
+        final var role        = roleRepository.findById(id).orElseThrow(NotFoundException::new);
+        final var roleUser    = userRepository.findFirstByRoles(role);
+
+        if (roleUser != null) {
+            referencedWarning.setKey("role.user.role.referenced");
+            referencedWarning.addParam(roleUser.getId());
+            return referencedWarning;
+        }
+
+        return null;
     }
 
 }

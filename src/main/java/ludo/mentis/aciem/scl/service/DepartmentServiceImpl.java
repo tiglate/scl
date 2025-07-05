@@ -1,16 +1,15 @@
 package ludo.mentis.aciem.scl.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import ludo.mentis.aciem.scl.domain.Department;
 import ludo.mentis.aciem.scl.model.DepartmentDTO;
 import ludo.mentis.aciem.scl.repos.DepartmentRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
-import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import ludo.mentis.aciem.scl.util.NotFoundException;
-
-import java.time.OffsetDateTime;
+import ludo.mentis.aciem.scl.util.ReferencedWarning;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -42,8 +41,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Long create(final DepartmentDTO departmentDTO) {
-        departmentDTO.setCreatedAt(OffsetDateTime.now());
-        departmentDTO.setUpdatedAt(OffsetDateTime.now());
         var department = mapToEntity(departmentDTO);
         return departmentRepository.save(department).getId();
     }

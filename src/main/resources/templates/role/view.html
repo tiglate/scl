@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>View Role</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('view', 'View Role', 'roleForm', @{/roles})}"></div>
+        <th:block th:replace="~{role/_form :: roleForm('view', ${role})}"></th:block>
+    </div>
+</body>
+</html>

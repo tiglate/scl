@@ -1,12 +1,13 @@
 package ludo.mentis.aciem.scl.config;
 
-import ludo.mentis.aciem.scl.model.FileData;
-import ludo.mentis.aciem.scl.service.FileDataService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import ludo.mentis.aciem.scl.model.FileData;
+import ludo.mentis.aciem.scl.service.FileDataService;
 
 
 @Configuration

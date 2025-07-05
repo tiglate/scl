@@ -3,6 +3,7 @@ package ludo.mentis.aciem.scl.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,19 +22,19 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 public class FormsSecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         // creates hashes with {bcrypt} prefix
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
+    AuthenticationManager authenticationManager(
             final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain formsSecurityConfigFilterChain(final HttpSecurity http,
+    SecurityFilterChain formsSecurityConfigFilterChain(final HttpSecurity http,
             @Value("${formsSecurityConfig.rememberMeKey}") final String rememberMeKey) throws
             Exception {
         return http.cors(withDefaults())

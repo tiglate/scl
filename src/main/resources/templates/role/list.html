@@ -1,51 +1,103 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{role.list.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{role.list.headline}]]</h1>
-                <div>
-                    <a th:href="@{/roles/add}" class="btn btn-primary ms-2">[[#{role.list.createNew}]]</a>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Roles</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByCodeLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByCodeDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByDescriptionLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByDescriptionDirection" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div class="d-flex flex-wrap mb-4">
+            <h1 class="flex-grow-1">Roles</h1>
+            <div>
+                <a class="btn btn-primary ms-2"
+                   th:href="@{/roles/add}"><i class="bi-plus-circle"></i> Add</a>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Filters
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <form id="searchForm" th:action="${requestUri}" th:object="${roleSearch}" method="get">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="txtCode" class="form-label">Code</label>
+                                <input type="text" id="txtCode" th:field="*{code}" class="form-control text-uppercase" />
+                            </div>
+                            <div class="col-md-9">
+                                <label for="txtDescription" class="form-label">Description</label>
+                                <input type="text" id="txtDescription" th:field="*{description}" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col d-flex justify-content-end">
+                                <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                       onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                                <input type="submit" value="Search" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div th:if="${!roles.empty || filter != null}" class="row">
-                <div th:replace="~{fragments/utils::searchFilter(object='role')}" />
-                <div th:replace="~{fragments/utils::sorting(object='role', sortOptions=${ {'id,ASC', 'code,ASC', 'description,ASC'} }, columnClass='offset-lg-4')}" />
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Results
             </div>
-            <div th:if="${roles.empty}">[[#{role.list.empty}]]</div>
-            <div th:if="${!roles.empty}" class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead>
+            <div class="card-body">
+                <p class="card-text" th:if="${#lists.isEmpty(roles)}">No records were found</p>
+                <div th:if="${not #lists.isEmpty(roles)}" class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle">
+                        <thead>
                         <tr>
-                            <th scope="col">[[#{role.id.label}]]</th>
-                            <th scope="col">[[#{role.code.label}]]</th>
-                            <th scope="col">[[#{role.description.label}]]</th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id', ${sortByIdLink}, ${sortByIdDirection}, 'id')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Code', ${sortByCodeLink}, ${sortByCodeDirection}, 'code')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Description', ${sortByDescriptionLink}, ${sortByDescriptionDirection}, 'description')}"></th>
                             <th><!-- --></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody class="table-group-divider">
                         <tr th:each="role : ${roles}">
                             <td>[[${role.id}]]</td>
                             <td>[[${role.code}]]</td>
                             <td>[[${role.description}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">
-                                    <a th:href="@{/roles/edit/{id}(id=${role.id})}" class="btn btn-sm btn-secondary">[[#{role.list.edit}]]</a>
+                                    <a th:href="@{/roles/view/{id}(id=${role.id})}"
+                                       class="btn btn-sm btn-secondary bi-eye"
+                                       title="View"></a>
+                                    <a th:href="@{/roles/edit/{id}(id=${role.id})}"
+                                       class="btn btn-sm btn-secondary bi-pencil-square"
+                                       title="Edit"></a>
                                     <form th:action="@{/roles/delete/{id}(id=${role.id})}"
-                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{role.list.delete}]]</button>
+                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
+                                        </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div th:replace="~{fragments/utils::pagination()}" />
+            <div class="card-footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <nav th:replace="~{fragments/form-utils::pagination()}"></nav>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

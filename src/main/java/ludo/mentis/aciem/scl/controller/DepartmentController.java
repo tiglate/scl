@@ -1,10 +1,10 @@
 package ludo.mentis.aciem.scl.controller;
 
 
-import jakarta.validation.Valid;
-import ludo.mentis.aciem.scl.model.DepartmentDTO;
-import ludo.mentis.aciem.scl.service.DepartmentService;
-import ludo.mentis.aciem.scl.util.*;
+import static java.util.Map.entry;
+
+import java.util.Map;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,14 +14,23 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Map;
+import jakarta.validation.Valid;
+import ludo.mentis.aciem.scl.model.DepartmentDTO;
+import ludo.mentis.aciem.scl.service.DepartmentService;
+import ludo.mentis.aciem.scl.util.FlashMessages;
+import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import ludo.mentis.aciem.scl.util.SortUtils;
+import ludo.mentis.aciem.scl.util.UserRoles;
+import ludo.mentis.aciem.scl.util.WebUtils;
 
-import static java.util.Map.entry;
-
-@SuppressWarnings("SameReturnValue")
 @Controller
 @RequestMapping("/departments")
 public class DepartmentController {
@@ -43,7 +52,7 @@ public class DepartmentController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.DEPARTMENT_READ + "', '" + UserRoles.DEPARTMENT_WRITE + "')")
     public String list(@ModelAttribute("departmentSearch") DepartmentDTO filter,
-                       @RequestParam(name = "sort", required = false) String sort,
+                       @RequestParam(required = false) String sort,
                        @SortDefault(sort = "id", direction = Sort.Direction.DESC) @PageableDefault(size = 20) final Pageable pageable,
                        final Model model) {
         if (sort == null) {
@@ -64,14 +73,14 @@ public class DepartmentController {
 
     @GetMapping("/view/{id}")
     @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.DEPARTMENT_READ + "', '" + UserRoles.DEPARTMENT_WRITE + "')")
-    public String view(@PathVariable(name = "id") final Long id, final Model model) {
+    public String view(@PathVariable final Long id, final Model model) {
         model.addAttribute("department", departmentService.get(id));
         return CONTROLLER_VIEW;
     }
 
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasAnyAuthority('" + UserRoles.DEPARTMENT_READ + "')")
-    public String edit(@PathVariable(name = "id") final Long id, final Model model) {
+    public String edit(@PathVariable final Long id, final Model model) {
         model.addAttribute("department", departmentService.get(id));
         return CONTROLLER_EDIT;
     }
@@ -96,7 +105,7 @@ public class DepartmentController {
 
     @PostMapping("/edit/{id}")
     @PreAuthorize("hasAnyAuthority('" + UserRoles.DEPARTMENT_WRITE + "')")
-    public String edit(@PathVariable(name = "id") final Long id,
+    public String edit(@PathVariable final Long id,
                        @ModelAttribute("department") @Valid final DepartmentDTO departmentDTO,
                        final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -109,7 +118,7 @@ public class DepartmentController {
 
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('" + UserRoles.DEPARTMENT_WRITE + "')")
-    public String delete(@PathVariable(name = "id") final Long id,
+    public String delete(@PathVariable final Long id,
                          final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = departmentService.getReferencedWarning(id);
         if (referencedWarning != null) {

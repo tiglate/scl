@@ -10,7 +10,8 @@ import org.springframework.security.core.userdetails.User;
  */
 public class FormsUserDetails extends User {
 
-    private final Long id;
+	private static final long serialVersionUID = -3576157936224863000L;
+	private final Long id;
 
     public FormsUserDetails(final Long id, final String username, final String hash,
                             final Collection<? extends GrantedAuthority> authorities) {

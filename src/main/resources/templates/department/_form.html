@@ -4,7 +4,7 @@
     <title>Department Form</title>
 </head>
 <body>
-    <!--/*@thymesVar id="department" type="br.dev.ampliar.caipora.model.DepartmentDTO"*/-->
+    <!--/*@thymesVar id="department" type="ludo.mentis.aciem.scl.model.DepartmentDTO"*/-->
     <!--/*@thymesVar id="mode" type="java.lang.String"*/-->
     <th:block th:fragment="departmentForm(mode, department)" th:object="${department}">
         <div class="card shadow mb-3">
@@ -53,11 +53,11 @@
                     </div>
                     <div class="col-md-5">
                         <label for="txtCreatedAt" class="form-label">Input Date</label>
-                        <input type="text" id="txtCreatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(department.createdAt, 'dd-MMM-yy hh:mm:ss')}"  />
+                        <input type="text" id="txtCreatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(department.createdAt, 'dd-MMM-yyyy HH:mm:ss')}"  />
                     </div>
                     <div class="col-md-5">
                         <label for="txtUpdatedAt" class="form-label">Last Update</label>
-                        <input type="text" id="txtUpdatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(department.updatedAt, 'dd-MMM-yy hh:mm:ss')}"  />
+                        <input type="text" id="txtUpdatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(department.updatedAt, 'dd-MMM-yyyy HH:mm:ss')}"  />
                     </div>
                 </div>
             </div>
