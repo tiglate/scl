@@ -1,23 +1,19 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{documentType.edit.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{documentType.edit.headline}]]</h1>
-                <div>
-                    <a th:href="@{/documentTypes}" class="btn btn-secondary">[[#{documentType.edit.back}]]</a>
-                </div>
-            </div>
-            <div th:replace="~{fragments/forms::globalErrors('documentType')}" />
-            <form th:action="${requestUri}" method="post" novalidate="">
-                <div th:replace="~{fragments/forms::inputRow(object='documentType', field='id', disabled=true, type='number')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='documentType', field='name', required=true)}" />
-                <input type="submit" th:value="#{documentType.edit.headline}" class="btn btn-primary mt-4" />
-            </form>
-        </div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Edit Document Type</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('edit', 'Edit Document Type', 'documentTypeForm', @{/documentTypes})}"></div>
+        <div th:replace="~{fragments/form-utils::globalErrors('documentType')}"></div>
+        <form th:action="${requestUri}" method="post" id="documentTypeForm">
+            <th:block th:replace="~{documentType/_form :: documentTypeForm('edit', ${documentType})}"></th:block>
+        </form>
+    </div>
+</body>
 </html>

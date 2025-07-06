@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface DocumentTypeService {
 
-    Page<DocumentTypeDTO> findAll(String filter, Pageable pageable);
+	Page<DocumentTypeDTO> findAll(DocumentTypeDTO searchDTO, Pageable pageable);
 
     DocumentTypeDTO get(Long id);
 

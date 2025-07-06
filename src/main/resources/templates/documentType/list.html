@@ -1,49 +1,95 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{documentType.list.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{documentType.list.headline}]]</h1>
-                <div>
-                    <a th:href="@{/documentTypes/add}" class="btn btn-primary ms-2">[[#{documentType.list.createNew}]]</a>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Document Types</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByNameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByNameDirection" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div class="d-flex flex-wrap mb-4">
+            <h1 class="flex-grow-1">Document Types</h1>
+            <div>
+                <a class="btn btn-primary ms-2"
+                   th:href="@{/documentTypes/add}"><i class="bi-plus-circle"></i> Add</a>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Filters
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <form id="searchForm" th:action="${requestUri}" th:object="${documentTypeSearch}" method="get">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="txtName" class="form-label">Name</label>
+                                <input type="text" id="txtName" th:field="*{name}" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col d-flex justify-content-end">
+                                <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                       onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                                <input type="submit" value="Search" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div th:if="${!documentTypes.empty || filter != null}" class="row">
-                <div th:replace="~{fragments/utils::searchFilter(object='documentType')}" />
-                <div th:replace="~{fragments/utils::sorting(object='documentType', sortOptions=${ {'id,ASC', 'name,ASC'} }, columnClass='offset-lg-4')}" />
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Results
             </div>
-            <div th:if="${documentTypes.empty}">[[#{documentType.list.empty}]]</div>
-            <div th:if="${!documentTypes.empty}" class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead>
+            <div class="card-body">
+                <p class="card-text" th:if="${#lists.isEmpty(documentTypes)}">No records were found</p>
+                <div th:if="${not #lists.isEmpty(documentTypes)}" class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle">
+                        <thead>
                         <tr>
-                            <th scope="col">[[#{documentType.id.label}]]</th>
-                            <th scope="col">[[#{documentType.name.label}]]</th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id', ${sortByIdLink}, ${sortByIdDirection}, 'id')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Name', ${sortByNameLink}, ${sortByNameDirection}, 'name')}"></th>
                             <th><!-- --></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody class="table-group-divider">
                         <tr th:each="documentType : ${documentTypes}">
                             <td>[[${documentType.id}]]</td>
                             <td>[[${documentType.name}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">
-                                    <a th:href="@{/documentTypes/edit/{id}(id=${documentType.id})}" class="btn btn-sm btn-secondary">[[#{documentType.list.edit}]]</a>
+                                    <a th:href="@{/documentTypes/view/{id}(id=${documentType.id})}"
+                                       class="btn btn-sm btn-secondary bi-eye"
+                                       title="View"></a>
+                                    <a th:href="@{/documentTypes/edit/{id}(id=${documentType.id})}"
+                                       class="btn btn-sm btn-secondary bi-pencil-square"
+                                       title="Edit"></a>
                                     <form th:action="@{/documentTypes/delete/{id}(id=${documentType.id})}"
-                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{documentType.list.delete}]]</button>
+                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
+                                        </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div th:replace="~{fragments/utils::pagination()}" />
+            <div class="card-footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <nav th:replace="~{fragments/form-utils::pagination()}"></nav>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

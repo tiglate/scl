@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Document Type Form</title>
+</head>
+<body>
+    <!--/*@thymesVar id="documentType" type="ludo.mentis.aciem.scl.model.DocumentTypeDTO"*/-->
+    <!--/*@thymesVar id="mode" type="java.lang.String"*/-->
+    <th:block th:fragment="documentTypeForm(mode, documentType)" th:object="${documentType}">
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <label for="txtName" class="form-label">Name*</label>
+                        <input type="text"
+                               id="txtName"
+                               class="form-control"
+                               th:field="*{name}"
+                               th:disabled="${mode == 'view'}"
+                               th:classappend="${#fields.hasErrors('name') ? 'is-invalid' : ''}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('name')}" class="mb-0">[[${error}]]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3" th:if="${mode != 'add'}">
+            <div class="card-header">
+                Audit
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="txtId" class="form-label">Id</label>
+                        <input type="number" id="txtId" th:field="*{id}" disabled="disabled" class="form-control" />
+                    </div>
+                    <div class="col-md-5">
+                        <label for="txtCreatedAt" class="form-label">Input Date</label>
+                        <input type="text" id="txtCreatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(documentType.createdAt, 'dd-MMM-yyyy HH:mm:ss')}"  />
+                    </div>
+                    <div class="col-md-5">
+                        <label for="txtUpdatedAt" class="form-label">Last Update</label>
+                        <input type="text" id="txtUpdatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(documentType.updatedAt, 'dd-MMM-yyyy HH:mm:ss')}"  />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>

@@ -193,6 +193,7 @@ BEGIN
         iso_code    VARCHAR(3)   NOT NULL,
         bacen_code  VARCHAR(3)   NOT NULL,
         name        VARCHAR(255) NOT NULL,
+        end_date    DATE         NULL,
         created_at  DATETIME2    NOT NULL DEFAULT(SYSDATETIME()),
         updated_at  DATETIME2    NULL,
 
@@ -208,6 +209,7 @@ BEGIN
         iso_code         VARCHAR(3)   NULL,
         bacen_code       VARCHAR(3)   NULL,
         name             VARCHAR(255) NULL,
+        end_date         DATE         NULL,
         created_at       DATETIME2    NULL,
         updated_at       DATETIME2    NULL,
 
@@ -237,7 +239,7 @@ BEGIN
         created_at       DATETIME2    NULL,
         updated_at       DATETIME2    NULL,
 
-        CONSTRAINT pk_document_type_aud PRIMARY KEY (id_document_type),
+        CONSTRAINT pk_document_type_aud PRIMARY KEY (id_document_type, id_revision),
         CONSTRAINT fk_document_type_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_document_type_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -269,7 +271,7 @@ BEGIN
         created_at       DATETIME2    NULL,
         updated_at       DATETIME2    NULL,
 
-        CONSTRAINT pk_document_aud PRIMARY KEY (id_document),
+        CONSTRAINT pk_document_aud PRIMARY KEY (id_document, id_revision),
         CONSTRAINT fk_document_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_document_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -305,7 +307,7 @@ BEGIN
         created_at       DATETIME2    NULL,
         updated_at       DATETIME2    NULL,
 
-        CONSTRAINT pk_counterparty_aud PRIMARY KEY (id_counterparty),
+        CONSTRAINT pk_counterparty_aud PRIMARY KEY (id_counterparty, id_revision),
         CONSTRAINT fk_counterparty_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_counterparty_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -332,7 +334,7 @@ BEGIN
         id_revision      INT     NOT NULL,
         id_revision_type TINYINT NULL,
 
-        CONSTRAINT pk_counterparty_document_aud PRIMARY KEY (id_counterparty, id_document),
+        CONSTRAINT pk_counterparty_document_aud PRIMARY KEY (id_counterparty, id_document, id_revision),
         CONSTRAINT fk_counterparty_document_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_counterparty_document_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -395,7 +397,7 @@ BEGIN
         created_at       DATETIME2       NULL,
         updated_at       DATETIME2       NULL,
 
-        CONSTRAINT pk_fx_trade_aud PRIMARY KEY (id_fx_trade),
+        CONSTRAINT pk_fx_trade_aud PRIMARY KEY (id_fx_trade, id_revision),
         CONSTRAINT fk_fx_trade_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_fx_trade_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -436,7 +438,7 @@ BEGIN
         created_at       DATETIME2     NULL,
         updated_at       DATETIME2     NULL,
 
-        CONSTRAINT pk_fx_settlement_aud PRIMARY KEY (id_fx_settlement),
+        CONSTRAINT pk_fx_settlement_aud PRIMARY KEY (id_fx_settlement, id_revision),
         CONSTRAINT fk_fx_settlement_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_fx_settlement_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -457,7 +459,7 @@ BEGIN
         id_revision_type    TINYINT       NULL,
         [file]              NVARCHAR(MAX) NULL,
 
-        CONSTRAINT pk_fx_step_evidence_aud PRIMARY KEY (id_fx_step_evidence),
+        CONSTRAINT pk_fx_step_evidence_aud PRIMARY KEY (id_fx_step_evidence, id_revision),
         CONSTRAINT fk_fx_step_evidence_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_fx_step_evidence_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -493,7 +495,7 @@ BEGIN
         event_date            DATETIME     NULL,
         comments              VARCHAR(255) NULL,
 
-        CONSTRAINT pk_fx_settlement_step_aud PRIMARY KEY (id_fx_settlement_step),
+        CONSTRAINT pk_fx_settlement_step_aud PRIMARY KEY (id_fx_settlement_step, id_revision),
         CONSTRAINT fk_fx_settlement_step_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_fx_settlement_step_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
@@ -520,7 +522,7 @@ BEGIN
         id_revision           INT     NOT NULL,
         id_revision_type      TINYINT NULL,
 
-        CONSTRAINT pk_fx_settlement_steps_aud PRIMARY KEY (id_fx_settlement, id_fx_settlement_step),
+        CONSTRAINT pk_fx_settlement_steps_aud PRIMARY KEY (id_fx_settlement, id_fx_settlement_step, id_revision),
         CONSTRAINT fk_fx_settlement_steps_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
         CONSTRAINT fk_fx_settlement_steps_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
