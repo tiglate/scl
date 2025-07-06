@@ -35,18 +35,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
-    @Query("SELECT new ludo.mentis.aciem.scl.model.UserDTO(u.id, u.name, u.email, u.gender, u.username, u.password, u.isActive, d.id, d.name, u.createdAt, u.updatedAt) " +
+    @Query("SELECT new ludo.mentis.aciem.scl.model.UserDTO(u.id, u.name, u.email, u.gender, u.username, u.password, u.enabled, d.id, d.name, u.createdAt, u.updatedAt) " +
             "FROM User u " +
             "LEFT JOIN u.department d " +
             "WHERE (:username IS NULL OR u.username LIKE %:username%) " +
             "AND (:name IS NULL OR u.name LIKE %:name%) " +
             "AND (:department IS NULL OR d.id = :department) " +
-            "AND (:isActive IS NULL OR u.isActive = :isActive) ")
+            "AND (:enabled IS NULL OR u.enabled = :enabled) ")
     Page<UserDTO> findAllBySearchCriteria(
             @Param("username") String username,
             @Param("name") String name,
             @Param("department") Integer department,
-            @Param("isActive") Boolean isActive,
+            @Param("enabled") Boolean enabled,
             Pageable pageable
     );
 }

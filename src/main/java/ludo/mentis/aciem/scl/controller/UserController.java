@@ -77,7 +77,7 @@ public class UserController {
                 entry("email", "sortByEmail"),
                 entry("gender", "sortByGender"),
                 entry("username", "sortByUsername"),
-                entry("isActive", "sortByIsActive"),
+                entry("enabled", "sortByEnabled"),
                 entry("department.name", "sortByDepartmentName")
         ));
         final var pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
@@ -99,7 +99,7 @@ public class UserController {
     @GetMapping("/add")
     public String add(@ModelAttribute("user") final UserDTO userDTO) {
         userDTO.setGender(Gender.MALE);
-        userDTO.setIsActive(true);
+        userDTO.setEnabled(true);
         return CONTROLLER_ADD;
     }
 

@@ -5,7 +5,7 @@ public class UserSearchDTO {
     private String username;
     private String name;
     private Integer department;
-    private Boolean isActive;
+    private Boolean enabled;
 
     public String getUsername() {
         return username;
@@ -31,11 +31,11 @@ public class UserSearchDTO {
         this.department = value;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setIsActive(Boolean value) {
-        this.isActive = value;
+    public void setEnabled(Boolean value) {
+        this.enabled = value;
     }
 }

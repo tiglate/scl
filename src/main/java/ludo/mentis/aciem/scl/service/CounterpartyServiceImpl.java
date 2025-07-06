@@ -76,7 +76,7 @@ public class CounterpartyServiceImpl implements CounterpartyService {
     private CounterpartyDTO mapToDTO(final Counterparty counterparty, final CounterpartyDTO counterpartyDTO) {
         counterpartyDTO.setId(counterparty.getId());
         counterpartyDTO.setOriginId(counterparty.getOriginId());
-        counterpartyDTO.setShortName(counterparty.getShortName());
+        counterpartyDTO.setLongName(counterparty.getLongName());
         counterpartyDTO.setShortName(counterparty.getShortName());
         counterpartyDTO.setIsActive(counterparty.getIsActive());
         counterpartyDTO.setCreatedAt(counterparty.getCreatedAt());
@@ -102,11 +102,7 @@ public class CounterpartyServiceImpl implements CounterpartyService {
         counterparty.setIsActive(counterpartyDTO.getIsActive());
         counterparty.setCreatedAt(counterpartyDTO.getCreatedAt());
         counterparty.setUpdatedAt(counterpartyDTO.getUpdatedAt());
-        final var updatedBy = counterpartyDTO.getUpdatedById() == null
-        		            ? null
-        		            : userRepository.findById(counterpartyDTO.getUpdatedById())
-        		                            .orElseThrow(() -> new NotFoundException("updatedBy not found"));
-        counterparty.setUpdatedBy(updatedBy);
+
         final var documents = documentRepository
         		.findAllById(counterpartyDTO.getDocuments() == null ? List.of() : counterpartyDTO.getDocuments());
         if (documents.size() != (counterpartyDTO.getDocuments() == null ? 0 : counterpartyDTO.getDocuments().size())) {

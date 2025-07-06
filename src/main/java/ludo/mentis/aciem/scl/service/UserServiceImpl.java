@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 searchDTO.getUsername(),
                 searchDTO.getName(),
                 searchDTO.getDepartment(),
-                searchDTO.getIsActive(),
+                searchDTO.getEnabled(),
                 pageable
         );
     }
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setEmail(user.getEmail());
         userDTO.setGender(user.getGender());
         userDTO.setUsername(user.getUsername());
-        userDTO.setIsActive(user.getIsActive());
+        userDTO.setEnabled(user.getEnabled());
         userDTO.setDepartmentId(user.getDepartment() == null ? null : user.getDepartment().getId());
         userDTO.setResetUID(user.getResetUID());
         userDTO.setResetStart(user.getResetStart());
@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         user.setGender(userDTO.getGender());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty() ? user.getPassword() : passwordEncoder.encode(userDTO.getPassword()));
-        user.setIsActive(userDTO.getIsActive());
+        user.setEnabled(userDTO.getEnabled());
         user.setResetUID(userDTO.getResetUID());
         user.setResetStart(userDTO.getResetStart());
 

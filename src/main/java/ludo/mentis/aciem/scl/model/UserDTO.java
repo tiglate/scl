@@ -40,7 +40,7 @@ public class UserDTO {
     private String password;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class})
-    private Boolean isActive;
+    private Boolean enabled;
     
     @NotNull(groups = {OnCreate.class, OnUpdate.class})
     private Long departmentId;
@@ -62,7 +62,7 @@ public class UserDTO {
     }
 
     public UserDTO(Long id, String name, String email, Gender gender, String username, String password,
-                   Boolean isActive, Long departmentId, String departmentName, LocalDateTime createdAt,
+                   Boolean enabled, Long departmentId, String departmentName, LocalDateTime createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -70,7 +70,7 @@ public class UserDTO {
         this.gender = gender;
         this.username = username;
         this.password = password;
-        this.isActive = isActive;
+        this.enabled = enabled;
         this.departmentId = departmentId;
         this.departmentName = departmentName;
         this.createdAt = createdAt;
@@ -125,12 +125,12 @@ public class UserDTO {
         this.gender = gender;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setIsActive(final Boolean isActive) {
-        this.isActive = isActive;
+    public void setEnabled(final Boolean isActive) {
+        this.enabled = isActive;
     }
 
     public UUID getResetUID() {

@@ -19,8 +19,8 @@
     <!--/*@thymesVar id="sortByGenderDirection" type="java.lang.String"*/-->
     <!--/*@thymesVar id="sortByUsernameLink" type="java.lang.String"*/-->
     <!--/*@thymesVar id="sortByUsernameDirection" type="java.lang.String"*/-->
-    <!--/*@thymesVar id="sortByIsActiveLink" type="java.lang.String"*/-->
-    <!--/*@thymesVar id="sortByIsActiveDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByEnabledLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByEnabledDirection" type="java.lang.String"*/-->
     <!--/*@thymesVar id="sortByDepartmentNameLink" type="java.lang.String"*/-->
     <!--/*@thymesVar id="sortByDepartmentNameDirection" type="java.lang.String"*/-->
     <div layout:fragment="content">
@@ -83,7 +83,7 @@
                             <th th:replace="~{fragments/table-utils :: sortableColumnHeader('E-mail', ${sortByEmailLink}, ${sortByEmailDirection}, 'email')}"></th>
                             <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Gender', ${sortByGenderLink}, ${sortByGenderDirection}, 'gender')}"></th>
                             <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Username', ${sortByUsernameLink}, ${sortByUsernameDirection}, 'username')}"></th>
-                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Active?', ${sortByIsActiveLink}, ${sortByIsActiveDirection}, 'isActive')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Enabled?', ${sortByEnabledLink}, ${sortByEnabledDirection}, 'enabled')}"></th>
                             <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Department', ${sortByDepartmentNameLink}, ${sortByDepartmentNameDirection}, 'department.name')}"></th>
                             <th></th>
                         </tr>
@@ -95,7 +95,7 @@
                             <td>[[${user.email}]]</td>
                             <td>[[${user.gender}]]</td>
                             <td>[[${user.username}]]</td>
-                            <td>[[${user.isActive}]]</td>
+                            <td>[[${user.enabled}]]</td>
                             <td>[[${user.departmentName}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">

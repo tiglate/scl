@@ -37,7 +37,7 @@ BEGIN
         gender,
         username,
         password,
-        is_active)
+        enabled)
     SELECT
         id_department,
         name      = 'Admin',
@@ -45,7 +45,7 @@ BEGIN
         gender    = 'MALE',
         username  = 'admin',
         password  = '{bcrypt}$2a$12$NYZurvH.l.vujYDufA6X6uFLBqQ1tDSDxX5VPTAcKSpNxJ3mBiWOW', -- 12345
-        is_active = 1
+        enabled   = 1
     FROM
         tb_department
     WHERE

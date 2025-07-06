@@ -1,5 +1,6 @@
 package ludo.mentis.aciem.scl.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -31,9 +32,11 @@ import ludo.mentis.aciem.scl.model.Gender;
 @Entity
 @Table(name = "tb_user")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 8283388598734946775L;
+
+	@Id
     @Column(name = "id_user", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,7 +62,7 @@ public class User {
     private Department department;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean enabled;
 
     @Column(columnDefinition = "uniqueidentifier")
     private UUID resetUID;
@@ -139,12 +142,12 @@ public class User {
         this.department = department;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setIsActive(final Boolean isActive) {
-        this.isActive = isActive;
+    public void setEnabled(final Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public UUID getResetUID() {

@@ -97,18 +97,18 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <label for="cboIsActive" class="form-label">Active?*</label>
-                        <select id="cboIsActive"
+                        <label for="cboEnabled" class="form-label">Enabled?*</label>
+                        <select id="cboEnabled"
                                 class="form-select"
-                                th:field="*{isActive}"
+                                th:field="*{enabled}"
                                 th:disabled="${mode == 'view'}"
-                                th:classappend="${#fields.hasErrors('isActive') ? 'is-invalid' : ''}">
+                                th:classappend="${#fields.hasErrors('enabled') ? 'is-invalid' : ''}">
                             <option value="">Please select</option>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                         </select>
-                        <div th:if="${#fields.hasErrors('isActive')}" class="invalid-feedback d-block">
-                            <p th:each="error : ${#fields.errors('isActive')}" class="mb-0">[[${error}]]</p>
+                        <div th:if="${#fields.hasErrors('enabled')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('enabled')}" class="mb-0">[[${error}]]</p>
                         </div>
                     </div>
                 </div>

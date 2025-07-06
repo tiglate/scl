@@ -24,10 +24,8 @@ public class CounterpartyDTO {
     @NotNull
     private Boolean isActive;
 
-    @NotNull
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
     private Long updatedById;
