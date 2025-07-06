@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Currency Form</title>
+</head>
+<body>
+    <!--/*@thymesVar id="currency" type="ludo.mentis.aciem.scl.model.CurrencyDTO"*/-->
+    <!--/*@thymesVar id="mode" type="java.lang.String"*/-->
+    <th:block th:fragment="currencyForm(mode, currency)" th:object="${currency}">
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Details
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label for="txtIsoCode" class="form-label">ISO Code*</label>
+                        <input type="text"
+                               id="txtIsoCode"
+                               class="form-control text-uppercase"
+                               maxlength="3"
+                               th:field="*{isoCode}"
+                               th:disabled="${mode == 'view'}"
+                               th:classappend="${#fields.hasErrors('isoCode') ? 'is-invalid' : ''}" />
+                        <div th:if="${#fields.hasErrors('isoCode')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('isoCode')}" class="mb-0">[[${error}]]</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <label for="txtBacenCode" class="form-label">BACEN Code*</label>
+                        <input type="text"
+                               id="txtBacenCode"
+                               class="form-control"
+                               maxlength="3"
+                               th:field="*{bacenCode}"
+                               th:disabled="${mode == 'view'}"
+                               th:classappend="${#fields.hasErrors('bacenCode') ? 'is-invalid' : ''}" />
+                        <div th:if="${#fields.hasErrors('bacenCode')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('bacenCode')}" class="mb-0">[[${error}]]</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="txtName" class="form-label">Name*</label>
+                        <input type="text"
+                               id="txtName"
+                               class="form-control"
+                               maxlength="255"
+                               th:field="*{name}"
+                               th:disabled="${mode == 'view'}"
+                               th:classappend="${#fields.hasErrors('name') ? 'is-invalid' : ''}" />
+                        <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('name')}" class="mb-0">[[${error}]]</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="text"
+                               id="endDate"
+                               class="form-control js-datepicker"
+                               th:field="*{endDate}"
+                               th:disabled="${mode == 'view'}"
+                               th:classappend="${#fields.hasErrors('endDate') ? 'is-invalid' : ''}" />
+                        <div th:if="${#fields.hasErrors('endDate')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('endDate')}" class="mb-0">[[${error}]]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3" th:if="${mode != 'add'}">
+            <div class="card-header">
+                Audit
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="txtId" class="form-label">Id</label>
+                        <input type="number" id="txtId" th:field="*{id}" disabled="disabled" class="form-control" />
+                    </div>
+                    <div class="col-md-5">
+                        <label for="txtCreatedAt" class="form-label">Input Date</label>
+                        <input type="text" id="txtCreatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(currency.createdAt, 'dd-MMM-yyyy HH:mm:ss')}"  />
+                    </div>
+                    <div class="col-md-5">
+                        <label for="txtUpdatedAt" class="form-label">Last Update</label>
+                        <input type="text" id="txtUpdatedAt" disabled="disabled" class="form-control" th:value="${#temporals.format(currency.updatedAt, 'dd-MMM-yyyy HH:mm:ss')}"  />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>

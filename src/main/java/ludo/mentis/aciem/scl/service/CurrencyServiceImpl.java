@@ -1,17 +1,15 @@
 package ludo.mentis.aciem.scl.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import ludo.mentis.aciem.scl.domain.Currency;
-import ludo.mentis.aciem.scl.domain.FxTrade;
 import ludo.mentis.aciem.scl.model.CurrencyDTO;
 import ludo.mentis.aciem.scl.repos.CurrencyRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
@@ -26,24 +24,13 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public Page<CurrencyDTO> findAll(final String filter, final Pageable pageable) {
-        Page<Currency> page;
-        if (filter != null) {
-            Long longFilter = null;
-            try {
-                longFilter = Long.parseLong(filter);
-            } catch (final NumberFormatException numberFormatException) {
-                // keep null - no parseable input
-            }
-            page = currencyRepository.findAllById(longFilter, pageable);
-        } else {
-            page = currencyRepository.findAll(pageable);
-        }
-        return new PageImpl<>(page.getContent()
-                .stream()
-                .map(currency -> mapToDTO(currency, new CurrencyDTO()))
-                .toList(),
-                pageable, page.getTotalElements());
+    public Page<CurrencyDTO> findAll(CurrencyDTO searchDTO, Pageable pageable) {
+        return currencyRepository.findAllBySearchCriteria(
+                searchDTO.getName(),
+                searchDTO.getIsoCode(),
+                searchDTO.getBacenCode(),
+                pageable
+        );
     }
 
     @Override
@@ -55,8 +42,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public Long create(final CurrencyDTO currencyDTO) {
-        final Currency currency = new Currency();
-        mapToEntity(currencyDTO, currency);
+        var currency = mapToEntity(currencyDTO);
         return currencyRepository.save(currency).getId();
     }
 
@@ -75,16 +61,24 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     private CurrencyDTO mapToDTO(final Currency currency, final CurrencyDTO currencyDTO) {
         currencyDTO.setId(currency.getId());
+        currencyDTO.setName(currency.getName());
         currencyDTO.setIsoCode(currency.getIsoCode());
         currencyDTO.setBacenCode(currency.getBacenCode());
-        currencyDTO.setName(currency.getName());
+        currencyDTO.setEndDate(currency.getEndDate());
+        currencyDTO.setCreatedAt(currency.getCreatedAt());
+        currencyDTO.setUpdatedAt(currency.getUpdatedAt());
         return currencyDTO;
     }
 
+    private Currency mapToEntity(final CurrencyDTO currencyDTO) {
+        return mapToEntity(currencyDTO, new Currency());
+    }
+
     private Currency mapToEntity(final CurrencyDTO currencyDTO, final Currency currency) {
-        currency.setIsoCode(currencyDTO.getIsoCode());
-        currency.setBacenCode(currencyDTO.getBacenCode());
         currency.setName(currencyDTO.getName());
+        currency.setIsoCode(currencyDTO.getIsoCode() != null ? currencyDTO.getIsoCode().toUpperCase() : currencyDTO.getIsoCode());
+        currency.setBacenCode(currencyDTO.getBacenCode());
+        currency.setEndDate(currencyDTO.getEndDate());
         return currency;
     }
 
@@ -100,16 +94,16 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
-        final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final Currency currency = currencyRepository.findById(id)
+        final var referencedWarning = new ReferencedWarning();
+        final var currency = currencyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final FxTrade buyCurrencyFxTrade = fxTradeRepository.findFirstByBuyCurrency(currency);
+        final var buyCurrencyFxTrade = fxTradeRepository.findFirstByBuyCurrency(currency);
         if (buyCurrencyFxTrade != null) {
             referencedWarning.setKey("currency.fxTrade.buyCurrency.referenced");
             referencedWarning.addParam(buyCurrencyFxTrade.getId());
             return referencedWarning;
         }
-        final FxTrade sellCurrencyFxTrade = fxTradeRepository.findFirstBySellCurrency(currency);
+        final var sellCurrencyFxTrade = fxTradeRepository.findFirstBySellCurrency(currency);
         if (sellCurrencyFxTrade != null) {
             referencedWarning.setKey("currency.fxTrade.sellCurrency.referenced");
             referencedWarning.addParam(sellCurrencyFxTrade.getId());

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CurrencyService {
 
-    Page<CurrencyDTO> findAll(String filter, Pageable pageable);
+	Page<CurrencyDTO> findAll(CurrencyDTO searchDTO, Pageable pageable);
 
     CurrencyDTO get(Long id);
 

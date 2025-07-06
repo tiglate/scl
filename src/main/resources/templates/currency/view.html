@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>View Currency</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('view', 'View Currency', 'currencyForm', @{/currencies})}"></div>
+        <th:block th:replace="~{currency/_form :: currencyForm('view', ${currency})}"></th:block>
+    </div>
+</body>
+</html>

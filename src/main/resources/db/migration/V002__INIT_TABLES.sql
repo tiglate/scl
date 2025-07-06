@@ -228,8 +228,8 @@ BEGIN
 	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('XOF', '372', 'CFA WEST FRANC', NULL);
 	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('XAF', '370', 'CFA CENTRAL / FRA', NULL);
 	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('XCG', '326', 'CARIBBEAN GUILDER', NULL);
-	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('NZD', '245', 'NEW ZEALAND DOLLA', NULL);
-	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('USD', '220', 'UNITED STATES DOL', NULL);
+	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('NZD', '245', 'NEW ZEALAND DOLLAR', NULL);
+	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('USD', '220', 'UNITED STATES DOLLAR', NULL);
 	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('XCD', '215', 'EAST CARIBBEAN DOLLAR', NULL);
 	INSERT INTO tb_currency (iso_code, bacen_code, name, end_date) VALUES ('SDR', '138', 'SPECIAL DRAWING RIGHT', NULL);
 END
