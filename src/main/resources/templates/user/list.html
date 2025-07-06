@@ -1,57 +1,126 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{user.list.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{user.list.headline}]]</h1>
-                <div>
-                    <a th:href="@{/users/add}" class="btn btn-primary ms-2">[[#{user.list.createNew}]]</a>
-                </div>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Users</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByNameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByNameDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByEmailLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByEmailDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByGenderLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByGenderDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByUsernameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByUsernameDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIsActiveLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIsActiveDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByDepartmentNameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByDepartmentNameDirection" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div class="d-flex flex-wrap mb-4">
+            <h1 class="flex-grow-1">Users</h1>
+            <div>
+                <a class="btn btn-primary ms-2"
+                   th:href="@{/users/add}"><i class="bi-plus-circle"></i> Add</a>
             </div>
-            <div th:if="${!users.empty || filter != null}" class="row">
-                <div th:replace="~{fragments/utils::searchFilter(object='user')}" />
-                <div th:replace="~{fragments/utils::sorting(object='user', sortOptions=${ {'id,ASC', 'email,ASC', 'username,ASC'} }, columnClass='offset-lg-4')}" />
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Filters
             </div>
-            <div th:if="${users.empty}">[[#{user.list.empty}]]</div>
-            <div th:if="${!users.empty}" class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead>
+            <div class="card-body">
+                <form id="searchForm" th:action="${requestUri}" th:object="${userSearch}" method="get">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="txtUsername" class="form-label">Username</label>
+                            <input type="text" id="txtUsername" th:field="*{username}" class="form-control"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="txtName" class="form-label">Name</label>
+                            <input type="text" id="txtName" th:field="*{name}" class="form-control"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cboDepartment" class="form-label">Department</label>
+                            <select id="cboDepartment" th:field="*{department}" class="form-select">
+                                <option value=""></option>
+                                <option th:each="optionValue : ${departmentValues}" th:value="${optionValue.key}">
+                                    [[${optionValue.value}]]
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col d-flex justify-content-end">
+                            <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                   onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                            <input type="submit" value="Search" class="btn btn-primary"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Results
+            </div>
+            <div class="card-body">
+                <p th:if="${#lists.isEmpty(users)}" class="card-text">No records found</p>
+                <div th:if="${not #lists.isEmpty(users)}" class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle">
+                        <thead>
                         <tr>
-                            <th scope="col">[[#{user.id.label}]]</th>
-                            <th scope="col">[[#{user.email.label}]]</th>
-                            <th scope="col">[[#{user.username.label}]]</th>
-                            <th scope="col">[[#{user.name.label}]]</th>
-                            <th scope="col">[[#{user.gender.label}]]</th>
-                            <th scope="col">[[#{user.isActive.label}]]</th>
-                            <th><!-- --></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id', ${sortByIdLink}, ${sortByIdDirection}, 'id')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Name', ${sortByNameLink}, ${sortByNameDirection}, 'name')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('E-mail', ${sortByEmailLink}, ${sortByEmailDirection}, 'email')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Gender', ${sortByGenderLink}, ${sortByGenderDirection}, 'gender')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Username', ${sortByUsernameLink}, ${sortByUsernameDirection}, 'username')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Active?', ${sortByIsActiveLink}, ${sortByIsActiveDirection}, 'isActive')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Department', ${sortByDepartmentNameLink}, ${sortByDepartmentNameDirection}, 'department.name')}"></th>
+                            <th></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody class="table-group-divider">
                         <tr th:each="user : ${users}">
                             <td>[[${user.id}]]</td>
-                            <td>[[${user.email}]]</td>
-                            <td>[[${user.username}]]</td>
                             <td>[[${user.name}]]</td>
+                            <td>[[${user.email}]]</td>
                             <td>[[${user.gender}]]</td>
+                            <td>[[${user.username}]]</td>
                             <td>[[${user.isActive}]]</td>
+                            <td>[[${user.departmentName}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">
-                                    <a th:href="@{/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-secondary">[[#{user.list.edit}]]</a>
+                                    <a th:href="@{/users/view/{id}(id=${user.id})}"
+                                       class="btn btn-sm btn-secondary bi-eye"
+                                       title="View"></a>
+                                    <a th:href="@{/users/edit/{id}(id=${user.id})}"
+                                       class="btn btn-sm btn-secondary bi-pencil-square"
+                                       title="Edit"></a>
                                     <form th:action="@{/users/delete/{id}(id=${user.id})}"
-                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{user.list.delete}]]</button>
+                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
+                                        </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div th:replace="~{fragments/utils::pagination()}" />
+            <div class="card-footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <nav th:replace="~{fragments/form-utils::pagination()}"></nav>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

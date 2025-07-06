@@ -3,13 +3,17 @@ package ludo.mentis.aciem.scl.repos;
 import java.util.List;
 import java.util.UUID;
 
-import ludo.mentis.aciem.scl.domain.Department;
-import ludo.mentis.aciem.scl.domain.Role;
-import ludo.mentis.aciem.scl.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import ludo.mentis.aciem.scl.domain.Department;
+import ludo.mentis.aciem.scl.domain.Role;
+import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.UserDTO;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -31,4 +35,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
+    @Query("SELECT new ludo.mentis.aciem.scl.model.UserDTO(u.id, u.name, u.email, u.gender, u.username, u.password, u.isActive, d.id, d.name, u.createdAt, u.updatedAt) " +
+            "FROM User u " +
+            "LEFT JOIN u.department d " +
+            "WHERE (:username IS NULL OR u.username LIKE %:username%) " +
+            "AND (:name IS NULL OR u.name LIKE %:name%) " +
+            "AND (:department IS NULL OR d.id = :department) " +
+            "AND (:isActive IS NULL OR u.isActive = :isActive) ")
+    Page<UserDTO> findAllBySearchCriteria(
+            @Param("username") String username,
+            @Param("name") String name,
+            @Param("department") Integer department,
+            @Param("isActive") Boolean isActive,
+            Pageable pageable
+    );
 }

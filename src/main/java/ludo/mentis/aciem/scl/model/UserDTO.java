@@ -1,55 +1,81 @@
 package ludo.mentis.aciem.scl.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-import ludo.mentis.aciem.scl.util.WebUtils;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 public class UserDTO {
 
     private Long id;
 
-    @NotNull
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class})
     @Size(max = 255)
+    private String name;
+    
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class})
+    @Size(max = 255)
+    @Email
     @UserEmailUnique
     private String email;
+    
+    @NotNull(groups = {OnCreate.class, OnUpdate.class})
+    private Gender gender;
 
-    @NotNull
-    @Size(max = 30)
-    @Email(regexp = WebUtils.EMAIL_PATTERN)
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class})
+    @Size(max = 50)
     @UserUsernameUnique
     private String username;
 
-    @NotNull
+    @NotBlank(groups = OnCreate.class)
     @Size(max = 255)
     private String password;
 
-    @NotNull
-    @Size(max = 255)
-    private String name;
-
-    @NotNull
-    private Gender gender;
-
-    @NotNull
+    @NotNull(groups = {OnCreate.class, OnUpdate.class})
     private Boolean isActive;
+    
+    @NotNull(groups = {OnCreate.class, OnUpdate.class})
+    private Long departmentId;
 
     private UUID resetUID;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private OffsetDateTime resetStart;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class})
-    private Integer departmentId;
-
     private String departmentName;
 
     private List<Long> roles;
+    
+    private LocalDateTime createdAt;
+    
+    private LocalDateTime updatedAt;
+    
+    public UserDTO() {
+    }
+
+    public UserDTO(Long id, String name, String email, Gender gender, String username, String password,
+                   Boolean isActive, Long departmentId, String departmentName, LocalDateTime createdAt,
+                   LocalDateTime updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.username = username;
+        this.password = password;
+        this.isActive = isActive;
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     public Long getId() {
         return id;
@@ -123,11 +149,11 @@ public class UserDTO {
         this.resetStart = resetStart;
     }
 
-    public Integer getDepartmentId() {
+    public Long getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(final Integer departmentId) {
+    public void setDepartmentId(final Long departmentId) {
         this.departmentId = departmentId;
     }
 
@@ -142,5 +168,21 @@ public class UserDTO {
     public void setRoles(final List<Long> roles) {
         this.roles = roles;
     }
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
 }

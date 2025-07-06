@@ -1,30 +1,19 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{user.add.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{user.add.headline}]]</h1>
-                <div>
-                    <a th:href="@{/users}" class="btn btn-secondary">[[#{user.add.back}]]</a>
-                </div>
-            </div>
-            <div th:replace="~{fragments/forms::globalErrors('user')}" />
-            <form th:action="${requestUri}" method="post" novalidate="">
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='email', required=true)}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='username', required=true, type='email')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='password', required=true, type='password')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='name', required=true)}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='gender', required=true, type='radio')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='isActive', type='checkbox')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='resetUID')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='resetStart')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='user', field='roles', type='multiselect')}" />
-                <input type="submit" th:value="#{user.add.headline}" class="btn btn-primary mt-4" />
-            </form>
-        </div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Add User</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('add', 'Add User', 'userForm', @{/users})}"></div>
+        <div th:replace="~{fragments/form-utils::globalErrors('user')}"></div>
+        <form th:action="${requestUri}" method="post" id="userForm">
+            <th:block th:replace="~{user/_form :: userForm('add', ${user}, ${genderValues}, ${departmentValues}, ${rolesValues})}"></th:block>
+        </form>
+    </div>
+</body>
 </html>

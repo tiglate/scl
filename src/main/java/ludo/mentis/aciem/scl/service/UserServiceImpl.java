@@ -1,15 +1,20 @@
 package ludo.mentis.aciem.scl.service;
 
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import ludo.mentis.aciem.scl.domain.Counterparty;
-import ludo.mentis.aciem.scl.domain.FxSettlement;
-import ludo.mentis.aciem.scl.domain.FxSettlementStep;
-import ludo.mentis.aciem.scl.domain.FxTrade;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.UserDTO;
+import ludo.mentis.aciem.scl.model.UserSearchDTO;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
+import ludo.mentis.aciem.scl.repos.DepartmentRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementStepRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
@@ -17,12 +22,6 @@ import ludo.mentis.aciem.scl.repos.RoleRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -32,64 +31,57 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final FxSettlementStepRepository fxSettlementStepRepository;
     private final FxTradeRepository fxTradeRepository;
+    private final DepartmentRepository departmentRepository;
     private final CounterpartyRepository counterpartyRepository;
     private final FxSettlementRepository fxSettlementRepository;
+    private final FxSettlementStepRepository fxSettlementStepRepository;
 
-    public UserServiceImpl(final UserRepository userRepository, final RoleRepository roleRepository,
-            final PasswordEncoder passwordEncoder,
-            final FxSettlementStepRepository fxSettlementStepRepository,
-            final FxTradeRepository fxTradeRepository,
-            final CounterpartyRepository counterpartyRepository,
-            final FxSettlementRepository fxSettlementRepository) {
+    public UserServiceImpl(final UserRepository userRepository,
+    		               final RoleRepository roleRepository,
+    		               final PasswordEncoder passwordEncoder,
+    		               final FxTradeRepository fxTradeRepository,
+    		               final DepartmentRepository departmentRepository,
+    		               final CounterpartyRepository counterpartyRepository,
+    		               final FxSettlementRepository fxSettlementRepository,
+    		               final FxSettlementStepRepository fxSettlementStepRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.fxSettlementStepRepository = fxSettlementStepRepository;
         this.fxTradeRepository = fxTradeRepository;
+        this.departmentRepository = departmentRepository;
         this.counterpartyRepository = counterpartyRepository;
         this.fxSettlementRepository = fxSettlementRepository;
+        this.fxSettlementStepRepository = fxSettlementStepRepository;
     }
 
     @Override
-    public Page<UserDTO> findAll(final String filter, final Pageable pageable) {
-        Page<User> page;
-        if (filter != null) {
-            Long longFilter = null;
-            try {
-                longFilter = Long.parseLong(filter);
-            } catch (final NumberFormatException numberFormatException) {
-                // keep null - no parseable input
-            }
-            page = userRepository.findAllById(longFilter, pageable);
-        } else {
-            page = userRepository.findAll(pageable);
-        }
-        return new PageImpl<>(page.getContent()
-                .stream()
-                .map(user -> mapToDTO(user, new UserDTO()))
-                .toList(),
-                pageable, page.getTotalElements());
+    public Page<UserDTO> findAll(UserSearchDTO searchDTO, Pageable pageable) {
+        return userRepository.findAllBySearchCriteria(
+                searchDTO.getUsername(),
+                searchDTO.getName(),
+                searchDTO.getDepartment(),
+                searchDTO.getIsActive(),
+                pageable
+        );
     }
 
     @Override
     public UserDTO get(final Long id) {
         return userRepository.findById(id)
-                .map(user -> mapToDTO(user, new UserDTO()))
+                .map(this::mapToDTO)
                 .orElseThrow(NotFoundException::new);
     }
 
     @Override
     public Long create(final UserDTO userDTO) {
-        final User user = new User();
-        mapToEntity(userDTO, user);
+        final var user = mapToEntity(userDTO);
         return userRepository.save(user).getId();
     }
 
     @Override
     public void update(final Long id, final UserDTO userDTO) {
-        final User user = userRepository.findById(id)
+        final var user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(userDTO, user);
         userRepository.save(user);
@@ -100,36 +92,49 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
+    private UserDTO mapToDTO(final User user) {
+        var userDTO = new UserDTO();
         userDTO.setId(user.getId());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setUsername(user.getUsername());
         userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
         userDTO.setGender(user.getGender());
+        userDTO.setUsername(user.getUsername());
         userDTO.setIsActive(user.getIsActive());
+        userDTO.setDepartmentId(user.getDepartment() == null ? null : user.getDepartment().getId());
         userDTO.setResetUID(user.getResetUID());
         userDTO.setResetStart(user.getResetStart());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
         userDTO.setRoles(user.getRoles().stream()
-                .map(role -> role.getId())
+                .map(Role::getId)
                 .toList());
         return userDTO;
     }
 
+    private User mapToEntity(final UserDTO userDTO) {
+        return mapToEntity(userDTO, new User());
+    }
+
     private User mapToEntity(final UserDTO userDTO, final User user) {
-        user.setEmail(userDTO.getEmail());
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
         user.setGender(userDTO.getGender());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty() ? user.getPassword() : passwordEncoder.encode(userDTO.getPassword()));
         user.setIsActive(userDTO.getIsActive());
         user.setResetUID(userDTO.getResetUID());
         user.setResetStart(userDTO.getResetStart());
-        final List<Role> roles = roleRepository.findAllById(
-                userDTO.getRoles() == null ? List.of() : userDTO.getRoles());
+
+        final var department = userDTO.getDepartmentId() == null ? null : departmentRepository.findById(userDTO.getDepartmentId())
+                .orElseThrow(() -> new NotFoundException("department not found"));
+        user.setDepartment(department);
+
+        final var roles = roleRepository.findAllById(userDTO.getRoles() == null ? Collections.emptyList() : userDTO.getRoles());
         if (roles.size() != (userDTO.getRoles() == null ? 0 : userDTO.getRoles().size())) {
             throw new NotFoundException("one of roles not found");
         }
         user.setRoles(new HashSet<>(roles));
+
         return user;
     }
 
@@ -145,28 +150,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
-        final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final User user = userRepository.findById(id)
+        final var referencedWarning = new ReferencedWarning();
+        final var user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final FxSettlementStep userFxSettlementStep = fxSettlementStepRepository.findFirstByUser(user);
+        final var userFxSettlementStep = fxSettlementStepRepository.findFirstByUser(user);
         if (userFxSettlementStep != null) {
             referencedWarning.setKey("user.fxSettlementStep.user.referenced");
             referencedWarning.addParam(userFxSettlementStep.getId());
             return referencedWarning;
         }
-        final FxTrade updatedByFxTrade = fxTradeRepository.findFirstByUpdatedBy(user);
+        final var updatedByFxTrade = fxTradeRepository.findFirstByUpdatedBy(user);
         if (updatedByFxTrade != null) {
             referencedWarning.setKey("user.fxTrade.updatedBy.referenced");
             referencedWarning.addParam(updatedByFxTrade.getId());
             return referencedWarning;
         }
-        final Counterparty updatedByCounterparty = counterpartyRepository.findFirstByUpdatedBy(user);
+        final var updatedByCounterparty = counterpartyRepository.findFirstByUpdatedBy(user);
         if (updatedByCounterparty != null) {
             referencedWarning.setKey("user.counterparty.updatedBy.referenced");
             referencedWarning.addParam(updatedByCounterparty.getId());
             return referencedWarning;
         }
-        final FxSettlement completedByFxSettlement = fxSettlementRepository.findFirstByCompletedBy(user);
+        final var completedByFxSettlement = fxSettlementRepository.findFirstByCompletedBy(user);
         if (completedByFxSettlement != null) {
             referencedWarning.setKey("user.fxSettlement.completedBy.referenced");
             referencedWarning.addParam(completedByFxSettlement.getId());

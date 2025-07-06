@@ -1,15 +1,30 @@
 package ludo.mentis.aciem.scl.domain;
 
-import jakarta.persistence.*;
-
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
-import ludo.mentis.aciem.scl.model.Gender;
+
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import ludo.mentis.aciem.scl.model.Gender;
 
 
 @Audited
@@ -62,11 +77,11 @@ public class User {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime2")
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime2")
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -156,21 +171,21 @@ public class User {
         this.roles = roles;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     @SuppressWarnings("unused")
-    public void setCreatedAt(OffsetDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
     @SuppressWarnings("unused")
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
