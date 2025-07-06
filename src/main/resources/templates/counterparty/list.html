@@ -1,61 +1,118 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{counterparty.list.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{counterparty.list.headline}]]</h1>
-                <div>
-                    <a th:href="@{/counterparties/add}" class="btn btn-primary ms-2">[[#{counterparty.list.createNew}]]</a>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Counterparties</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIdDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByCodeLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByCodeDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByShortNameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByShortNameDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByLongNameLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByLongNameDirection" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIsActiveLink" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="sortByIsActiveDirection" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div class="d-flex flex-wrap mb-4">
+            <h1 class="flex-grow-1">Counterparties</h1>
+            <div>
+                <a class="btn btn-primary ms-2"
+                   th:href="@{/counterparties/add}"
+                   sec:authorize="hasAuthority('COUNTERPARTY_WRITE')"><i class="bi-plus-circle"></i> Add</a>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Filters
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <form id="searchForm" th:action="${requestUri}" th:object="${counterpartySearch}" method="get">
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <label for="txtCode" class="form-label">Code</label>
+                                <input type="number" id="txtCode" th:field="*{originId}" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="txtShortName" class="form-label">Short Name</label>
+                                <input type="text" id="txtShortName" th:field="*{shortName}" class="form-control" maxlength="255" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="txtLongName" class="form-label">Long Name</label>
+                                <input type="text" id="txtLongName" th:field="*{longName}" class="form-control" maxlength="255" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col d-flex justify-content-end">
+                                <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                       onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                                <input type="submit" value="Search" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div th:if="${!counterparties.empty || filter != null}" class="row">
-                <div th:replace="~{fragments/utils::searchFilter(object='counterparty')}" />
-                <div th:replace="~{fragments/utils::sorting(object='counterparty', sortOptions=${ {'id,ASC', 'originId,ASC', 'longName,ASC'} }, columnClass='offset-lg-4')}" />
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Results
             </div>
-            <div th:if="${counterparties.empty}">[[#{counterparty.list.empty}]]</div>
-            <div th:if="${!counterparties.empty}" class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead>
+            <div class="card-body">
+                <p class="card-text" th:if="${#lists.isEmpty(counterparties)}">No records were found</p>
+                <div th:if="${not #lists.isEmpty(counterparties)}" class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle">
+                        <thead>
                         <tr>
-                            <th scope="col">[[#{counterparty.id.label}]]</th>
-                            <th scope="col">[[#{counterparty.originId.label}]]</th>
-                            <th scope="col">[[#{counterparty.longName.label}]]</th>
-                            <th scope="col">[[#{counterparty.shortName.label}]]</th>
-                            <th scope="col">[[#{counterparty.isActive.label}]]</th>
-                            <th scope="col">[[#{counterparty.createdAt.label}]]</th>
-                            <th scope="col">[[#{counterparty.updatedAt.label}]]</th>
-                            <th scope="col">[[#{counterparty.updatedBy.label}]]</th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id', ${sortByIdLink}, ${sortByIdDirection}, 'id')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Code', ${sortByCodeLink}, ${sortByCodeDirection}, 'originId')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Short Name', ${sortByShortNameLink}, ${sortByShortNameDirection}, 'shortName')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Long Name', ${sortByLongNameLink}, ${sortByLongNameDirection}, 'longName')}"></th>
+                            <th th:replace="~{fragments/table-utils :: sortableColumnHeader('Active?', ${sortByIsActiveLink}, ${sortByIsActiveDirection}, 'isActive')}"></th>
                             <th><!-- --></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody class="table-group-divider">
                         <tr th:each="counterparty : ${counterparties}">
                             <td>[[${counterparty.id}]]</td>
                             <td>[[${counterparty.originId}]]</td>
-                            <td>[[${counterparty.longName}]]</td>
                             <td>[[${counterparty.shortName}]]</td>
+                            <td>[[${counterparty.longName}]]</td>
                             <td>[[${counterparty.isActive}]]</td>
-                            <td>[[${counterparty.createdAt}]]</td>
-                            <td>[[${counterparty.updatedAt}]]</td>
-                            <td>[[${counterparty.updatedBy}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">
-                                    <a th:href="@{/counterparties/edit/{id}(id=${counterparty.id})}" class="btn btn-sm btn-secondary">[[#{counterparty.list.edit}]]</a>
+                                    <a th:href="@{/counterparties/view/{id}(id=${counterparty.id})}"
+                                       class="btn btn-sm btn-secondary bi-eye"
+                                       title="View"></a>
+                                    <a th:href="@{/counterparties/edit/{id}(id=${counterparty.id})}"
+                                       sec:authorize="hasAuthority('COUNTERPARTY_WRITE')"
+                                       class="btn btn-sm btn-secondary bi-pencil-square"
+                                       title="Edit"></a>
                                     <form th:action="@{/counterparties/delete/{id}(id=${counterparty.id})}"
-                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{counterparty.list.delete}]]</button>
+                                          sec:authorize="hasAuthority('COUNTERPARTY_WRITE')"
+                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
+                                        </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div th:replace="~{fragments/utils::pagination()}" />
+            <div class="card-footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <nav th:replace="~{fragments/form-utils::pagination()}"></nav>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

@@ -1,8 +1,9 @@
 package ludo.mentis.aciem.scl.model;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -13,7 +14,7 @@ public class CounterpartyDTO {
 
     private Integer originId;
 
-    @NotNull
+    @NotBlank
     @Size(max = 255)
     private String longName;
 
@@ -24,85 +25,112 @@ public class CounterpartyDTO {
     private Boolean isActive;
 
     @NotNull
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-    private Long updatedBy;
+    private Long updatedById;
+    
+    private String updatedByName;
 
     private List<Long> documents;
+    
+    public CounterpartyDTO() {
+    	
+    }
 
-    public Long getId() {
+    public CounterpartyDTO(Long id, Integer originId, String longName, String shortName, Boolean isActive,
+    		               LocalDateTime createdAt, LocalDateTime updatedAt, Long updatedById, String updatedByName) {
+		this.id = id;
+		this.originId = originId;
+		this.longName = longName;
+		this.shortName = shortName;
+		this.isActive = isActive;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.updatedById = updatedById;
+		this.updatedByName = updatedByName;
+	}
+
+	public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void setId(final Long value) {
+        this.id = value;
     }
 
     public Integer getOriginId() {
         return originId;
     }
 
-    public void setOriginId(final Integer originId) {
-        this.originId = originId;
+    public void setOriginId(final Integer value) {
+        this.originId = value;
     }
 
     public String getLongName() {
         return longName;
     }
 
-    public void setLongName(final String longName) {
-        this.longName = longName;
+    public void setLongName(final String value) {
+        this.longName = value;
     }
 
     public String getShortName() {
         return shortName;
     }
 
-    public void setShortName(final String shortName) {
-        this.shortName = shortName;
+    public void setShortName(final String value) {
+        this.shortName = value;
     }
 
     public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(final Boolean isActive) {
-        this.isActive = isActive;
+    public void setIsActive(final Boolean value) {
+        this.isActive = value;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(final LocalDateTime value) {
+        this.createdAt = value;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(final OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(final LocalDateTime value) {
+        this.updatedAt = value;
     }
 
-    public Long getUpdatedBy() {
-        return updatedBy;
+    public Long getUpdatedById() {
+        return updatedById;
     }
 
-    public void setUpdatedBy(final Long updatedBy) {
-        this.updatedBy = updatedBy;
+    public void setUpdatedById(final Long value) {
+        this.updatedById = value;
+    }
+
+    public String getUpdatedByName() {
+        return updatedByName;
+    }
+
+    public void setUpdatedByName(final String value) {
+        this.updatedByName = value;
     }
 
     public List<Long> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(final List<Long> documents) {
-        this.documents = documents;
+    public void setDocuments(final List<Long> value) {
+        this.documents = value;
     }
 
 }

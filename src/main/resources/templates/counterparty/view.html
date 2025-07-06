@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>View Counterparty</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('view', 'View Counterparty', 'counterpartyForm', @{/counterparties})}"></div>
+        <th:block th:replace="~{counterparty/_form :: counterpartyForm('view', ${counterparty})}"></th:block>
+    </div>
+</body>
+</html>

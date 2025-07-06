@@ -2,10 +2,14 @@ package ludo.mentis.aciem.scl.service;
 
 import java.util.HashSet;
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import ludo.mentis.aciem.scl.domain.Counterparty;
 import ludo.mentis.aciem.scl.domain.Document;
-import ludo.mentis.aciem.scl.domain.FxTrade;
-import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.CounterpartyDTO;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
 import ludo.mentis.aciem.scl.repos.DocumentRepository;
@@ -13,12 +17,6 @@ import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -39,24 +37,14 @@ public class CounterpartyServiceImpl implements CounterpartyService {
     }
 
     @Override
-    public Page<CounterpartyDTO> findAll(final String filter, final Pageable pageable) {
-        Page<Counterparty> page;
-        if (filter != null) {
-            Long longFilter = null;
-            try {
-                longFilter = Long.parseLong(filter);
-            } catch (final NumberFormatException numberFormatException) {
-                // keep null - no parseable input
-            }
-            page = counterpartyRepository.findAllById(longFilter, pageable);
-        } else {
-            page = counterpartyRepository.findAll(pageable);
-        }
-        return new PageImpl<>(page.getContent()
-                .stream()
-                .map(counterparty -> mapToDTO(counterparty, new CounterpartyDTO()))
-                .toList(),
-                pageable, page.getTotalElements());
+    public Page<CounterpartyDTO> findAll(CounterpartyDTO searchDTO, Pageable pageable) {
+        return counterpartyRepository.findAllBySearchCriteria(
+                searchDTO.getOriginId(),
+                searchDTO.getShortName(),
+                searchDTO.getLongName(),
+                searchDTO.getIsActive(),
+                pageable
+        );
     }
 
     @Override
@@ -68,8 +56,7 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
     @Override
     public Long create(final CounterpartyDTO counterpartyDTO) {
-        final Counterparty counterparty = new Counterparty();
-        mapToEntity(counterpartyDTO, counterparty);
+        var counterparty = mapToEntity(counterpartyDTO);
         return counterpartyRepository.save(counterparty).getId();
     }
 
@@ -86,35 +73,42 @@ public class CounterpartyServiceImpl implements CounterpartyService {
         counterpartyRepository.deleteById(id);
     }
 
-    private CounterpartyDTO mapToDTO(final Counterparty counterparty,
-            final CounterpartyDTO counterpartyDTO) {
+    private CounterpartyDTO mapToDTO(final Counterparty counterparty, final CounterpartyDTO counterpartyDTO) {
         counterpartyDTO.setId(counterparty.getId());
         counterpartyDTO.setOriginId(counterparty.getOriginId());
-        counterpartyDTO.setLongName(counterparty.getLongName());
+        counterpartyDTO.setShortName(counterparty.getShortName());
         counterpartyDTO.setShortName(counterparty.getShortName());
         counterpartyDTO.setIsActive(counterparty.getIsActive());
         counterpartyDTO.setCreatedAt(counterparty.getCreatedAt());
         counterpartyDTO.setUpdatedAt(counterparty.getUpdatedAt());
-        counterpartyDTO.setUpdatedBy(counterparty.getUpdatedBy() == null ? null : counterparty.getUpdatedBy().getId());
+        if (counterparty.getUpdatedBy() != null) {
+            counterpartyDTO.setUpdatedById(counterparty.getUpdatedBy().getId());
+            counterpartyDTO.setUpdatedByName(counterparty.getUpdatedBy().getName());
+        }
         counterpartyDTO.setDocuments(counterparty.getDocuments().stream()
-                .map(document -> document.getId())
+                .map(Document::getId)
                 .toList());
         return counterpartyDTO;
     }
 
-    private Counterparty mapToEntity(final CounterpartyDTO counterpartyDTO,
-            final Counterparty counterparty) {
+    private Counterparty mapToEntity(final CounterpartyDTO counterpartyDTO) {
+        return mapToEntity(counterpartyDTO, new Counterparty());
+    }
+
+    private Counterparty mapToEntity(final CounterpartyDTO counterpartyDTO, final Counterparty counterparty) {
         counterparty.setOriginId(counterpartyDTO.getOriginId());
         counterparty.setLongName(counterpartyDTO.getLongName());
         counterparty.setShortName(counterpartyDTO.getShortName());
         counterparty.setIsActive(counterpartyDTO.getIsActive());
         counterparty.setCreatedAt(counterpartyDTO.getCreatedAt());
         counterparty.setUpdatedAt(counterpartyDTO.getUpdatedAt());
-        final User updatedBy = counterpartyDTO.getUpdatedBy() == null ? null : userRepository.findById(counterpartyDTO.getUpdatedBy())
-                .orElseThrow(() -> new NotFoundException("updatedBy not found"));
+        final var updatedBy = counterpartyDTO.getUpdatedById() == null
+        		            ? null
+        		            : userRepository.findById(counterpartyDTO.getUpdatedById())
+        		                            .orElseThrow(() -> new NotFoundException("updatedBy not found"));
         counterparty.setUpdatedBy(updatedBy);
-        final List<Document> documents = documentRepository.findAllById(
-                counterpartyDTO.getDocuments() == null ? List.of() : counterpartyDTO.getDocuments());
+        final var documents = documentRepository
+        		.findAllById(counterpartyDTO.getDocuments() == null ? List.of() : counterpartyDTO.getDocuments());
         if (documents.size() != (counterpartyDTO.getDocuments() == null ? 0 : counterpartyDTO.getDocuments().size())) {
             throw new NotFoundException("one of documents not found");
         }
@@ -124,10 +118,10 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
-        final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final Counterparty counterparty = counterpartyRepository.findById(id)
+        final var referencedWarning = new ReferencedWarning();
+        final var counterparty = counterpartyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final FxTrade counterpartyFxTrade = fxTradeRepository.findFirstByCounterparty(counterparty);
+        final var counterpartyFxTrade = fxTradeRepository.findFirstByCounterparty(counterparty);
         if (counterpartyFxTrade != null) {
             referencedWarning.setKey("counterparty.trade.counterparty.referenced");
             referencedWarning.addParam(counterpartyFxTrade.getId());
@@ -135,5 +129,4 @@ public class CounterpartyServiceImpl implements CounterpartyService {
         }
         return null;
     }
-
 }

@@ -1,17 +1,11 @@
 package ludo.mentis.aciem.scl.controller;
 
-import jakarta.validation.Valid;
-import ludo.mentis.aciem.scl.domain.Document;
-import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.model.CounterpartyDTO;
-import ludo.mentis.aciem.scl.repos.DocumentRepository;
-import ludo.mentis.aciem.scl.repos.UserRepository;
-import ludo.mentis.aciem.scl.service.CounterpartyService;
-import ludo.mentis.aciem.scl.util.CustomCollectors;
-import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import ludo.mentis.aciem.scl.util.UserRoles;
-import ludo.mentis.aciem.scl.util.WebUtils;
-import org.springframework.data.domain.Page;
+
+import static java.util.Map.entry;
+
+import java.util.Map;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -28,95 +22,115 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.validation.Valid;
+import ludo.mentis.aciem.scl.model.CounterpartyDTO;
+import ludo.mentis.aciem.scl.service.CounterpartyService;
+import ludo.mentis.aciem.scl.util.FlashMessages;
+import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import ludo.mentis.aciem.scl.util.SortUtils;
+import ludo.mentis.aciem.scl.util.UserRoles;
+import ludo.mentis.aciem.scl.util.WebUtils;
 
 @Controller
 @RequestMapping("/counterparties")
 public class CounterpartyController {
 
+    private static final String ENTITY_NAME = "Counterparty";
+    private static final String CONTROLLER_ADD = "counterparty/add";
+    private static final String CONTROLLER_EDIT = "counterparty/edit";
+    private static final String CONTROLLER_VIEW = "counterparty/view";
+    private static final String CONTROLLER_LIST = "counterparty/list";
+    private static final String REDIRECT_TO_CONTROLLER_INDEX = "redirect:/counterparties";
     private final CounterpartyService counterpartyService;
-    private final UserRepository userRepository;
-    private final DocumentRepository documentRepository;
+    private final SortUtils sortUtils;
 
-    public CounterpartyController(final CounterpartyService counterpartyService,
-            final UserRepository userRepository, final DocumentRepository documentRepository) {
+    public CounterpartyController(final CounterpartyService counterpartyService) {
         this.counterpartyService = counterpartyService;
-        this.userRepository = userRepository;
-        this.documentRepository = documentRepository;
-    }
-
-    @ModelAttribute
-    public void prepareContext(final Model model) {
-        model.addAttribute("updatedByValues", userRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(User::getId, User::getEmail)));
-        model.addAttribute("documentsValues", documentRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(Document::getId, Document::getValue)));
+        this.sortUtils = new SortUtils();
     }
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.COUNTERPARTY_READ + "', '" + UserRoles.COUNTERPARTY_WRITE + "')")
-    public String list(@RequestParam(name = "filter", required = false) final String filter,
-            @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable,
-            final Model model) {
-        final Page<CounterpartyDTO> counterparties = counterpartyService.findAll(filter, pageable);
+    public String list(@ModelAttribute("counterpartySearch") CounterpartyDTO filter,
+                       @RequestParam(required = false) String sort,
+                       @SortDefault(sort = "id", direction = Sort.Direction.DESC) @PageableDefault(size = 20) final Pageable pageable,
+                       final Model model) {
+        if (sort == null) {
+            sort = "id,desc";
+        }
+        final var sortOrder = this.sortUtils.addSortAttributesToModel(model, sort, pageable, Map.ofEntries(
+                entry("id", "sortById"),
+                entry("originId", "sortByCode"),
+                entry("shortName", "sortByShortName"),
+                entry("longName", "sortByLongName"),
+                entry("isActive", "sortByIsActive")
+        ));
+        final var pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
+        final var counterparties = counterpartyService.findAll(filter, pageRequest);
         model.addAttribute("counterparties", counterparties);
         model.addAttribute("filter", filter);
         model.addAttribute("paginationModel", WebUtils.getPaginationModel(counterparties));
-        return "counterparty/list";
+        return CONTROLLER_LIST;
+    }
+
+    @GetMapping("/view/{id}")
+    @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.COUNTERPARTY_READ + "', '" + UserRoles.COUNTERPARTY_WRITE + "')")
+    public String view(@PathVariable final Long id, final Model model) {
+        model.addAttribute("counterparty", counterpartyService.get(id));
+        return CONTROLLER_VIEW;
+    }
+
+    @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
+    public String edit(@PathVariable final Long id, final Model model) {
+        model.addAttribute("counterparty", counterpartyService.get(id));
+        return CONTROLLER_EDIT;
     }
 
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
     public String add(@ModelAttribute("counterparty") final CounterpartyDTO counterpartyDTO) {
-        return "counterparty/add";
+        return CONTROLLER_ADD;
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
     public String add(@ModelAttribute("counterparty") @Valid final CounterpartyDTO counterpartyDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+                      final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "counterparty/add";
+            return CONTROLLER_ADD;
         }
         counterpartyService.create(counterpartyDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("counterparty.create.success"));
-        return "redirect:/counterparties";
-    }
-
-    @GetMapping("/edit/{id}")
-    @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
-    public String edit(@PathVariable(name = "id") final Long id, final Model model) {
-        model.addAttribute("counterparty", counterpartyService.get(id));
-        return "counterparty/edit";
+        FlashMessages.createSuccess(redirectAttributes, ENTITY_NAME);
+        return REDIRECT_TO_CONTROLLER_INDEX;
     }
 
     @PostMapping("/edit/{id}")
     @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
-    public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("counterparty") @Valid final CounterpartyDTO counterpartyDTO,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+    public String edit(@PathVariable final Long id,
+                       @ModelAttribute("counterparty") @Valid final CounterpartyDTO counterpartyDTO,
+                       final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "counterparty/edit";
+            return CONTROLLER_EDIT;
         }
         counterpartyService.update(id, counterpartyDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("counterparty.update.success"));
-        return "redirect:/counterparties";
+        FlashMessages.updateSuccess(redirectAttributes, ENTITY_NAME);
+        return REDIRECT_TO_CONTROLLER_INDEX;
     }
 
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
-    public String delete(@PathVariable(name = "id") final Long id,
-            final RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable final Long id,
+                         final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = counterpartyService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
+            redirectAttributes.addFlashAttribute(FlashMessages.MSG_ERROR,
                     WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
             counterpartyService.delete(id);
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("counterparty.delete.success"));
+            FlashMessages.deleteSuccess(redirectAttributes, ENTITY_NAME);
         }
-        return "redirect:/counterparties";
+        return REDIRECT_TO_CONTROLLER_INDEX;
     }
 
 }

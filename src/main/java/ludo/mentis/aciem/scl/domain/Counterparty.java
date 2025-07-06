@@ -6,7 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -35,11 +35,11 @@ public class Counterparty {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime2")
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime2")
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_updated_by")
@@ -57,72 +57,72 @@ public class Counterparty {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void setId(final Long value) {
+        this.id = value;
     }
 
     public Integer getOriginId() {
         return originId;
     }
 
-    public void setOriginId(final Integer originId) {
-        this.originId = originId;
+    public void setOriginId(final Integer value) {
+        this.originId = value;
     }
 
     public String getLongName() {
         return longName;
     }
 
-    public void setLongName(final String longName) {
-        this.longName = longName;
+    public void setLongName(final String value) {
+        this.longName = value;
     }
 
     public String getShortName() {
         return shortName;
     }
 
-    public void setShortName(final String shortName) {
-        this.shortName = shortName;
+    public void setShortName(final String value) {
+        this.shortName = value;
     }
 
     public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(final Boolean isActive) {
-        this.isActive = isActive;
+    public void setIsActive(final Boolean value) {
+        this.isActive = value;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(final LocalDateTime value) {
+        this.createdAt = value;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(final OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(final LocalDateTime value) {
+        this.updatedAt = value;
     }
 
     public User getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(final User updatedBy) {
-        this.updatedBy = updatedBy;
+    public void setUpdatedBy(final User value) {
+        this.updatedBy = value;
     }
 
     public Set<Document> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(final Set<Document> documents) {
-        this.documents = documents;
+    public void setDocuments(final Set<Document> value) {
+        this.documents = value;
     }
 
 }

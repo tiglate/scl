@@ -1,30 +1,19 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{counterparty.edit.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{counterparty.edit.headline}]]</h1>
-                <div>
-                    <a th:href="@{/counterparties}" class="btn btn-secondary">[[#{counterparty.edit.back}]]</a>
-                </div>
-            </div>
-            <div th:replace="~{fragments/forms::globalErrors('counterparty')}" />
-            <form th:action="${requestUri}" method="post" novalidate="">
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='id', disabled=true, type='number')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='originId', type='number')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='longName', required=true)}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='shortName')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='isActive', type='checkbox')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='createdAt', required=true, inputClass='js-datetimepicker')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='updatedAt', required=true, inputClass='js-datetimepicker')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='updatedBy', type='select')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='counterparty', field='documents', type='multiselect')}" />
-                <input type="submit" th:value="#{counterparty.edit.headline}" class="btn btn-primary mt-4" />
-            </form>
-        </div>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>Edit Counterparty</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('edit', 'Edit Counterparty', 'counterpartyForm', @{/counterparties})}"></div>
+        <div th:replace="~{fragments/form-utils::globalErrors('counterparty')}"></div>
+        <form th:action="${requestUri}" method="post" id="counterpartyForm">
+            <th:block th:replace="~{counterparty/_form :: counterpartyForm('edit', ${counterparty})}"></th:block>
+        </form>
+    </div>
+</body>
 </html>
