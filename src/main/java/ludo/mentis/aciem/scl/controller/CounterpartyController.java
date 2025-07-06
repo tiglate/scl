@@ -90,6 +90,7 @@ public class CounterpartyController {
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('" + UserRoles.COUNTERPARTY_WRITE + "')")
     public String add(@ModelAttribute("counterparty") final CounterpartyDTO counterpartyDTO) {
+    	counterpartyDTO.setIsActive(true);
         return CONTROLLER_ADD;
     }
 
