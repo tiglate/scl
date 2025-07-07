@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 
 @Audited
@@ -30,14 +30,18 @@ public class Document {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_document_type")
     private DocumentType documentType;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_counterparty")
+    private Counterparty counterparty;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime2")
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime2")
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -59,33 +63,41 @@ public class Document {
         return expiration;
     }
 
-    public void setExpiration(final LocalDate expiration) {
-        this.expiration = expiration;
+    public void setExpiration(final LocalDate value) {
+        this.expiration = value;
     }
 
     public DocumentType getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(final DocumentType documentType) {
-        this.documentType = documentType;
+    public void setDocumentType(final DocumentType value) {
+        this.documentType = value;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public Counterparty getCounterparty() {
+		return counterparty;
+	}
+
+	public void setCounterparty(Counterparty value) {
+		this.counterparty = value;
+	}
+
+	public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     @SuppressWarnings("unused")
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(LocalDateTime value) {
+        this.createdAt = value;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
     @SuppressWarnings("unused")
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(LocalDateTime value) {
+        this.updatedAt = value;
     }
 }

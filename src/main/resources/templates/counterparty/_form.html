@@ -7,6 +7,10 @@
     <!--/*@thymesVar id="counterparty" type="ludo.mentis.aciem.scl.model.CounterpartyDTO"*/-->
     <!--/*@thymesVar id="mode" type="java.lang.String"*/-->
     <th:block th:fragment="counterpartyForm(mode, counterparty)" th:object="${counterparty}">
+        <script type="application/json" id="existing-documents-json" th:inline="javascript">
+            [[${counterparty.documents}]]
+        </script>
+
         <div class="card shadow mb-3">
             <div class="card-header">
                 Details
@@ -70,7 +74,17 @@
             </div>
         </div>
 
-        <div class="card shadow mb-3" th:if="${mode != 'add'}">
+		<div class="card shadow mb-3">
+			<div class="card-header">Documents</div>
+			<div class="card-body" id="documents-container"></div>
+			<div class="card-footer text-end" th:if="${mode != 'view'}">
+				<button type="button" class="btn btn-primary" id="add-document-btn">
+					<i class="bi-plus-circle-fill"></i> Add Document
+				</button>
+			</div>
+		</div>
+
+		<div class="card shadow mb-3" th:if="${mode != 'add'}">
             <div class="card-header">
                 Audit
             </div>
@@ -95,6 +109,36 @@
                 </div>
             </div>
         </div>
+        
+		<template id="document-template">
+		    <div class="document-row">
+		        <input type="hidden" name="documents[__INDEX__].id" value="__ID__" />
+		        <input type="hidden" name="documents[__INDEX__].action" value="__ACTION__" />
+		
+		        <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Type*</label>
+                        <select name="documents[__INDEX__].documentTypeId" class="form-select" th:disabled="${mode == 'view'}" required>
+                            <option value="">-- Select --</option>
+                            <option th:each="dt : ${documentTypeValues}" th:value="${dt.key}" th:text="${dt.value}"></option>
+                        </select>
+                    </div>
+		            <div class="col-md-4 mb-3">
+		                <label class="form-label">Value*</label>
+		                <input type="text" name="documents[__INDEX__].value" value="__VALUE__" class="form-control" th:disabled="${mode == 'view'}" required />
+		            </div>
+		            <div class="col-md-4 mb-3">
+		                <label class="form-label">Expiration</label>
+		                <input type="date" name="documents[__INDEX__].expiration" value="__EXPIRATION__" class="form-control" th:disabled="${mode == 'view'}" />
+		            </div>
+		            <div class="col-md-1 mb-3 d-flex align-items-end">
+		                <button type="button" class="btn btn-danger" th:disabled="${mode == 'view'}">
+		                    <i class="bi bi-x-circle-fill"></i>
+		                </button>
+		            </div>
+		        </div>
+		    </div>
+		</template>
     </th:block>
 </body>
 </html>

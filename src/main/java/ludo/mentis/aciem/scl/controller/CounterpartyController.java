@@ -23,8 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import ludo.mentis.aciem.scl.domain.DocumentType;
 import ludo.mentis.aciem.scl.model.CounterpartyDTO;
+import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
 import ludo.mentis.aciem.scl.service.CounterpartyService;
+import ludo.mentis.aciem.scl.util.CustomCollectors;
 import ludo.mentis.aciem.scl.util.FlashMessages;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 import ludo.mentis.aciem.scl.util.SortUtils;
@@ -41,12 +44,23 @@ public class CounterpartyController {
     private static final String CONTROLLER_VIEW = "counterparty/view";
     private static final String CONTROLLER_LIST = "counterparty/list";
     private static final String REDIRECT_TO_CONTROLLER_INDEX = "redirect:/counterparties";
-    private final CounterpartyService counterpartyService;
     private final SortUtils sortUtils;
+    private final CounterpartyService counterpartyService;
+    private final DocumentTypeRepository documentTypeRepository;
 
-    public CounterpartyController(final CounterpartyService counterpartyService) {
-        this.counterpartyService = counterpartyService;
-        this.sortUtils = new SortUtils();
+    public CounterpartyController(final CounterpartyService counterpartyService,
+    		                      final DocumentTypeRepository documentTypeRepository) {
+    	this.sortUtils = new SortUtils();
+    	this.counterpartyService = counterpartyService;
+        this.documentTypeRepository = documentTypeRepository;
+    }
+
+    @ModelAttribute
+    public void prepareContext(final Model model) {
+        model.addAttribute("documentTypeValues", documentTypeRepository
+        		.findAll(Sort.by("id"))
+        		.stream()
+        		.collect(CustomCollectors.toSortedMap(DocumentType::getId, DocumentType::getName)));
     }
 
     @GetMapping
@@ -133,5 +147,4 @@ public class CounterpartyController {
         }
         return REDIRECT_TO_CONTROLLER_INDEX;
     }
-
 }

@@ -13,8 +13,6 @@ DROP TABLE tb_fx_trade;
 DROP TABLE tb_fx_trade_aud;
 DROP TABLE tb_currency;
 DROP TABLE tb_currency_aud;
-DROP TABLE tb_counterparty_document;
-DROP TABLE tb_counterparty_document_aud;
 DROP TABLE tb_counterparty;
 DROP TABLE tb_counterparty_aud;
 DROP TABLE tb_document;
@@ -245,38 +243,6 @@ BEGIN
     );
 END
 
-IF OBJECT_ID('tb_document', 'U') IS NULL
-BEGIN
-    CREATE TABLE tb_document (
-        id_document      BIGINT       NOT NULL IDENTITY (1, 1),
-        id_document_type BIGINT       NOT NULL,
-        value            VARCHAR(255) NOT NULL,
-        expiration       DATE         NULL,
-        created_at       DATETIME2    NOT NULL DEFAULT (SYSDATETIME()),
-        updated_at       DATETIME2    NULL,
-
-        CONSTRAINT pk_document PRIMARY KEY (id_document),
-        CONSTRAINT fk_document_document_type FOREIGN KEY (id_document_type) REFERENCES tb_document_type (id_document_type)
-            ON UPDATE NO ACTION
-            ON DELETE NO ACTION
-    );
-
-    CREATE TABLE tb_document_aud (
-        id_document      BIGINT       NOT NULL,
-        id_revision      INT          NOT NULL,
-        id_revision_type TINYINT      NULL,
-        id_document_type BIGINT       NULL,
-        value            VARCHAR(255) NULL,
-        expiration       DATE         NULL,
-        created_at       DATETIME2    NULL,
-        updated_at       DATETIME2    NULL,
-
-        CONSTRAINT pk_document_aud PRIMARY KEY (id_document, id_revision),
-        CONSTRAINT fk_document_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
-        CONSTRAINT fk_document_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
-    );
-END
-
 IF OBJECT_ID('tb_counterparty', 'U') IS NULL
 BEGIN
     CREATE TABLE tb_counterparty (
@@ -313,30 +279,40 @@ BEGIN
     );
 END
 
-IF OBJECT_ID('tb_counterparty_document', 'U') IS NULL
+IF OBJECT_ID('tb_document', 'U') IS NULL
 BEGIN
-    CREATE TABLE tb_counterparty_document (
-        id_counterparty BIGINT NOT NULL,
-        id_document     BIGINT NOT NULL,
+    CREATE TABLE tb_document (
+        id_document      BIGINT       NOT NULL IDENTITY (1, 1),
+        id_counterparty  BIGINT       NOT NULL,
+        id_document_type BIGINT       NOT NULL,
+        value            VARCHAR(255) NOT NULL,
+        expiration       DATE         NULL,
+        created_at       DATETIME2    NOT NULL DEFAULT (SYSDATETIME()),
+        updated_at       DATETIME2    NULL,
 
-        CONSTRAINT pk_counterparty_document PRIMARY KEY (id_counterparty, id_document),
-        CONSTRAINT fk_counterparty_document_counterparty FOREIGN KEY (id_counterparty) REFERENCES tb_counterparty (id_counterparty)
+        CONSTRAINT pk_document PRIMARY KEY (id_document),
+        CONSTRAINT fk_document_counterparty FOREIGN KEY (id_counterparty) REFERENCES tb_counterparty (id_counterparty)
             ON UPDATE CASCADE
             ON DELETE CASCADE,
-        CONSTRAINT fk_counterparty_document_document FOREIGN KEY (id_document) REFERENCES tb_document (id_document)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE
+        CONSTRAINT fk_document_document_type FOREIGN KEY (id_document_type) REFERENCES tb_document_type (id_document_type)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
     );
 
-    CREATE TABLE tb_counterparty_document_aud (
-        id_counterparty  BIGINT  NOT NULL,
-        id_document      BIGINT  NOT NULL,
-        id_revision      INT     NOT NULL,
-        id_revision_type TINYINT NULL,
+    CREATE TABLE tb_document_aud (
+        id_document      BIGINT       NOT NULL,
+        id_revision      INT          NOT NULL,
+        id_counterparty  BIGINT       NULL,
+        id_revision_type TINYINT      NULL,
+        id_document_type BIGINT       NULL,
+        value            VARCHAR(255) NULL,
+        expiration       DATE         NULL,
+        created_at       DATETIME2    NULL,
+        updated_at       DATETIME2    NULL,
 
-        CONSTRAINT pk_counterparty_document_aud PRIMARY KEY (id_counterparty, id_document, id_revision),
-        CONSTRAINT fk_counterparty_document_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
-        CONSTRAINT fk_counterparty_document_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
+        CONSTRAINT pk_document_aud PRIMARY KEY (id_document, id_revision),
+        CONSTRAINT fk_document_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
+        CONSTRAINT fk_document_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
     );
 END
 

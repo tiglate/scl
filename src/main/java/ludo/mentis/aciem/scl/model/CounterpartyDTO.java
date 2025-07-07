@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -32,10 +33,10 @@ public class CounterpartyDTO {
     
     private String updatedByName;
 
-    private List<Long> documents;
+    private List<DocumentDTO> documents;
     
     public CounterpartyDTO() {
-    	
+
     }
 
     public CounterpartyDTO(Long id, Integer originId, String longName, String shortName, Boolean isActive,
@@ -123,12 +124,11 @@ public class CounterpartyDTO {
         this.updatedByName = value;
     }
 
-    public List<Long> getDocuments() {
+    public List<DocumentDTO> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(final List<Long> value) {
+    public void setDocuments(final List<DocumentDTO> value) {
         this.documents = value;
     }
-
 }

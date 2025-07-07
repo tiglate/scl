@@ -1,4 +1,5 @@
 import 'bootstrap';
+import CounterpartyDocumentsManager from './counterparty-documents';
 import htmx from 'htmx.org';
 import flatpickr from 'flatpickr';
 import 'scss/app.scss';
@@ -123,4 +124,38 @@ window.clearForm = function() {
 
     document.addEventListener('DOMContentLoaded', initTooltips);
     document.body.addEventListener('htmx:afterSwap', initTooltips);
+
+    function getExistingDocuments() {
+        const raw = document.getElementById("existing-documents-json");
+        if (!raw) return [];
+        try {
+            return JSON.parse(raw.textContent);
+        } catch (e) {
+            console.error("Invalid JSON for existingDocuments:", e);
+            return [];
+        }
+    }
+
+    function initCounterpartyDocuments() {
+        const existingDocs = getExistingDocuments();
+        const manager = new CounterpartyDocumentsManager("#documents-container", "#document-template", existingDocs);
+        manager.init();
+        const form = document.getElementById("counterpartyForm");
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                if (!manager.validateAll()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+        }
+    }
+
+    // Run again when HTMX replaces the form
+    document.body.addEventListener("htmx:load", (e) => {
+        if (e.target.querySelector("#documents-container")) {
+            initCounterpartyDocuments();
+        }
+    });
+
 })();
