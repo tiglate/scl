@@ -1,5 +1,9 @@
 package ludo.mentis.aciem.scl.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import ludo.mentis.aciem.scl.domain.Counterparty;
 import ludo.mentis.aciem.scl.domain.Currency;
 import ludo.mentis.aciem.scl.domain.FxSettlement;
@@ -13,51 +17,36 @@ import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 
 @Service
 public class FxTradeServiceImpl implements FxTradeService {
 
-    private final FxTradeRepository fxTradeRepository;
-    private final CounterpartyRepository counterpartyRepository;
-    private final CurrencyRepository currencyRepository;
     private final UserRepository userRepository;
+    private final FxTradeRepository fxTradeRepository;
+    private final CurrencyRepository currencyRepository;
+    private final CounterpartyRepository counterpartyRepository;
     private final FxSettlementRepository fxSettlementRepository;
 
-    public FxTradeServiceImpl(final FxTradeRepository fxTradeRepository,
-            final CounterpartyRepository counterpartyRepository,
-            final CurrencyRepository currencyRepository, final UserRepository userRepository,
-            final FxSettlementRepository fxSettlementRepository) {
-        this.fxTradeRepository = fxTradeRepository;
-        this.counterpartyRepository = counterpartyRepository;
-        this.currencyRepository = currencyRepository;
+    public FxTradeServiceImpl(final UserRepository userRepository,
+                              final FxTradeRepository fxTradeRepository,
+                              final CurrencyRepository currencyRepository,
+                              final CounterpartyRepository counterpartyRepository,
+                              final FxSettlementRepository fxSettlementRepository) {
         this.userRepository = userRepository;
+        this.fxTradeRepository = fxTradeRepository;
+        this.currencyRepository = currencyRepository;
+        this.counterpartyRepository = counterpartyRepository;
         this.fxSettlementRepository = fxSettlementRepository;
     }
 
     @Override
-    public Page<FxTradeDTO> findAll(final String filter, final Pageable pageable) {
-        Page<FxTrade> page;
-        if (filter != null) {
-            Long longFilter = null;
-            try {
-                longFilter = Long.parseLong(filter);
-            } catch (final NumberFormatException numberFormatException) {
-                // keep null - no parseable input
-            }
-            page = fxTradeRepository.findAllById(longFilter, pageable);
-        } else {
-            page = fxTradeRepository.findAll(pageable);
-        }
-        return new PageImpl<>(page.getContent()
-                .stream()
-                .map(fxTrade -> mapToDTO(fxTrade, new FxTradeDTO()))
-                .toList(),
-                pageable, page.getTotalElements());
+    public Page<FxTradeDTO> findAll(FxTradeDTO searchDTO, Pageable pageable) {
+        return fxTradeRepository.findAllBySearchCriteria(
+                searchDTO.getTradeId(),
+                searchDTO.getTradeDate(),
+                searchDTO.getValueDate(),
+                pageable
+        );
     }
 
     @Override
@@ -69,8 +58,7 @@ public class FxTradeServiceImpl implements FxTradeService {
 
     @Override
     public Long create(final FxTradeDTO fxTradeDTO) {
-        final FxTrade fxTrade = new FxTrade();
-        mapToEntity(fxTradeDTO, fxTrade);
+        var fxTrade = mapToEntity(fxTradeDTO);
         return fxTradeRepository.save(fxTrade).getId();
     }
 
@@ -85,6 +73,10 @@ public class FxTradeServiceImpl implements FxTradeService {
     @Override
     public void delete(final Long id) {
         fxTradeRepository.deleteById(id);
+    }
+
+    private FxTrade mapToEntity(final FxTradeDTO fxTradeDTO) {
+        return mapToEntity(fxTradeDTO, new FxTrade());
     }
 
     private FxTradeDTO mapToDTO(final FxTrade fxTrade, final FxTradeDTO fxTradeDTO) {

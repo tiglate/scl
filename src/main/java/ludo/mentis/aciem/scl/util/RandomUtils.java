@@ -1,0 +1,12 @@
+package ludo.mentis.aciem.scl.util;
+
+import java.util.List;
+
+public interface RandomUtils {
+
+	<T> List<T> createRandomSublist(List<T> list, int n);
+
+	<T extends Enum<?>> T pickRandomEnumValue(Class<T> enumClass);
+
+	boolean pickRandomBoolean();
+}

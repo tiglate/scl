@@ -57,6 +57,17 @@ public class FxTradeDTO {
     private Long sellCurrency;
 
     private Long updatedBy;
+    
+    public FxTradeDTO() {
+    	
+    }
+    
+    public FxTradeDTO(Long id, String tradeId, LocalDate tradeDate, LocalDate valueDate) {
+    	this.id = id;
+    	this.tradeId = tradeId;
+    	this.tradeDate = tradeDate;
+    	this.valueDate = valueDate;
+    }
 
     public Long getId() {
         return id;

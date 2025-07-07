@@ -26,41 +26,6 @@ BEGIN
     INSERT INTO tb_role (code) VALUES ('DEPARTMENT_WRITE');
 END
 
-IF NOT EXISTS(SELECT 1 FROM tb_user)
-BEGIN
-    DECLARE @Id_User INT
-
-    INSERT INTO tb_user (
-        id_department,
-        name,
-        email,
-        gender,
-        username,
-        password,
-        enabled)
-    SELECT
-        id_department,
-        name      = 'Admin',
-        email     = 'admin@admin.com',
-        gender    = 'MALE',
-        username  = 'admin',
-        password  = '{bcrypt}$2a$12$NYZurvH.l.vujYDufA6X6uFLBqQ1tDSDxX5VPTAcKSpNxJ3mBiWOW', -- 12345
-        enabled   = 1
-    FROM
-        tb_department
-    WHERE
-        name = 'IT'
-
-    SET @Id_User = SCOPE_IDENTITY()
-
-    INSERT INTO tb_user_role (id_user, id_role)
-    SELECT
-        @Id_User,
-        id_role
-    FROM
-        tb_role
-END
-
 IF NOT EXISTS(SELECT 1 FROM tb_document_type)
 BEGIN
 	INSERT INTO tb_document_type (name) VALUES ('CNPJ');

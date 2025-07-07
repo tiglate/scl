@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface FxTradeService {
 
-    Page<FxTradeDTO> findAll(String filter, Pageable pageable);
+	Page<FxTradeDTO> findAll(FxTradeDTO searchDTO, Pageable pageable);
 
     FxTradeDTO get(Long id);
 
