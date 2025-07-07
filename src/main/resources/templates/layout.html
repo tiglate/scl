@@ -10,9 +10,9 @@
         <script th:src="@{/js/bundle.js}" defer></script>
     </head>
     <body hx-boost="true">
-        <header class="bg-light">
+        <header id="main-header" data-bs-theme="dark">
             <div class="container">
-                <nav class="navbar navbar-light navbar-expand-md">
+                <nav class="navbar navbar-expand-md">
                     <a th:href="@{/}" class="navbar-brand">
                         <img th:src="@{/images/logo.png}" th:alt="#{app.title}" width="30" height="30" class="d-inline-block align-top" />
                         <span class="ps-1">[[#{app.title}]]</span>
