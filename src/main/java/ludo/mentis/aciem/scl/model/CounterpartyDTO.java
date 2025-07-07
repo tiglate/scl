@@ -1,7 +1,6 @@
 package ludo.mentis.aciem.scl.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
