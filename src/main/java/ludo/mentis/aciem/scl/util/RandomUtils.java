@@ -1,5 +1,6 @@
 package ludo.mentis.aciem.scl.util;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RandomUtils {
@@ -9,4 +10,6 @@ public interface RandomUtils {
 	<T extends Enum<?>> T pickRandomEnumValue(Class<T> enumClass);
 
 	boolean pickRandomBoolean();
+	
+	LocalDate getRandomDate(LocalDate start, LocalDate end);
 }

@@ -1,5 +1,7 @@
 package ludo.mentis.aciem.scl.repos;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +23,6 @@ public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long
     );
 
     boolean existsByNameIgnoreCase(String name);
-
+    
+    Optional<DocumentType> findByNameIgnoreCase(String name);
 }

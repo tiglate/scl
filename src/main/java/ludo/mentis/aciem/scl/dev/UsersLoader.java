@@ -40,6 +40,11 @@ public class UsersLoader implements DataLoaderCommand {
 	}
 	
 	@Override
+	public int getOrder() {
+		return 0;
+	}
+	
+	@Override
 	public String getName() {
 		return "Users";
 	}

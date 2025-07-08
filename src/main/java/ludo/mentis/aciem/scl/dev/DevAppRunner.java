@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.dev;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +32,8 @@ public class DevAppRunner implements ApplicationRunner {
 		}
 		
 		log.info("Development environment detected. Starting data loading.");
+		
+		dataLoaders.sort(Comparator.comparingInt(DataLoaderCommand::getOrder));
 		
 		for (var cmd : dataLoaders) {
 			if (!cmd.canItRun()) {

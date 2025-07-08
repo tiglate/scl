@@ -1,9 +1,12 @@
 package ludo.mentis.aciem.scl.util;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
@@ -47,6 +50,13 @@ public class RandomUtilsImpl implements RandomUtils {
     
     @Override
     public boolean pickRandomBoolean() {
-    	return random.nextInt(10000) % 2 == 0;
+    	return random.nextBoolean();
+    }
+    
+    @Override
+    public LocalDate getRandomDate(LocalDate start, LocalDate end) {
+        long days = ChronoUnit.DAYS.between(start, end);
+        long randomDays = ThreadLocalRandom.current().nextLong(days + 1);
+        return start.plusDays(randomDays);
     }
 }

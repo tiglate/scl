@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 
 public class FxTradeDTO {
@@ -40,10 +40,10 @@ public class FxTradeDTO {
     private FxTradePurpose purpose;
 
     @NotNull
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @NotNull
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @Digits(integer = 20, fraction = 10)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -149,19 +149,19 @@ public class FxTradeDTO {
         this.purpose = purpose;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(final OffsetDateTime createdAt) {
+    public void setCreatedAt(final LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(final OffsetDateTime updatedAt) {
+    public void setUpdatedAt(final LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
