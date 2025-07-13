@@ -28,6 +28,7 @@ import ludo.mentis.aciem.scl.domain.Currency;
 import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.FxTradeDTO;
 import ludo.mentis.aciem.scl.model.FxTradePurpose;
+import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 import ludo.mentis.aciem.scl.model.Product;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
 import ludo.mentis.aciem.scl.repos.CurrencyRepository;
@@ -72,42 +73,48 @@ public class FxTradeController {
     public void prepareContext(final Model model) {
         model.addAttribute("productValues", Product.values());
         model.addAttribute("purposeValues", FxTradePurpose.values());
-        model.addAttribute("counterpartyValues", counterpartyRepository.findAll(Sort.by("id"))
+        model.addAttribute("counterpartyValues", counterpartyRepository.findAll(Sort.by("shortName"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Counterparty::getId, Counterparty::getLongName)));
-        model.addAttribute("buyCurrencyValues", currencyRepository.findAll(Sort.by("id"))
+        model.addAttribute("currencyValues", currencyRepository.findAll(Sort.by("isoCode"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Currency::getId, Currency::getIsoCode)));
-        model.addAttribute("sellCurrencyValues", currencyRepository.findAll(Sort.by("id"))
+        model.addAttribute("userValues", userRepository.findAll(Sort.by("id"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(Currency::getId, Currency::getIsoCode)));
-        model.addAttribute("updatedByValues", userRepository.findAll(Sort.by("id"))
-                .stream()
-                .collect(CustomCollectors.toSortedMap(User::getId, User::getEmail)));
+                .collect(CustomCollectors.toSortedMap(User::getId, User::getName)));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.TRADE_READ + "', '" + UserRoles.TRADE_WRITE + "')")
-    public String list(@ModelAttribute("fxtradeSearch") FxTradeDTO filter,
+    public String list(@ModelAttribute("fxtradeSearch") FxTradeSearchDTO filter,
                        @RequestParam(required = false) String sort,
-                       @SortDefault(sort = "id", direction = Sort.Direction.DESC) @PageableDefault(size = 20) final Pageable pageable,
+                       @SortDefault(sort = "id", direction = Sort.Direction.DESC) @PageableDefault(size = 18) final Pageable pageable,
                        final Model model) {
         if (sort == null) {
             sort = "id,desc";
         }
         final var sortOrder = this.sortUtils.addSortAttributesToModel(model, sort, pageable, Map.ofEntries(
-                entry("id", "sortById"),
-                entry("code", "sortByCode"),
-                entry("tradeDate", "sortByTradeDate"),
-                entry("valueDate", "sortByValueDate"),
-                entry("product", "sortByProduct"),
-                entry("counterparty", "sortByCounterparty")
+            entry("id"                    , "sortById"),
+            entry("tradeId"               , "sortByTradeId"),
+            entry("product"               , "sortByProduct"),
+            entry("tradeDate"             , "sortByTradeDate"),
+            entry("valueDate"             , "sortByValueDate"),
+            entry("buyCurrencyIso"        , "sortByCurrencyBought"),
+            entry("buyAmount"             , "sortByAmountBought"),
+            entry("sellCurrencyIso"       , "sortByCurrencySold"),
+            entry("sellAmount"            , "sortByAmountSold"),
+            entry("purpose"               , "sortByPurpose"),
+            entry("exchangeRate"          , "sortByExchangeRate"),
+            entry("counterpartyShortName" , "sortByCounterparty"),
+            entry("investorManager"       , "sortByInvestorManager"),
+            entry("beneficiary"           , "sortByBeneficiary"),
+            entry("updatedByName"         , "sortByUpdatedBy")
         ));
         final var pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortOrder);
-        final var fxtrades = fxTradeService.findAll(filter, pageRequest);
-        model.addAttribute("fxtrades", fxtrades);
+        final var fxTrades = fxTradeService.findAll(filter, pageRequest);
+        model.addAttribute("fxTrades", fxTrades);
         model.addAttribute("filter", filter);
-        model.addAttribute("paginationModel", WebUtils.getPaginationModel(fxtrades));
+        model.addAttribute("paginationModel", WebUtils.getPaginationModel(fxTrades));
         return CONTROLLER_LIST;
     }
 

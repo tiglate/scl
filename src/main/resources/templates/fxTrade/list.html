@@ -1,61 +1,203 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>[[#{fxTrade.list.headline}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{fxTrade.list.headline}]]</h1>
-                <div>
-                    <a th:href="@{/fxTrades/add}" class="btn btn-primary ms-2">[[#{fxTrade.list.createNew}]]</a>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>FX Trades</title>
+</head>
+<body>
+    <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByIdLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByTradeIdLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByProductLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByTradeDateLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByValueDateLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByCurrencyBoughtLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByAmountBoughtLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByCurrencySoldLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByAmountSoldLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByPurposeLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByExchangeRateLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByCounterpartyLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByInvestorManagerLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByBeneficiaryLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByUpdatedByLink" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByIdDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByTradeIdDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByProductDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByTradeDateDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByValueDateDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByCurrencyBoughtDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByAmountBoughtDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByCurrencySoldDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByAmountSoldDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByPurposeDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByExchangeRateDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByCounterpartyDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByInvestorManagerDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByBeneficiaryDirection" type="java.lang.String"*/-->
+	<!--/*@thymesVar id="sortByUpdatedByDirection" type="java.lang.String"*/-->
+    <div layout:fragment="content">
+        <div class="d-flex flex-wrap mb-4">
+            <h1 class="flex-grow-1">FX Trades</h1>
+            <div>
+                <a class="btn btn-primary ms-2"
+                   th:href="@{/fx/add}"
+                   sec:authorize="hasAuthority('TRADE_WRITE')"><i class="bi-plus-circle"></i> Add</a>
+            </div>
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Filters
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <form id="searchForm" th:action="${requestUri}" th:object="${fxtradeSearch}" method="get">
+		                <div class="row g-3 mb-3">
+		                    <div class="col-md-3">
+		                        <label for="tradeId" class="form-label">Trade ID</label>
+		                        <input type="text" class="form-control" id="tradeId" th:field="*{tradeId}">
+		                    </div>
+		                    <div class="col-md-3">
+		                        <label for="tradeDate" class="form-label">Trade Date</label>
+		                        <input type="date" class="form-control" id="tradeDate" th:field="*{tradeDate}">
+		                    </div>
+		                    <div class="col-md-3">
+		                        <label for="valueDate" class="form-label">Value Date</label>
+		                        <input type="date" class="form-control" id="valueDate" th:field="*{valueDate}">
+		                    </div>
+		                    <div class="col-md-3">
+                                <label for="cboProduct" class="form-label">Product</label>
+                                <select id="cboProduct" th:field="*{product}" class="form-select">
+                                    <option value=""></option>
+                                    <option th:each="optionValue : ${productValues}" th:value="${optionValue}">
+                                        [[${optionValue.getDisplayName()}]]
+                                    </option>
+                                </select>
+		                    </div>
+		                    <div class="col-md-3">
+                                <label for="cboPurpose" class="form-label">Purpose</label>
+                                <select id="cboPurpose" th:field="*{purpose}" class="form-select">
+                                    <option value=""></option>
+                                    <option th:each="optionValue : ${purposeValues}" th:value="${optionValue}">
+                                        [[${optionValue.getDisplayName()}]]
+                                    </option>
+                                </select>
+		                    </div>
+		                    <div class="col-md-3">
+                                <label for="cboCounterparty" class="form-label">Counterparty</label>
+                                <select id="cboCounterparty" th:field="*{counterpartyId}" class="form-select">
+                                    <option value=""></option>
+                                    <option th:each="optionValue : ${counterpartyValues}" th:value="${optionValue.key}">
+                                        [[${optionValue.value}]]
+                                    </option>
+                                </select>
+		                    </div>
+		                    <div class="col-md-3">
+	                            <label for="cboBuyCurrency" class="form-label">Buy Currency</label>
+	                            <select id="cboBuyCurrency" th:field="*{buyCurrencyId}" class="form-select">
+	                                <option value=""></option>
+	                                <option th:each="optionValue : ${currencyValues}" th:value="${optionValue.key}">
+	                                    [[${optionValue.value}]]
+	                                </option>
+	                            </select>
+		                    </div>
+		                    <div class="col-md-3">
+                                <label for="cboSellCurrency" class="form-label">Sell Currency</label>
+                                <select id="cboSellCurrency" th:field="*{sellCurrencyId}" class="form-select">
+                                    <option value=""></option>
+                                    <option th:each="optionValue : ${currencyValues}" th:value="${optionValue.key}">
+                                        [[${optionValue.value}]]
+                                    </option>
+                                </select>
+		                    </div>
+		                </div>
+                        <div class="row mb-3">
+                            <div class="col d-flex justify-content-end">
+                                <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                       onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                                <input type="submit" value="Search" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div th:if="${!fxTrades.empty || filter != null}" class="row">
-                <div th:replace="~{fragments/utils::searchFilter(object='fxTrade')}" />
-                <div th:replace="~{fragments/utils::sorting(object='fxTrade', sortOptions=${ {'id,ASC', 'tradeId,ASC', 'tradeDate,ASC'} }, columnClass='offset-lg-4')}" />
+        </div>
+
+        <div class="card shadow mb-3">
+            <div class="card-header">
+                Results
             </div>
-            <div th:if="${fxTrades.empty}">[[#{fxTrade.list.empty}]]</div>
-            <div th:if="${!fxTrades.empty}" class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th scope="col">[[#{fxTrade.id.label}]]</th>
-                            <th scope="col">[[#{fxTrade.tradeId.label}]]</th>
-                            <th scope="col">[[#{fxTrade.tradeDate.label}]]</th>
-                            <th scope="col">[[#{fxTrade.valueDate.label}]]</th>
-                            <th scope="col">[[#{fxTrade.product.label}]]</th>
-                            <th scope="col">[[#{fxTrade.buyAmount.label}]]</th>
-                            <th scope="col">[[#{fxTrade.sellAmount.label}]]</th>
-                            <th scope="col">[[#{fxTrade.investorManager.label}]]</th>
+            <div class="card-body">
+                <p class="card-text" th:if="${#lists.isEmpty(fxTrades)}">No records were found</p>
+                <div th:if="${not #lists.isEmpty(fxTrades)}" class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle">
+                        <thead>
+                        <tr class="text-nowrap">
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id'              , ${sortByIdLink}             , ${sortByIdDirection}             , 'id')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Trade Id'        , ${sortByTradeIdLink}        , ${sortByTradeIdDirection}        , 'tradeId')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Product'         , ${sortByProductLink}        , ${sortByProductDirection}        , 'product')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Trade Date'      , ${sortByTradeDateLink}      , ${sortByTradeDateDirection}      , 'tradeDate')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Value Date'      , ${sortByValueDateLink}      , ${sortByValueDateDirection}      , 'valueDate')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Currency Bought' , ${sortByCurrencyBoughtLink} , ${sortByCurrencyBoughtDirection} , 'buyCurrencyIso')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Amount Bought'   , ${sortByAmountBoughtLink}   , ${sortByAmountBoughtDirection}   , 'buyAmount')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Currency Sold'   , ${sortByCurrencySoldLink}   , ${sortByCurrencySoldDirection}   , 'sellCurrencyIso')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Amount Sold'     , ${sortByAmountSoldLink}     , ${sortByAmountSoldDirection}     , 'sellAmount')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Purpose'         , ${sortByPurposeLink}        , ${sortByPurposeDirection}        , 'purpose')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Exchange Rate'   , ${sortByExchangeRateLink}   , ${sortByExchangeRateDirection}   , 'exchangeRate')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Counterparty'    , ${sortByCounterpartyLink}   , ${sortByCounterpartyDirection}   , 'counterpartyShortName')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Investor Manager', ${sortByInvestorManagerLink}, ${sortByInvestorManagerDirection}, 'investorManager')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Beneficiary'     , ${sortByBeneficiaryLink}    , ${sortByBeneficiaryDirection}    , 'beneficiary')}"></th>
+							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Updated By'      , ${sortByUpdatedByLink}      , ${sortByUpdatedByDirection}      , 'updatedByName')}"></th>
                             <th><!-- --></th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="fxTrade : ${fxTrades}">
-                            <td>[[${fxTrade.id}]]</td>
-                            <td>[[${fxTrade.tradeId}]]</td>
-                            <td>[[${fxTrade.tradeDate}]]</td>
-                            <td>[[${fxTrade.valueDate}]]</td>
-                            <td>[[${fxTrade.product}]]</td>
-                            <td>[[${fxTrade.buyAmount}]]</td>
-                            <td>[[${fxTrade.sellAmount}]]</td>
-                            <td>[[${fxTrade.investorManager}]]</td>
+                        </thead>
+                        <tbody class="table-group-divider">
+                        <tr th:each="fxTrade : ${fxTrades}" class="text-nowrap">
+							<td>[[${fxTrade.id}]]</td>
+							<td>[[${fxTrade.tradeId}]]</td>
+							<td>[[${fxTrade.product.displayName}]]</td>
+							<td>[[${#temporals.format(fxTrade.tradeDate, "dd/MMM/yyyy")}]]</td>
+                            <td>[[${#temporals.format(fxTrade.valueDate, "dd/MMM/yyyy")}]]</td>
+							<td>[[${fxTrade.buyCurrencyIso}]]</td>
+							<td>[[${#numbers.formatDecimal(fxTrade.buyAmount, 1, 'COMMA', 2, 'POINT')}]]</td>
+							<td>[[${fxTrade.sellCurrencyIso}]]</td>
+							<td>[[${#numbers.formatDecimal(fxTrade.sellAmount, 1, 'COMMA', 2, 'POINT')}]]</td>
+							<td>[[${fxTrade.purpose.displayName}]]</td>
+							<td>[[${fxTrade.exchangeRate}]]</td>
+							<td>[[${fxTrade.counterpartyShortName}]]</td>
+							<td>[[${fxTrade.investorManager}]]</td>
+							<td>[[${fxTrade.beneficiary}]]</td>
+							<td>[[${fxTrade.updatedByName}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">
-                                    <a th:href="@{/fxTrades/edit/{id}(id=${fxTrade.id})}" class="btn btn-sm btn-secondary">[[#{fxTrade.list.edit}]]</a>
+                                    <a th:href="@{/fxTrades/view/{id}(id=${fxTrade.id})}"
+                                       class="btn btn-sm btn-secondary bi-eye"
+                                       title="View"></a>
+                                    <a th:href="@{/fxTrades/edit/{id}(id=${fxTrade.id})}"
+                                       sec:authorize="hasAuthority('TRADE_WRITE')"
+                                       class="btn btn-sm btn-secondary bi-pencil-square"
+                                       title="Edit"></a>
                                     <form th:action="@{/fxTrades/delete/{id}(id=${fxTrade.id})}"
-                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{fxTrade.list.delete}]]</button>
+                                          sec:authorize="hasAuthority('TRADE_WRITE')"
+                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
+                                        </button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div th:replace="~{fragments/utils::pagination()}" />
+            <div class="card-footer d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <nav th:replace="~{fragments/form-utils::pagination()}"></nav>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

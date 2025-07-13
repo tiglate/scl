@@ -8,8 +8,10 @@ import ludo.mentis.aciem.scl.domain.Counterparty;
 import ludo.mentis.aciem.scl.domain.Currency;
 import ludo.mentis.aciem.scl.domain.FxSettlement;
 import ludo.mentis.aciem.scl.domain.FxTrade;
+import ludo.mentis.aciem.scl.domain.FxTradeView;
 import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.FxTradeDTO;
+import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
 import ludo.mentis.aciem.scl.repos.CurrencyRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
@@ -40,13 +42,8 @@ public class FxTradeServiceImpl implements FxTradeService {
     }
 
     @Override
-    public Page<FxTradeDTO> findAll(FxTradeDTO searchDTO, Pageable pageable) {
-        return fxTradeRepository.findAllBySearchCriteria(
-                searchDTO.getTradeId(),
-                searchDTO.getTradeDate(),
-                searchDTO.getValueDate(),
-                pageable
-        );
+    public Page<FxTradeView> findAll(FxTradeSearchDTO criteria, Pageable pageable) {
+        return fxTradeRepository.findAllBySearchCriteria(criteria, pageable);
     }
 
     @Override
