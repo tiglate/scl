@@ -3,6 +3,7 @@ package ludo.mentis.aciem.scl.domain;
 import jakarta.persistence.*;
 import ludo.mentis.aciem.scl.model.FxTradePurpose;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
@@ -46,6 +47,7 @@ public class FxTrade extends Trade {
     @JoinColumn(name = "id_sell_currency")
     private Currency sellCurrency;
 
+    @LastModifiedBy
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_updated_by")
     private User updatedBy;

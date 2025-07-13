@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import ludo.mentis.aciem.scl.validation.DepartmentNameUnique;
 
 @SuppressWarnings("unused")
 public class DepartmentDTO {

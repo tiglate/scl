@@ -3,13 +3,10 @@ package ludo.mentis.aciem.scl.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import ludo.mentis.aciem.scl.domain.Counterparty;
-import ludo.mentis.aciem.scl.domain.Currency;
-import ludo.mentis.aciem.scl.domain.FxSettlement;
 import ludo.mentis.aciem.scl.domain.FxTrade;
 import ludo.mentis.aciem.scl.domain.FxTradeView;
-import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.FxTradeDTO;
 import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
@@ -21,6 +18,7 @@ import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class FxTradeServiceImpl implements FxTradeService {
 
     private final UserRepository userRepository;
@@ -90,10 +88,11 @@ public class FxTradeServiceImpl implements FxTradeService {
         fxTradeDTO.setCreatedAt(fxTrade.getCreatedAt());
         fxTradeDTO.setUpdatedAt(fxTrade.getUpdatedAt());
         fxTradeDTO.setExchangeRate(fxTrade.getExchangeRate());
-        fxTradeDTO.setCounterparty(fxTrade.getCounterparty() == null ? null : fxTrade.getCounterparty().getId());
-        fxTradeDTO.setBuyCurrency(fxTrade.getBuyCurrency() == null ? null : fxTrade.getBuyCurrency().getId());
-        fxTradeDTO.setSellCurrency(fxTrade.getSellCurrency() == null ? null : fxTrade.getSellCurrency().getId());
-        fxTradeDTO.setUpdatedBy(fxTrade.getUpdatedBy() == null ? null : fxTrade.getUpdatedBy().getId());
+        fxTradeDTO.setCounterpartyId(fxTrade.getCounterparty() == null ? null : fxTrade.getCounterparty().getId());
+        fxTradeDTO.setBuyCurrencyId(fxTrade.getBuyCurrency() == null ? null : fxTrade.getBuyCurrency().getId());
+        fxTradeDTO.setSellCurrencyId(fxTrade.getSellCurrency() == null ? null : fxTrade.getSellCurrency().getId());
+        fxTradeDTO.setUpdatedById(fxTrade.getUpdatedBy() == null ? null : fxTrade.getUpdatedBy().getId());
+        fxTradeDTO.setUpdatedByName(fxTrade.getUpdatedBy() == null ? null : fxTrade.getUpdatedBy().getName());
         return fxTradeDTO;
     }
 
@@ -110,16 +109,16 @@ public class FxTradeServiceImpl implements FxTradeService {
         fxTrade.setCreatedAt(fxTradeDTO.getCreatedAt());
         fxTrade.setUpdatedAt(fxTradeDTO.getUpdatedAt());
         fxTrade.setExchangeRate(fxTradeDTO.getExchangeRate());
-        final Counterparty counterparty = fxTradeDTO.getCounterparty() == null ? null : counterpartyRepository.findById(fxTradeDTO.getCounterparty())
+        final var counterparty = fxTradeDTO.getCounterpartyId() == null ? null : counterpartyRepository.findById(fxTradeDTO.getCounterpartyId())
                 .orElseThrow(() -> new NotFoundException("counterparty not found"));
         fxTrade.setCounterparty(counterparty);
-        final Currency buyCurrency = fxTradeDTO.getBuyCurrency() == null ? null : currencyRepository.findById(fxTradeDTO.getBuyCurrency())
+        final var buyCurrency = fxTradeDTO.getBuyCurrencyId() == null ? null : currencyRepository.findById(fxTradeDTO.getBuyCurrencyId())
                 .orElseThrow(() -> new NotFoundException("buyCurrency not found"));
         fxTrade.setBuyCurrency(buyCurrency);
-        final Currency sellCurrency = fxTradeDTO.getSellCurrency() == null ? null : currencyRepository.findById(fxTradeDTO.getSellCurrency())
+        final var sellCurrency = fxTradeDTO.getSellCurrencyId() == null ? null : currencyRepository.findById(fxTradeDTO.getSellCurrencyId())
                 .orElseThrow(() -> new NotFoundException("sellCurrency not found"));
         fxTrade.setSellCurrency(sellCurrency);
-        final User updatedBy = fxTradeDTO.getUpdatedBy() == null ? null : userRepository.findById(fxTradeDTO.getUpdatedBy())
+        final var updatedBy = fxTradeDTO.getUpdatedById() == null ? null : userRepository.findById(fxTradeDTO.getUpdatedById())
                 .orElseThrow(() -> new NotFoundException("updatedBy not found"));
         fxTrade.setUpdatedBy(updatedBy);
         return fxTrade;
@@ -127,10 +126,9 @@ public class FxTradeServiceImpl implements FxTradeService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
-        final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final FxTrade fxTrade = fxTradeRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        final FxSettlement tradeFxSettlement = fxSettlementRepository.findFirstByTrade(fxTrade);
+        final var referencedWarning = new ReferencedWarning();
+        final var fxTrade = fxTradeRepository.findById(id).orElseThrow(NotFoundException::new);
+        final var tradeFxSettlement = fxSettlementRepository.findFirstByTrade(fxTrade);
         if (tradeFxSettlement != null) {
             referencedWarning.setKey("fxTrade.fxSettlement.trade.referenced");
             referencedWarning.addParam(tradeFxSettlement.getId());

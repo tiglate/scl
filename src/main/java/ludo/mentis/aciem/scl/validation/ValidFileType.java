@@ -1,4 +1,4 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -8,6 +8,8 @@ import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
+import ludo.mentis.aciem.scl.model.FileData;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

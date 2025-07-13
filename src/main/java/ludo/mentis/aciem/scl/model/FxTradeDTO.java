@@ -1,15 +1,23 @@
 package ludo.mentis.aciem.scl.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import ludo.mentis.aciem.scl.validation.FieldsNotEqual;
+
+
+@FieldsNotEqual(
+    field = "buyCurrencyId", 
+    secondField = "sellCurrencyId", 
+    message = "The bought and the sold currencies cannot be the same."
+)
 public class FxTradeDTO {
 
     private Long id;
@@ -17,19 +25,43 @@ public class FxTradeDTO {
     @Size(max = 255)
     private String tradeId;
 
+    @NotNull
     private LocalDate tradeDate;
 
+    @NotNull
     private LocalDate valueDate;
 
+    @NotNull
     private Product product;
 
+    private FxTradePurpose purpose;
+
+    @NotNull
+    private Long buyCurrencyId;
+
+    @NotNull
+    @Min(0)
     @Digits(integer = 20, fraction = 6)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal buyAmount;
 
+    @NotNull
+    private Long sellCurrencyId;
+
+    @NotNull
+    @Min(0)
     @Digits(integer = 20, fraction = 6)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal sellAmount;
+    
+    @NotNull
+    @Min(0)
+    @Digits(integer = 20, fraction = 10)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private BigDecimal exchangeRate;
+
+    @NotNull
+    private Long counterpartyId;
 
     @Size(max = 255)
     private String investorManager;
@@ -37,161 +69,155 @@ public class FxTradeDTO {
     @Size(max = 255)
     private String beneficiary;
 
-    private FxTradePurpose purpose;
-
-    @NotNull
+    private Long updatedById;
+    
+    private String updatedByName;
+    
     private LocalDateTime createdAt;
 
-    @NotNull
     private LocalDateTime updatedAt;
 
-    @Digits(integer = 20, fraction = 10)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal exchangeRate;
+	public Long getId() {
+		return id;
+	}
 
-    @NotNull
-    private Long counterparty;
+	public void setId(Long value) {
+		this.id = value;
+	}
 
-    private Long buyCurrency;
+	public String getTradeId() {
+		return tradeId;
+	}
 
-    private Long sellCurrency;
+	public void setTradeId(String value) {
+		this.tradeId = value;
+	}
 
-    private Long updatedBy;
+	public LocalDate getTradeDate() {
+		return tradeDate;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void setTradeDate(LocalDate value) {
+		this.tradeDate = value;
+	}
 
-    public void setId(final Long value) {
-        this.id = value;
-    }
+	public LocalDate getValueDate() {
+		return valueDate;
+	}
 
-    public String getTradeId() {
-        return tradeId;
-    }
+	public void setValueDate(LocalDate value) {
+		this.valueDate = value;
+	}
 
-    public void setTradeId(final String value) {
-        this.tradeId = value;
-    }
+	public Product getProduct() {
+		return product;
+	}
 
-    public LocalDate getTradeDate() {
-        return tradeDate;
-    }
+	public void setProduct(Product value) {
+		this.product = value;
+	}
 
-    public void setTradeDate(final LocalDate value) {
-        this.tradeDate = value;
-    }
+	public FxTradePurpose getPurpose() {
+		return purpose;
+	}
 
-    public LocalDate getValueDate() {
-        return valueDate;
-    }
+	public void setPurpose(FxTradePurpose value) {
+		this.purpose = value;
+	}
 
-    public void setValueDate(final LocalDate value) {
-        this.valueDate = value;
-    }
+	public Long getBuyCurrencyId() {
+		return buyCurrencyId;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public void setBuyCurrencyId(Long value) {
+		this.buyCurrencyId = value;
+	}
 
-    public void setProduct(final Product value) {
-        this.product = value;
-    }
+	public BigDecimal getBuyAmount() {
+		return buyAmount;
+	}
 
-    public BigDecimal getBuyAmount() {
-        return buyAmount;
-    }
+	public void setBuyAmount(BigDecimal value) {
+		this.buyAmount = value;
+	}
 
-    public void setBuyAmount(final BigDecimal value) {
-        this.buyAmount = value;
-    }
+	public Long getSellCurrencyId() {
+		return sellCurrencyId;
+	}
 
-    public BigDecimal getSellAmount() {
-        return sellAmount;
-    }
+	public void setSellCurrencyId(Long value) {
+		this.sellCurrencyId = value;
+	}
 
-    public void setSellAmount(final BigDecimal value) {
-        this.sellAmount = value;
-    }
+	public BigDecimal getSellAmount() {
+		return sellAmount;
+	}
 
-    public String getInvestorManager() {
-        return investorManager;
-    }
+	public void setSellAmount(BigDecimal value) {
+		this.sellAmount = value;
+	}
 
-    public void setInvestorManager(final String value) {
-        this.investorManager = value;
-    }
+	public BigDecimal getExchangeRate() {
+		return exchangeRate;
+	}
 
-    public String getBeneficiary() {
-        return beneficiary;
-    }
+	public void setExchangeRate(BigDecimal value) {
+		this.exchangeRate = value;
+	}
 
-    public void setBeneficiary(final String value) {
-        this.beneficiary = value;
-    }
+	public Long getCounterpartyId() {
+		return counterpartyId;
+	}
 
-    public FxTradePurpose getPurpose() {
-        return purpose;
-    }
+	public void setCounterpartyId(Long value) {
+		this.counterpartyId = value;
+	}
 
-    public void setPurpose(final FxTradePurpose value) {
-        this.purpose = value;
-    }
+	public String getInvestorManager() {
+		return investorManager;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setInvestorManager(String value) {
+		this.investorManager = value;
+	}
 
-    public void setCreatedAt(final LocalDateTime value) {
-        this.createdAt = value;
-    }
+	public String getBeneficiary() {
+		return beneficiary;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public void setBeneficiary(String value) {
+		this.beneficiary = value;
+	}
 
-    public void setUpdatedAt(final LocalDateTime value) {
-        this.updatedAt = value;
-    }
+	public Long getUpdatedById() {
+		return updatedById;
+	}
 
-    public BigDecimal getExchangeRate() {
-        return exchangeRate;
-    }
+	public void setUpdatedById(Long value) {
+		this.updatedById = value;
+	}
 
-    public void setExchangeRate(final BigDecimal value) {
-        this.exchangeRate = value;
-    }
+	public String getUpdatedByName() {
+		return updatedByName;
+	}
 
-    public Long getCounterparty() {
-        return counterparty;
-    }
+	public void setUpdatedByName(String value) {
+		this.updatedByName = value;
+	}
 
-    public void setCounterparty(final Long value) {
-        this.counterparty = value;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public Long getBuyCurrency() {
-        return buyCurrency;
-    }
+	public void setCreatedAt(LocalDateTime value) {
+		this.createdAt = value;
+	}
 
-    public void setBuyCurrency(final Long value) {
-        this.buyCurrency = value;
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 
-    public Long getSellCurrency() {
-        return sellCurrency;
-    }
-
-    public void setSellCurrency(final Long value) {
-        this.sellCurrency = value;
-    }
-
-    public Long getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(final Long value) {
-        this.updatedBy = value;
-    }
-
+	public void setUpdatedAt(LocalDateTime value) {
+		this.updatedAt = value;
+	}
 }

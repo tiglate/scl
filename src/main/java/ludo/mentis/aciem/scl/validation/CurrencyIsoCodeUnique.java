@@ -1,4 +1,4 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;

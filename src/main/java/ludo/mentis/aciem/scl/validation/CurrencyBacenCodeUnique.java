@@ -1,4 +1,4 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -14,35 +14,35 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
-import ludo.mentis.aciem.scl.service.DocumentTypeService;
+import ludo.mentis.aciem.scl.service.CurrencyService;
 import org.springframework.web.servlet.HandlerMapping;
 
 
 /**
- * Validate that the name value isn't taken yet.
+ * Validate that the bacenCode value isn't taken yet.
  */
 @Target({ FIELD, METHOD, ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = DocumentTypeNameUnique.DocumentTypeNameUniqueValidator.class
+        validatedBy = CurrencyBacenCodeUnique.CurrencyBacenCodeUniqueValidator.class
 )
-public @interface DocumentTypeNameUnique {
+public @interface CurrencyBacenCodeUnique {
 
-    String message() default "{Exists.documentType.name}";
+    String message() default "{Exists.currency.bacenCode}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class DocumentTypeNameUniqueValidator implements ConstraintValidator<DocumentTypeNameUnique, String> {
+    class CurrencyBacenCodeUniqueValidator implements ConstraintValidator<CurrencyBacenCodeUnique, String> {
 
-        private final DocumentTypeService documentTypeService;
+        private final CurrencyService currencyService;
         private final HttpServletRequest request;
 
-        public DocumentTypeNameUniqueValidator(final DocumentTypeService documentTypeService,
+        public CurrencyBacenCodeUniqueValidator(final CurrencyService currencyService,
                 final HttpServletRequest request) {
-            this.documentTypeService = documentTypeService;
+            this.currencyService = currencyService;
             this.request = request;
         }
 
@@ -55,11 +55,11 @@ public @interface DocumentTypeNameUnique {
             @SuppressWarnings("unchecked") final Map<String, String> pathVariables =
                     ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
             final String currentId = pathVariables.get("id");
-            if (currentId != null && value.equalsIgnoreCase(documentTypeService.get(Long.parseLong(currentId)).getName())) {
+            if (currentId != null && value.equalsIgnoreCase(currencyService.get(Long.parseLong(currentId)).getBacenCode())) {
                 // value hasn't changed
                 return true;
             }
-            return !documentTypeService.nameExists(value);
+            return !currencyService.bacenCodeExists(value);
         }
 
     }

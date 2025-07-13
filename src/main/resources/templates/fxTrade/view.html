@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en"
+      layout:decorate="~{layout}">
+<head>
+    <title>View FX Trade</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div th:replace="~{fragments/header :: header('view', 'View FX Trade', 'fxTradeForm', @{/fxTrades})}"></div>
+        <th:block th:replace="~{fxTrade/_form :: fxTradeForm('view', ${fxTrade})}"></th:block>
+    </div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -14,35 +14,35 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
-import ludo.mentis.aciem.scl.service.UserService;
+import ludo.mentis.aciem.scl.service.DocumentTypeService;
 import org.springframework.web.servlet.HandlerMapping;
 
 
 /**
- * Validate that the email value isn't taken yet.
+ * Validate that the name value isn't taken yet.
  */
 @Target({ FIELD, METHOD, ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = UserEmailUnique.UserEmailUniqueValidator.class
+        validatedBy = DocumentTypeNameUnique.DocumentTypeNameUniqueValidator.class
 )
-public @interface UserEmailUnique {
+public @interface DocumentTypeNameUnique {
 
-    String message() default "{Exists.user.email}";
+    String message() default "{Exists.documentType.name}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class UserEmailUniqueValidator implements ConstraintValidator<UserEmailUnique, String> {
+    class DocumentTypeNameUniqueValidator implements ConstraintValidator<DocumentTypeNameUnique, String> {
 
-        private final UserService userService;
+        private final DocumentTypeService documentTypeService;
         private final HttpServletRequest request;
 
-        public UserEmailUniqueValidator(final UserService userService,
+        public DocumentTypeNameUniqueValidator(final DocumentTypeService documentTypeService,
                 final HttpServletRequest request) {
-            this.userService = userService;
+            this.documentTypeService = documentTypeService;
             this.request = request;
         }
 
@@ -55,11 +55,11 @@ public @interface UserEmailUnique {
             @SuppressWarnings("unchecked") final Map<String, String> pathVariables =
                     ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
             final String currentId = pathVariables.get("id");
-            if (currentId != null && value.equalsIgnoreCase(userService.get(Long.parseLong(currentId)).getEmail())) {
+            if (currentId != null && value.equalsIgnoreCase(documentTypeService.get(Long.parseLong(currentId)).getName())) {
                 // value hasn't changed
                 return true;
             }
-            return !userService.emailExists(value);
+            return !documentTypeService.nameExists(value);
         }
 
     }

@@ -46,11 +46,11 @@ import ludo.mentis.aciem.scl.util.WebUtils;
 public class FxTradeController {
 
     private static final String ENTITY_NAME = "FxTrade";
-    private static final String CONTROLLER_ADD = "fxtrade/add";
-    private static final String CONTROLLER_EDIT = "fxtrade/edit";
-    private static final String CONTROLLER_VIEW = "fxtrade/view";
-    private static final String CONTROLLER_LIST = "fxtrade/list";
-    private static final String REDIRECT_TO_CONTROLLER_INDEX = "redirect:/fxtrades";
+    private static final String CONTROLLER_ADD = "fxTrade/add";
+    private static final String CONTROLLER_EDIT = "fxTrade/edit";
+    private static final String CONTROLLER_VIEW = "fxTrade/view";
+    private static final String CONTROLLER_LIST = "fxTrade/list";
+    private static final String REDIRECT_TO_CONTROLLER_INDEX = "redirect:/fxTrades";
     
     private final SortUtils sortUtils;
     private final FxTradeService fxTradeService;

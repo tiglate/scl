@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import ludo.mentis.aciem.scl.util.WebUtils;
+import ludo.mentis.aciem.scl.validation.PasswordResetRequestUsernameExists;
 
 
 public class PasswordResetRequest {

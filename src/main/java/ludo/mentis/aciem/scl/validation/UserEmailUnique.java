@@ -1,4 +1,4 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -14,35 +14,35 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
-import ludo.mentis.aciem.scl.service.CurrencyService;
+import ludo.mentis.aciem.scl.service.UserService;
 import org.springframework.web.servlet.HandlerMapping;
 
 
 /**
- * Validate that the bacenCode value isn't taken yet.
+ * Validate that the email value isn't taken yet.
  */
 @Target({ FIELD, METHOD, ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = CurrencyBacenCodeUnique.CurrencyBacenCodeUniqueValidator.class
+        validatedBy = UserEmailUnique.UserEmailUniqueValidator.class
 )
-public @interface CurrencyBacenCodeUnique {
+public @interface UserEmailUnique {
 
-    String message() default "{Exists.currency.bacenCode}";
+    String message() default "{Exists.user.email}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class CurrencyBacenCodeUniqueValidator implements ConstraintValidator<CurrencyBacenCodeUnique, String> {
+    class UserEmailUniqueValidator implements ConstraintValidator<UserEmailUnique, String> {
 
-        private final CurrencyService currencyService;
+        private final UserService userService;
         private final HttpServletRequest request;
 
-        public CurrencyBacenCodeUniqueValidator(final CurrencyService currencyService,
+        public UserEmailUniqueValidator(final UserService userService,
                 final HttpServletRequest request) {
-            this.currencyService = currencyService;
+            this.userService = userService;
             this.request = request;
         }
 
@@ -55,11 +55,11 @@ public @interface CurrencyBacenCodeUnique {
             @SuppressWarnings("unchecked") final Map<String, String> pathVariables =
                     ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
             final String currentId = pathVariables.get("id");
-            if (currentId != null && value.equalsIgnoreCase(currencyService.get(Long.parseLong(currentId)).getBacenCode())) {
+            if (currentId != null && value.equalsIgnoreCase(userService.get(Long.parseLong(currentId)).getEmail())) {
                 // value hasn't changed
                 return true;
             }
-            return !currencyService.bacenCodeExists(value);
+            return !userService.emailExists(value);
         }
 
     }

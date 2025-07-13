@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import ludo.mentis.aciem.scl.validation.CurrencyBacenCodeUnique;
+import ludo.mentis.aciem.scl.validation.CurrencyIsoCodeUnique;
 
 
 public class CurrencyDTO {

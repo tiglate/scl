@@ -1,47 +1,48 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.validation;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
-import ludo.mentis.aciem.scl.service.DepartmentService;
-import org.springframework.web.servlet.HandlerMapping;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
+import ludo.mentis.aciem.scl.service.UserService;
+import org.springframework.web.servlet.HandlerMapping;
 
-import static java.lang.annotation.ElementType.*;
 
 /**
- * Validate that the name value isn't taken yet.
+ * Validate that the username value isn't taken yet.
  */
 @Target({ FIELD, METHOD, ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = DepartmentNameUnique.DepartmentNameUniqueValidator.class
+        validatedBy = UserUsernameUnique.UserUsernameUniqueValidator.class
 )
-public @interface DepartmentNameUnique {
+public @interface UserUsernameUnique {
 
-    String message() default "This Name is already taken.";
+    String message() default "{Exists.user.username}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class DepartmentNameUniqueValidator implements ConstraintValidator<DepartmentNameUnique, String> {
+    class UserUsernameUniqueValidator implements ConstraintValidator<UserUsernameUnique, String> {
 
-        private final DepartmentService departmentService;
+        private final UserService userService;
         private final HttpServletRequest request;
 
-        public DepartmentNameUniqueValidator(final DepartmentService departmentService,
-                                             final HttpServletRequest request) {
-            this.departmentService = departmentService;
+        public UserUsernameUniqueValidator(final UserService userService,
+                final HttpServletRequest request) {
+            this.userService = userService;
             this.request = request;
         }
 
@@ -54,11 +55,11 @@ public @interface DepartmentNameUnique {
             @SuppressWarnings("unchecked") final Map<String, String> pathVariables =
                     ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
             final String currentId = pathVariables.get("id");
-            if (currentId != null && value.equalsIgnoreCase(departmentService.get(Long.parseLong(currentId)).getName())) {
+            if (currentId != null && value.equalsIgnoreCase(userService.get(Long.parseLong(currentId)).getUsername())) {
                 // value hasn't changed
                 return true;
             }
-            return !departmentService.nameExists(value);
+            return !userService.usernameExists(value);
         }
 
     }

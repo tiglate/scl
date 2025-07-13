@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import ludo.mentis.aciem.scl.validation.RoleCodeUnique;
 
 
 public class RoleDTO {
