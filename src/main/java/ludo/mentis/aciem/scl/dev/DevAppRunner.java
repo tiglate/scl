@@ -75,7 +75,7 @@ public class DevAppRunner implements ApplicationRunner {
 
 	    // 4. Check that AT LEAST ONE development-like profile is present.
 	    var hasAllowedProfile = profiles.stream()
-	            .anyMatch(p -> p.contains("dev") || p.equals("default"));
+	            .anyMatch(p -> p.contains("dev") || p.equals("default") || p.equals("local"));
 
 	    return hasNoBlockingProfiles && hasAllowedProfile;
 	}
