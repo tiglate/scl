@@ -1,4 +1,4 @@
-export default class CounterpartyDocumentsManager {
+class CounterpartyDocumentsManager {
     #template;
     #container;
     #documents;

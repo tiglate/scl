@@ -1,9 +1,3 @@
-import 'bootstrap';
-import CounterpartyDocumentsManager from './counterparty-documents';
-import htmx from 'htmx.org';
-import flatpickr from 'flatpickr';
-import 'scss/app.scss';
-
 /**
  * Register an event at the document for the specified selector,
  * so events are still catch after DOM changes.
