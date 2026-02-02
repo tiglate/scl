@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
 
 
 @Configuration
@@ -32,13 +34,22 @@ public class DomainConfig {
     HibernatePropertiesCustomizer jsonFormatMapper(final ObjectMapper objectMapper) {
         return properties -> properties.put(MappingSettings.JSON_FORMAT_MAPPER, new JacksonJsonFormatMapper(objectMapper));
     }
-    
+
     @Bean
     AuditorAware<User> auditorProvider() {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
+                .filter(auth -> !(auth instanceof AnonymousAuthenticationToken))
                 .map(Authentication::getPrincipal)
-                .map(User.class::cast);
+                .flatMap(principal -> {
+                    if (principal instanceof CustomUserDetails cud) {
+                        return Optional.ofNullable(cud.getUser());
+                    }
+                    if (principal instanceof User user) {
+                        return Optional.of(user);
+                    }
+                    return Optional.empty();
+                });
     }
 }

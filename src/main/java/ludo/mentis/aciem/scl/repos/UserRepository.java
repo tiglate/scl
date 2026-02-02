@@ -21,6 +21,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = "roles")
     User findByUsernameIgnoreCase(String username);
 
+    @EntityGraph(attributePaths = "roles")
+    User findByEmailIgnoreCase(String username);
+
     User findFirstByDepartment(Department department);
 
     User findByResetUID(UUID resetUID);

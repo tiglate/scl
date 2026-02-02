@@ -47,7 +47,7 @@ public @interface PasswordResetRequestUsernameExists {
                 // no valid value present
                 return true;
             }
-            return userRepository.existsByUsernameIgnoreCase(value);
+            return userRepository.existsByEmailIgnoreCase(value);
         }
 
     }
