@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # O Padrinho (Banco de Dados)
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_dev
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_PASSWORD}
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    # Adicionamos um healthcheck para o outro container saber quando o banco está pronto
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${MSSQL_PASSWORD}", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  # O "Soldado" que faz o serviço sujo e vaza
+  mssql-setup:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_setup
+    depends_on:
+      sql-server:
+        condition: service_healthy
+    volumes:
+      - ./setup.sql:/setup.sql
+    user: root
+    command: >
+      /bin/bash -c "
+      /opt/mssql-tools18/bin/sqlcmd -S sql-server -U sa -P ${MSSQL_PASSWORD} -d master -i /setup.sql -C;
+      echo 'Banco de dados criado com sucesso!';
+      "
+
+  # O Informante (Mailpit - Fake SMTP)
+  mail-server:
+    image: axllent/mailpit
+    container_name: mail_dev
+    restart: always
+    ports:
+      - "1025:1025" # Porta para o seu App enviar e-mail (SMTP)
+      - "8025:8025" # Interface Web para você ver os e-mails
+    environment:
+      - MP_MAX_MESSAGES=500
+      - MP_DATABASE=/data/mailpit.db
+    volumes:
+      - mail_data:/data
+
+volumes:
+  mssql_data:
+  mail_data:

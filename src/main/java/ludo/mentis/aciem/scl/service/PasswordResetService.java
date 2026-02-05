@@ -39,7 +39,7 @@ public class PasswordResetService {
     public void startProcess(final PasswordResetRequest passwordResetRequest) {
         log.info("received password reset request for {}", passwordResetRequest.getEmail());
 
-        final User user = userRepository.findByUsernameIgnoreCase(passwordResetRequest.getEmail());
+        final User user = userRepository.findByEmailIgnoreCase(passwordResetRequest.getEmail());
         if (user == null) {
             log.warn("user {} not found", passwordResetRequest.getEmail());
             return;

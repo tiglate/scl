@@ -12,12 +12,12 @@ import ludo.mentis.aciem.scl.domain.User;
 
 
 /**
- * Extension of Spring Security User class to store additional data.
+ * Extension of the Spring Security User class to store additional data.
  */
 public class CustomUserDetails extends User implements UserDetails {
 
 	@Serial
-    private static final long serialVersionUID = -3576157936224863000L;
+	private static final long serialVersionUID = -3576157936224863000L;
 
 	public CustomUserDetails() {
 	
@@ -48,4 +48,8 @@ public class CustomUserDetails extends User implements UserDetails {
 			       .map(roleRef -> new SimpleGrantedAuthority(roleRef.getCode()))
 			       .toList();
 	}
+
+    public User getUser() {
+		return this;
+    }
 }
