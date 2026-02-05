@@ -1,5 +1,6 @@
 package ludo.mentis.aciem.scl.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -23,7 +24,8 @@ import jakarta.persistence.Table;
 @EntityListeners(AuditingEntityListener.class)
 public class Role implements Serializable {
 
-	private static final long serialVersionUID = -4031801650263466322L;
+	@Serial
+    private static final long serialVersionUID = -4031801650263466322L;
 
 	@Id
     @Column(name = "id_role", nullable = false, updatable = false)

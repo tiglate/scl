@@ -1,5 +1,6 @@
 package ludo.mentis.aciem.scl.model;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +16,8 @@ import ludo.mentis.aciem.scl.domain.User;
  */
 public class CustomUserDetails extends User implements UserDetails {
 
-	private static final long serialVersionUID = -3576157936224863000L;
+	@Serial
+    private static final long serialVersionUID = -3576157936224863000L;
 
 	public CustomUserDetails() {
 	

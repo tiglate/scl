@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.repos;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -29,9 +30,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsernameIgnoreCase(String username);
 
-    User findFirstByRoles(Role role);
+    User findFirstByRoles(Set<Role> roles);
 
-    List<User> findAllByRoles(Role role);
+    List<User> findAllByRoles(Set<Role> roles);
 
     boolean existsByEmailIgnoreCase(String email);
 

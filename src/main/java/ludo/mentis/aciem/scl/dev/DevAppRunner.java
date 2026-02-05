@@ -60,7 +60,8 @@ public class DevAppRunner implements ApplicationRunner {
 	    var activeProfiles = environment.getActiveProfiles();
 
 	    // If no profiles are active, default to true.
-	    if (activeProfiles == null || activeProfiles.length == 0) {
+        //noinspection ConstantValue
+        if (activeProfiles == null || activeProfiles.length == 0) {
 	        return true;
 	    }
 

@@ -1,5 +1,6 @@
 package ludo.mentis.aciem.scl.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -34,7 +35,8 @@ import ludo.mentis.aciem.scl.model.Gender;
 @EntityListeners(AuditingEntityListener.class)
 public class User implements Serializable {
 
-	private static final long serialVersionUID = 8283388598734946775L;
+	@Serial
+    private static final long serialVersionUID = 8283388598734946775L;
 
 	@Id
     @Column(name = "id_user", nullable = false, updatable = false)

@@ -11,6 +11,8 @@ import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 
+import java.util.Set;
+
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -86,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
     public ReferencedWarning getReferencedWarning(final Long id) {
         final var referencedWarning = new ReferencedWarning();
         final var role        = roleRepository.findById(id).orElseThrow(NotFoundException::new);
-        final var roleUser    = userRepository.findFirstByRoles(role);
+        final var roleUser    = userRepository.findFirstByRoles(Set.of(role));
 
         if (roleUser != null) {
             referencedWarning.setKey("role.user.role.referenced");
