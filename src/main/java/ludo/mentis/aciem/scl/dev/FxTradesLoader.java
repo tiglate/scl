@@ -54,7 +54,7 @@ public class FxTradesLoader implements DataLoaderCommand {
         g10RatesVsBrl.put("CAD", new BigDecimal("4.01"));  // Canadian Dollar
         g10RatesVsBrl.put("AUD", new BigDecimal("3.57"));  // Australian Dollar
         g10RatesVsBrl.put("NZD", new BigDecimal("3.29"));  // New Zealand Dollar
-        g10RatesVsBrl.put("SEK", new BigDecimal("0.58"));  // Swedish Krona
+        g10RatesVsBrl.put("SEK", new BigDecimal("0.58"));  // Swedish Króna
         g10RatesVsBrl.put("NOK", new BigDecimal("0.54"));  // Norwegian Krone
         
         g10RatesVsUsd.put("EUR", new BigDecimal("1.17"));   // Euro
@@ -64,7 +64,7 @@ public class FxTradesLoader implements DataLoaderCommand {
         g10RatesVsUsd.put("CAD", new BigDecimal("0.73"));   // Canadian Dollar
         g10RatesVsUsd.put("AUD", new BigDecimal("0.65"));   // Australian Dollar
         g10RatesVsUsd.put("NZD", new BigDecimal("0.60"));   // New Zealand Dollar
-        g10RatesVsUsd.put("SEK", new BigDecimal("0.11"));   // Swedish Krona
+        g10RatesVsUsd.put("SEK", new BigDecimal("0.11"));   // Swedish Króna
         g10RatesVsUsd.put("NOK", new BigDecimal("0.099"));  // Norwegian Krone
 	}
 
@@ -95,28 +95,26 @@ public class FxTradesLoader implements DataLoaderCommand {
 			var product = randomUtils.pickRandomEnumValue(Product.class);
 			var tradeDate = randomUtils.getRandomDate(LocalDate.now().minusMonths(1), LocalDate.now());
 			LocalDate valueDate;
-			CurrencyPair pair;
+			var pair = switch (product) {
+                case FX_SPOT -> {
+                    valueDate = tradeDate.plusDays(1);
+                    yield getRandomCurrencyPair(null);
+                }
+                case FX_FORWARD -> {
+                    valueDate = tradeDate.plusDays(faker.random().nextInt(4, 180));
+                    yield getRandomCurrencyPair(null);
+                }
+                case NDF -> {
+                    valueDate = tradeDate.plusDays(faker.random().nextInt(180, 360));
+                    yield getRandomCurrencyPair(true);
+                }
+                default -> {
+                    valueDate = tradeDate.plusDays(faker.random().nextInt(4, 30));
+                    yield getRandomCurrencyPair(null);
+                }
+            };
 
-			switch (product) {
-			case FX_SPOT:
-				valueDate = tradeDate.plusDays(1);
-				pair = getRandomCurrencyPair(null);
-				break;
-			case FX_FORWARD:
-				valueDate = tradeDate.plusDays(faker.random().nextInt(4, 180));
-				pair = getRandomCurrencyPair(null);
-				break;
-			case NDF:
-				valueDate = tradeDate.plusDays(faker.random().nextInt(180, 360));
-				pair = getRandomCurrencyPair(true);
-				break;
-			default:
-				valueDate = tradeDate.plusDays(faker.random().nextInt(4, 30));
-				pair = getRandomCurrencyPair(null);
-				break;
-			}
-
-			fxTrade.setTradeId("TRD-" + faker.random().nextInt(10000, 99999));
+            fxTrade.setTradeId("TRD-" + faker.random().nextInt(10000, 99999));
 			fxTrade.setProduct(product);
 			fxTrade.setTradeDate(tradeDate);
 			fxTrade.setValueDate(valueDate);

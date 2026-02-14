@@ -1,59 +1,110 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en"
+      layout:decorate="~{layout}">
     <head>
-        <title>[[#{fxSettlement.list.headline}]]</title>
+        <title>FX Settlements</title>
     </head>
     <body>
         <div layout:fragment="content">
             <div class="d-flex flex-wrap mb-4">
-                <h1 class="flex-grow-1">[[#{fxSettlement.list.headline}]]</h1>
+                <h1 class="flex-grow-1">FX Settlements</h1>
                 <div>
-                    <a th:href="@{/fxSettlements/add}" class="btn btn-primary ms-2">[[#{fxSettlement.list.createNew}]]</a>
+                    <a class="btn btn-primary ms-2"
+                       th:href="@{/fxSettlements/add}"
+                       sec:authorize="hasAuthority('SETTLEMENT_WRITE')"><i class="bi-plus-circle"></i> Add</a>
                 </div>
             </div>
-            <div th:if="${!fxSettlements.empty || filter != null}" class="row">
-                <div th:replace="~{fragments/utils::searchFilter(object='fxSettlement')}" />
-                <div th:replace="~{fragments/utils::sorting(object='fxSettlement', sortOptions=${ {'id,ASC', 'comments,ASC', 'failureMotive,ASC'} }, columnClass='offset-lg-4')}" />
+
+            <div class="card shadow mb-3">
+                <div class="card-header">
+                    Filters
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        aqui
+                    </div>
+                </div>
             </div>
-            <div th:if="${fxSettlements.empty}">[[#{fxSettlement.list.empty}]]</div>
-            <div th:if="${!fxSettlements.empty}" class="table-responsive">
-                <table class="table table-striped table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th scope="col">[[#{fxSettlement.id.label}]]</th>
-                            <th scope="col">[[#{fxSettlement.comments.label}]]</th>
-                            <th scope="col">[[#{fxSettlement.failureMotive.label}]]</th>
-                            <th scope="col">[[#{fxSettlement.failureDetails.label}]]</th>
-                            <th scope="col">[[#{fxSettlement.completedAt.label}]]</th>
-                            <th scope="col">[[#{fxSettlement.trade.label}]]</th>
-                            <th scope="col">[[#{fxSettlement.completedBy.label}]]</th>
-                            <th><!-- --></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="fxSettlement : ${fxSettlements}">
-                            <td>[[${fxSettlement.id}]]</td>
-                            <td>[[${fxSettlement.comments}]]</td>
-                            <td>[[${fxSettlement.failureMotive}]]</td>
-                            <td>[[${fxSettlement.failureDetails}]]</td>
-                            <td>[[${fxSettlement.completedAt}]]</td>
-                            <td>[[${fxSettlement.trade}]]</td>
-                            <td>[[${fxSettlement.completedBy}]]</td>
-                            <td>
-                                <div class="float-end text-nowrap">
-                                    <a th:href="@{/fxSettlements/edit/{id}(id=${fxSettlement.id})}" class="btn btn-sm btn-secondary">[[#{fxSettlement.list.edit}]]</a>
-                                    <form th:action="@{/fxSettlements/delete/{id}(id=${fxSettlement.id})}"
-                                            th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{fxSettlement.list.delete}]]</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <div class="card shadow mb-3" id="resultsCard">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Results
+                    <button class="btn btn-sm btn-dark" data-target="resultsCard" id="toggleMaximize">
+                        Maximize
+                    </button>
+                </div>
+                <div class="card-body small-dashboard">
+                    <p class="card-text" th:if="${#lists.isEmpty(fxSettlements)}">No records were found</p>
+                    <div th:if="${not #lists.isEmpty(fxSettlements)}" class="table-responsive">
+                        <table class="table table-sm table-striped table-hover align-middle" id="fxSettlementTable">
+                            <thead>
+                                <tr class="text-nowrap">
+                                    <th>Counterparty</th>
+                                    <th>IM</th>
+                                    <th>Contract</th>
+                                    <th class="text-center">Curr</th>
+                                    <th>Trade Type</th>
+                                    <th class="text-end">G10 AMT</th>
+                                    <th class="text-end">BRL AMT</th>
+                                    <th>Trade</th>
+                                    <th>Beneficiary</th>
+                                    <th class="text-center">Instruction</th>
+                                    <th class="text-center">G10</th>
+                                    <th class="text-center">BRL</th>
+                                    <th class="text-center">ION</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr th:each="fxSettlement : ${fxSettlements}" class="text-nowrap">
+                                    <td>[[${fxSettlement.counterparty}]]</td>
+                                    <td>[[${fxSettlement.investorManager}]]</td>
+                                    <td>[[${fxSettlement.contractId}]]</td>
+                                    <td class="text-center">[[${fxSettlement.currency}]]</td>
+                                    <td>[[${fxSettlement.tradeType}]]</td>
+                                    <td th:styleappend="${fxSettlement.g10Amount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.g10Amount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                    <td th:styleappend="${fxSettlement.brlAmount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.brlAmount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
+                                    <td th:text="${#temporals.format(fxSettlement.tradeDate, 'dd-MMM-yy')}"></td>
+                                    <td>[[${fxSettlement.beneficiary}]]</td>
+                                    <td class="text-center"><a href="#" th:classappend="${fxSettlement.instruction ? 'bi-check-square' : 'bi-square'}" title="Instruction"></a></td>
+                                    <td class="text-center"><a href="#" th:classappend="${fxSettlement.g10 ? 'bi-check-square' : 'bi-square'}" title="G10"></a></td>
+                                    <td class="text-center"><a href="#" th:classappend="${fxSettlement.brl ? 'bi-check-square' : 'bi-square'}" title="BRL"></a></td>
+                                    <td class="text-center"><a href="#" th:classappend="${fxSettlement.ion ? 'bi-check-square' : 'bi-square'}" title="ION"></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <script>
+                            new simpleDatatables.DataTable("#fxSettlementTable", {
+                                fixedColumns: true,
+                                paging: false
+                            });
+
+                            // Seleciona os elementos
+                            const btn = document.getElementById('toggleMaximize');
+                            const card = document.getElementById(btn.dataset.target);
+
+                            // Adiciona o evento de clique
+                            btn.addEventListener('click', function() {
+                                // Alterna a classe CSS
+                                card.classList.toggle('card-maximize');
+
+                                // Altera o texto do botão conforme o estado
+                                if (card.classList.contains('card-maximize')) {
+                                    btn.textContent = 'Restore';
+                                    document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
+                                } else {
+                                    btn.textContent = 'Maximize';
+                                    document.body.style.overflow = ''; // Restaura o scroll
+                                }
+                            });
+
+                        </script>
+                    </div>
+                </div>
             </div>
-            <div th:replace="~{fragments/utils::pagination()}" />
         </div>
     </body>
 </html>

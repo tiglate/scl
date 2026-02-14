@@ -2,10 +2,8 @@ package ludo.mentis.aciem.scl.service;
 
 import java.util.HashSet;
 import java.util.List;
-import ludo.mentis.aciem.scl.domain.FxSettlement;
-import ludo.mentis.aciem.scl.domain.FxSettlementStep;
-import ludo.mentis.aciem.scl.domain.FxTrade;
-import ludo.mentis.aciem.scl.domain.User;
+
+import ludo.mentis.aciem.scl.domain.*;
 import ludo.mentis.aciem.scl.model.FxSettlementDTO;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementStepRepository;
@@ -35,6 +33,11 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         this.fxSettlementStepRepository = fxSettlementStepRepository;
         this.fxTradeRepository = fxTradeRepository;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public List<FxSettlementView> findAllBySearchCriteria() {
+        return fxSettlementRepository.findAllBySearchCriteria();
     }
 
     @Override

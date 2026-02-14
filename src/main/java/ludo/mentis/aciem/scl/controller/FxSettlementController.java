@@ -65,13 +65,9 @@ public class FxSettlementController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.SETTLEMENT_READ + "', '" + UserRoles.SETTLEMENT_WRITE + "')")
-    public String list(@RequestParam(name = "filter", required = false) final String filter,
-            @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable,
-            final Model model) {
-        final Page<FxSettlementDTO> fxSettlements = fxSettlementService.findAll(filter, pageable);
+    public String list(final Model model) {
+        final var fxSettlements = fxSettlementService.findAllBySearchCriteria();
         model.addAttribute("fxSettlements", fxSettlements);
-        model.addAttribute("filter", filter);
-        model.addAttribute("paginationModel", WebUtils.getPaginationModel(fxSettlements));
         return "fxSettlement/list";
     }
 
