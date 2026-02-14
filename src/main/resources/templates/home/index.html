@@ -8,20 +8,62 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h1 class="mb-4">[[#{home.index.headline}]]</h1>
-    <p class="mb-5">[(#{home.index.text})]</p>
-    <div class="col-md-4 mb-5">
-        <h4 class="mb-3">[[#{home.index.exploreEntities}]]</h4>
-        <div class="list-group">
-            <a th:href="@{/departments}" class="list-group-item list-group-item-action">Departments</a>
-            <a th:href="@{/users}" class="list-group-item list-group-item-action">[[#{user.list.headline}]]</a>
-            <a th:href="@{/roles}" class="list-group-item list-group-item-action">[[#{role.list.headline}]]</a>
-            <a th:href="@{/counterparties}" class="list-group-item list-group-item-action">[[#{counterparty.list.headline}]]</a>
-            <a th:href="@{/currencies}" class="list-group-item list-group-item-action">[[#{currency.list.headline}]]</a>
-            <a th:href="@{/fxTrades}" class="list-group-item list-group-item-action">[[#{fxTrade.list.headline}]]</a>
-            <a th:href="@{/fxSettlements}" class="list-group-item list-group-item-action">[[#{fxSettlement.list.headline}]]</a>
-            <a th:href="@{/documentTypes}" class="list-group-item list-group-item-action">[[#{documentType.list.headline}]]</a>
-        </div>
+    <div class="app-container">
+        <a th:href="@{/departments}" class="app-icon-wrapper">
+            <div class="app-icon grad-dept">
+                <i class="bi bi-diagram-3"></i>
+            </div>
+            <span class="app-label">Departments</span>
+        </a>
+
+        <a th:href="@{/users}" class="app-icon-wrapper">
+            <div class="app-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <span class="app-label">Users</span>
+        </a>
+
+        <a th:href="@{/roles}" class="app-icon-wrapper">
+            <div class="app-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <span class="app-label">Roles</span>
+        </a>
+
+        <a th:href="@{/counterparties}" class="app-icon-wrapper">
+            <div class="app-icon">
+                <i class="bi bi-building-up"></i>
+            </div>
+            <span class="app-label">Counterparties</span>
+        </a>
+
+        <a th:href="@{/currencies}" class="app-icon-wrapper">
+            <div class="app-icon">
+                <i class="bi bi-currency-exchange"></i>
+            </div>
+            <span class="app-label">Currencies</span>
+        </a>
+
+        <a th:href="@{/fxTrades}" class="app-icon-wrapper">
+            <div class="app-icon">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <span class="app-label">Fx Trades</span>
+        </a>
+
+        <a th:href="@{/fxSettlements}" class="app-icon-wrapper">
+            <div class="app-icon grad-settle">
+                <i class="bi bi-check-all"></i>
+            </div>
+            <span class="app-label">Fx Settlements</span>
+        </a>
+
+        <a th:href="@{/documentTypes}" class="app-icon-wrapper">
+            <div class="app-icon">
+                <i class="bi bi-files"></i>
+            </div>
+            <span class="app-label">Document Types</span>
+        </a>
     </div>
 </div>
 </body>

@@ -11,11 +11,6 @@
         <div layout:fragment="content">
             <div class="d-flex flex-wrap mb-4">
                 <h1 class="flex-grow-1">FX Settlements</h1>
-                <div>
-                    <a class="btn btn-primary ms-2"
-                       th:href="@{/fxSettlements/add}"
-                       sec:authorize="hasAuthority('SETTLEMENT_WRITE')"><i class="bi-plus-circle"></i> Add</a>
-                </div>
             </div>
 
             <div class="card shadow mb-3">
@@ -24,7 +19,23 @@
                 </div>
                 <div class="card-body">
                     <div class="card-text">
-                        aqui
+                        <form id="searchForm" th:action="${requestUri}" th:object="${fxSettlementSearch}" method="get">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3">
+                                    <label for="startDateEdit" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="startDateEdit" th:field="*{startDate}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="endDateEdit" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="endDateEdit" th:field="*{endDate}">
+                                </div>
+                                <div class="col-md-6 d-flex justify-content-end align-items-end">
+                                    <input type="reset" value="Clear" class="btn btn-secondary me-2"
+                                           onClick="return clearForm();" onKeyDown="return clearForm();"/>
+                                    <input type="submit" value="Refresh" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -32,7 +43,7 @@
             <div class="card shadow mb-3" id="resultsCard">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Results
-                    <button class="btn btn-sm btn-dark" data-target="resultsCard" id="toggleMaximize">
+                    <button class="btn btn-sm btn-dark toggle-maximize" data-target="resultsCard">
                         Maximize
                     </button>
                 </div>
@@ -77,30 +88,21 @@
                         </table>
 
                         <script>
-                            new simpleDatatables.DataTable("#fxSettlementTable", {
-                                fixedColumns: true,
-                                paging: false
-                            });
-
-                            // Seleciona os elementos
-                            const btn = document.getElementById('toggleMaximize');
-                            const card = document.getElementById(btn.dataset.target);
-
-                            // Adiciona o evento de clique
-                            btn.addEventListener('click', function() {
-                                // Alterna a classe CSS
-                                card.classList.toggle('card-maximize');
-
-                                // Altera o texto do botão conforme o estado
-                                if (card.classList.contains('card-maximize')) {
-                                    btn.textContent = 'Restore';
-                                    document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
-                                } else {
-                                    btn.textContent = 'Maximize';
-                                    document.body.style.overflow = ''; // Restaura o scroll
+                            (function () {
+                                function initDataTable() {
+                                    const table = document.getElementById("fxSettlementTable");
+                                    if (!table) {
+                                        return;
+                                    }
+                                    if (table.classList.contains("dataTable")) {
+                                        return;
+                                    }
+                                    new DataTable("#fxSettlementTable", { paging: false });
+                                    console.log("DataTable initialized");
                                 }
-                            });
-
+                                document.addEventListener('DOMContentLoaded', initDataTable);
+                                document.addEventListener('htmx:afterSwap', initDataTable);
+                            })();
                         </script>
                     </div>
                 </div>

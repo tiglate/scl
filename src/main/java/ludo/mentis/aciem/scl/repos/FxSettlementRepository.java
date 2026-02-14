@@ -9,13 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
 public interface FxSettlementRepository extends JpaRepository<FxSettlement, Long> {
 
-    @Query("SELECT v FROM FxSettlementView v")
-    List<FxSettlementView> findAllBySearchCriteria();
+    @Query("SELECT v FROM FxSettlementView v WHERE v.tradeDate BETWEEN :startDate AND :endDate")
+    List<FxSettlementView> findAllBySearchCriteria(LocalDate startDate, LocalDate endDate);
 
     Page<FxSettlement> findAllById(Long id, Pageable pageable);
 

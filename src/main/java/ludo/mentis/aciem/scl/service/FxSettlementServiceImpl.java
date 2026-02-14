@@ -1,5 +1,6 @@
 package ludo.mentis.aciem.scl.service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     }
 
     @Override
-    public List<FxSettlementView> findAllBySearchCriteria() {
-        return fxSettlementRepository.findAllBySearchCriteria();
+    public List<FxSettlementView> findAllBySearchCriteria(LocalDate startDate, LocalDate endDate) {
+        return fxSettlementRepository.findAllBySearchCriteria(startDate, endDate);
     }
 
     @Override
