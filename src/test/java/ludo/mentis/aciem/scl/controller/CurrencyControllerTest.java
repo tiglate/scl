@@ -22,6 +22,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static ludo.mentis.aciem.scl.controller.TestSecurityConfig.createCustomUserDetails;
+import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,7 +48,7 @@ class CurrencyControllerTest {
         when(currencyService.findAll(any(CurrencyDTO.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        mockMvc.perform(get("/currencies"))
+        mockMvc.perform(get("/currencies").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("currency/list"))
                 .andExpect(model().attributeExists("currencies", "filter"));
@@ -55,7 +58,7 @@ class CurrencyControllerTest {
     void testView() throws Exception {
         when(currencyService.get(1L)).thenReturn(new CurrencyDTO());
 
-        mockMvc.perform(get("/currencies/view/1"))
+        mockMvc.perform(get("/currencies/view/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("currency/view"))
                 .andExpect(model().attributeExists("currency"));
@@ -65,7 +68,7 @@ class CurrencyControllerTest {
     void testEditGet() throws Exception {
         when(currencyService.get(1L)).thenReturn(new CurrencyDTO());
 
-        mockMvc.perform(get("/currencies/edit/1"))
+        mockMvc.perform(get("/currencies/edit/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("currency/edit"))
                 .andExpect(model().attributeExists("currency"));
@@ -73,7 +76,7 @@ class CurrencyControllerTest {
 
     @Test
     void testAddGet() throws Exception {
-        mockMvc.perform(get("/currencies/add"))
+        mockMvc.perform(get("/currencies/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("currency/add"))
                 .andExpect(model().attributeExists("currency"));
@@ -81,7 +84,7 @@ class CurrencyControllerTest {
 
     @Test
     void testAddPost_Success() throws Exception {
-        mockMvc.perform(post("/currencies/add")
+        mockMvc.perform(post("/currencies/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("isoCode", "USD")
                         .param("bacenCode", "220")
@@ -100,7 +103,7 @@ class CurrencyControllerTest {
         existing.setBacenCode("220");
         when(currencyService.get(1L)).thenReturn(existing);
 
-        mockMvc.perform(post("/currencies/edit/1")
+        mockMvc.perform(post("/currencies/edit/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("isoCode", "USD")
                         .param("bacenCode", "220")
@@ -116,7 +119,7 @@ class CurrencyControllerTest {
     void testDelete_Success() throws Exception {
         when(currencyService.getReferencedWarning(1L)).thenReturn(null);
 
-        mockMvc.perform(post("/currencies/delete/1")
+        mockMvc.perform(post("/currencies/delete/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/currencies"))
@@ -131,7 +134,7 @@ class CurrencyControllerTest {
         warning.setMessage("Reference warning");
         when(currencyService.getReferencedWarning(1L)).thenReturn(warning);
 
-        mockMvc.perform(post("/currencies/delete/1")
+        mockMvc.perform(post("/currencies/delete/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/currencies"))

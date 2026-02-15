@@ -22,6 +22,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static ludo.mentis.aciem.scl.controller.TestSecurityConfig.createCustomUserDetails;
+import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,7 +48,7 @@ class RoleControllerTest {
         when(roleService.findAll(any(RoleDTO.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        mockMvc.perform(get("/roles"))
+        mockMvc.perform(get("/roles").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("role/list"))
                 .andExpect(model().attributeExists("roles", "filter"));
@@ -55,7 +58,7 @@ class RoleControllerTest {
     void testView() throws Exception {
         when(roleService.get(1L)).thenReturn(new RoleDTO());
 
-        mockMvc.perform(get("/roles/view/1"))
+        mockMvc.perform(get("/roles/view/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("role/view"))
                 .andExpect(model().attributeExists("role"));
@@ -63,7 +66,7 @@ class RoleControllerTest {
 
     @Test
     void testAddGet() throws Exception {
-        mockMvc.perform(get("/roles/add"))
+        mockMvc.perform(get("/roles/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("role/add"))
                 .andExpect(model().attributeExists("role"));
@@ -71,7 +74,7 @@ class RoleControllerTest {
 
     @Test
     void testAddPost_Success() throws Exception {
-        mockMvc.perform(post("/roles/add")
+        mockMvc.perform(post("/roles/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("code", "ROLE_TEST")
                         .param("description", "Test Role"))
@@ -84,7 +87,7 @@ class RoleControllerTest {
 
     @Test
     void testAddPost_BindingErrors() throws Exception {
-        mockMvc.perform(post("/roles/add")
+        mockMvc.perform(post("/roles/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("code", ""))
                 .andExpect(status().isOk())
@@ -96,7 +99,7 @@ class RoleControllerTest {
     void testEditGet() throws Exception {
         when(roleService.get(1L)).thenReturn(new RoleDTO());
 
-        mockMvc.perform(get("/roles/edit/1"))
+        mockMvc.perform(get("/roles/edit/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("role/edit"))
                 .andExpect(model().attributeExists("role"));
@@ -108,7 +111,7 @@ class RoleControllerTest {
         existingRole.setCode("ROLE_UPDATED");
         when(roleService.get(1L)).thenReturn(existingRole);
 
-        mockMvc.perform(post("/roles/edit/1")
+        mockMvc.perform(post("/roles/edit/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("code", "ROLE_UPDATED")
                         .param("description", "Updated Role"))
@@ -123,7 +126,7 @@ class RoleControllerTest {
     void testDelete_Success() throws Exception {
         when(roleService.getReferencedWarning(1L)).thenReturn(null);
 
-        mockMvc.perform(post("/roles/delete/1")
+        mockMvc.perform(post("/roles/delete/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/roles"))
@@ -138,7 +141,7 @@ class RoleControllerTest {
         warning.setMessage("Reference warning");
         when(roleService.getReferencedWarning(1L)).thenReturn(warning);
 
-        mockMvc.perform(post("/roles/delete/1")
+        mockMvc.perform(post("/roles/delete/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/roles"))

@@ -22,6 +22,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static ludo.mentis.aciem.scl.controller.TestSecurityConfig.createCustomUserDetails;
+import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,7 +48,7 @@ class DocumentTypeControllerTest {
         when(documentTypeService.findAll(any(DocumentTypeDTO.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        mockMvc.perform(get("/documentTypes"))
+        mockMvc.perform(get("/documentTypes").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("documentType/list"))
                 .andExpect(model().attributeExists("documentTypes", "filter"));
@@ -55,7 +58,7 @@ class DocumentTypeControllerTest {
     void testView() throws Exception {
         when(documentTypeService.get(1L)).thenReturn(new DocumentTypeDTO());
 
-        mockMvc.perform(get("/documentTypes/view/1"))
+        mockMvc.perform(get("/documentTypes/view/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("documentType/view"))
                 .andExpect(model().attributeExists("documentType"));
@@ -65,7 +68,7 @@ class DocumentTypeControllerTest {
     void testEditGet() throws Exception {
         when(documentTypeService.get(1L)).thenReturn(new DocumentTypeDTO());
 
-        mockMvc.perform(get("/documentTypes/edit/1"))
+        mockMvc.perform(get("/documentTypes/edit/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("documentType/edit"))
                 .andExpect(model().attributeExists("documentType"));
@@ -73,7 +76,7 @@ class DocumentTypeControllerTest {
 
     @Test
     void testAddGet() throws Exception {
-        mockMvc.perform(get("/documentTypes/add"))
+        mockMvc.perform(get("/documentTypes/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("documentType/add"))
                 .andExpect(model().attributeExists("documentType"));
@@ -81,7 +84,7 @@ class DocumentTypeControllerTest {
 
     @Test
     void testAddPost_Success() throws Exception {
-        mockMvc.perform(post("/documentTypes/add")
+        mockMvc.perform(post("/documentTypes/add").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("name", "Passport"))
                 .andExpect(status().is3xxRedirection())
@@ -97,7 +100,7 @@ class DocumentTypeControllerTest {
         existing.setName("Passport");
         when(documentTypeService.get(1L)).thenReturn(existing);
 
-        mockMvc.perform(post("/documentTypes/edit/1")
+        mockMvc.perform(post("/documentTypes/edit/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf())
                         .param("name", "Passport"))
                 .andExpect(status().is3xxRedirection())
@@ -111,7 +114,7 @@ class DocumentTypeControllerTest {
     void testDelete_Success() throws Exception {
         when(documentTypeService.getReferencedWarning(1L)).thenReturn(null);
 
-        mockMvc.perform(post("/documentTypes/delete/1")
+        mockMvc.perform(post("/documentTypes/delete/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/documentTypes"))
@@ -126,7 +129,7 @@ class DocumentTypeControllerTest {
         warning.setMessage("Reference warning");
         when(documentTypeService.getReferencedWarning(1L)).thenReturn(warning);
 
-        mockMvc.perform(post("/documentTypes/delete/1")
+        mockMvc.perform(post("/documentTypes/delete/1").with(user(createCustomUserDetails("admin", List.of(UserRoles.ADMIN))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/documentTypes"))

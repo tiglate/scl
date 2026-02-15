@@ -22,6 +22,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static ludo.mentis.aciem.scl.controller.TestSecurityConfig.createCustomUserDetails;
+import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -40,52 +43,47 @@ class DepartmentControllerTest {
     private FileDataService fileDataService;
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_READ)
     void testList() throws Exception {
         when(departmentService.findAll(any(DepartmentDTO.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        mockMvc.perform(get("/departments"))
+        mockMvc.perform(get("/departments").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_READ)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("department/list"))
                 .andExpect(model().attributeExists("departments", "filter"));
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_READ)
     void testView() throws Exception {
         when(departmentService.get(1L)).thenReturn(new DepartmentDTO());
 
-        mockMvc.perform(get("/departments/view/1"))
+        mockMvc.perform(get("/departments/view/1").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_READ)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("department/view"))
                 .andExpect(model().attributeExists("department"));
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_READ)
     void testEditGet() throws Exception {
         when(departmentService.get(1L)).thenReturn(new DepartmentDTO());
 
-        mockMvc.perform(get("/departments/edit/1"))
+        mockMvc.perform(get("/departments/edit/1").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_READ)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("department/edit"))
                 .andExpect(model().attributeExists("department"));
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_WRITE)
     void testAddGet() throws Exception {
-        mockMvc.perform(get("/departments/add"))
+        mockMvc.perform(get("/departments/add").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_WRITE)))))
                 .andExpect(status().isOk())
                 .andExpect(view().name("department/add"))
                 .andExpect(model().attributeExists("department"));
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_WRITE)
     void testAddPost_Success() throws Exception {
-        mockMvc.perform(post("/departments/add")
+        mockMvc.perform(post("/departments/add").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_WRITE))))
                         .with(csrf())
                         .param("name", "IT")
                         .param("email", "it@example.com"))
@@ -97,13 +95,12 @@ class DepartmentControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_WRITE)
     void testEditPost_Success() throws Exception {
         DepartmentDTO existing = new DepartmentDTO();
         existing.setName("IT");
         when(departmentService.get(1L)).thenReturn(existing);
 
-        mockMvc.perform(post("/departments/edit/1")
+        mockMvc.perform(post("/departments/edit/1").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_WRITE))))
                         .with(csrf())
                         .param("name", "IT")
                         .param("email", "it_new@example.com"))
@@ -115,11 +112,10 @@ class DepartmentControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_WRITE)
     void testDelete_Success() throws Exception {
         when(departmentService.getReferencedWarning(1L)).thenReturn(null);
 
-        mockMvc.perform(post("/departments/delete/1")
+        mockMvc.perform(post("/departments/delete/1").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_WRITE))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/departments"))
@@ -129,13 +125,12 @@ class DepartmentControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = UserRoles.DEPARTMENT_WRITE)
     void testDelete_Referenced() throws Exception {
         ReferencedWarning warning = new ReferencedWarning();
         warning.setMessage("Reference warning");
         when(departmentService.getReferencedWarning(1L)).thenReturn(warning);
 
-        mockMvc.perform(post("/departments/delete/1")
+        mockMvc.perform(post("/departments/delete/1").with(user(createCustomUserDetails("user", List.of(UserRoles.DEPARTMENT_WRITE))))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/departments"))
