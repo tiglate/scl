@@ -52,4 +52,13 @@ public class CustomUserDetails extends User implements UserDetails {
     public User getUser() {
 		return this;
     }
+
+	public String getInitials() {
+		final var name = this.getName() != null ? this.getName().trim() : "NA";
+		if (name.contains(" ")) {
+			final var parts = name.split(" ");
+			return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase();
+		}
+		return name.substring(0, 2).toUpperCase();
+	}
 }

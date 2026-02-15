@@ -1,8 +1,4 @@
-package ludo.mentis.aciem.scl.config;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
-import java.time.Duration;
+package ludo.mentis.aciem.scl.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,11 +10,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+
+import java.time.Duration;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class FormsSecurityConfig {
 
     @Bean
@@ -42,7 +41,14 @@ public class FormsSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
                 .formLogin(form -> form
                     .loginPage("/login")
-                    .failureUrl("/login?loginError=true"))
+                    .successHandler(new HtmxAwareAuthenticationSuccessHandler())
+                    .failureHandler((request, response, exception) -> {
+                        if ("true".equals(request.getHeader("HX-Request"))) {
+                            response.setHeader("HX-Redirect", "/login?loginError=true");
+                        } else {
+                            response.sendRedirect("/login?loginError=true");
+                        }
+                    }))
                 .rememberMe(rememberMe -> rememberMe
                     .tokenValiditySeconds(((int)Duration.ofDays(180).getSeconds()))
                     .rememberMeParameter("rememberMe")
@@ -51,7 +57,7 @@ public class FormsSecurityConfig {
                     .logoutSuccessUrl("/?logoutSuccess=true")
                     .deleteCookies("JSESSIONID"))
                 .exceptionHandling(exception -> exception
-                    .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login?loginRequired=true")))
+                    .authenticationEntryPoint(new HtmxAuthenticationEntryPoint("/login?loginRequired=true")))
                 .build();
     }
 

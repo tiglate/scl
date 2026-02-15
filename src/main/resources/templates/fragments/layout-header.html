@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<th:block th:fragment="layout-header">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/images/logo.svg}" alt="SCL" width="30" height="30" class="d-inline-block align-top" style="filter: invert(100%);">
+                SCL
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}"><i class="bi bi-house-door me-1"></i> Home</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Security
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/users}"><i class="bi bi-people me-2"></i> Users</a></li>
+                            <li><a class="dropdown-item" th:href="@{/roles}"><i class="bi bi-shield-lock me-2"></i> Roles</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Config
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/departments}"><i class="bi bi-diagram-3 me-2"></i> Departments</a></li>
+                            <li><a class="dropdown-item" th:href="@{/currencies}"><i class="bi bi-currency-exchange me-2"></i> Currencies</a></li>
+                            <li><a class="dropdown-item" th:href="@{/documentTypes}"><i class="bi bi-file-earmark-text me-2"></i> Document Type</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Trades
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/fxTrades}"><i class="bi bi-graph-up-arrow me-2"></i> FX Trades</a></li>
+                            <li><a class="dropdown-item" th:href="@{/fxSettlements}"><i class="bi bi-check-all me-2"></i> FX Settlement</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/login}" hx-boost="false">Login</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3" sec:authorize="isAuthenticated()">
+                    <button type="button" class="btn btn-link text-white position-relative p-0 border-0" id="notifBtn">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                        2
+                    </span>
+                    </button>
+
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-white" data-bs-toggle="dropdown">
+                            <div class="user-profile-img me-2" sec:authentication="principal.initials"></div>
+                            <span class="d-none d-sm-inline small" sec:authentication="principal.name"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Profile Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="nav-link">
+                                    <input value="Logout" type="submit" class="dropdown-item text-danger" />
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</th:block>
+</body>
+</html>

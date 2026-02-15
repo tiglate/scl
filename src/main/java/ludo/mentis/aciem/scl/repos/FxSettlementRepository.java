@@ -20,4 +20,6 @@ public interface FxSettlementRepository extends JpaRepository<FxSettlement, Long
 
     FxSettlement findFirstByCompletedBy(User user);
 
+    @Query("SELECT MAX(t.tradeDate) FROM FxSettlementView t")
+    LocalDate findLastTradeDate();
 }

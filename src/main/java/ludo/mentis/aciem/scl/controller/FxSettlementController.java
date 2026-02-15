@@ -46,7 +46,7 @@ public class FxSettlementController {
             filter = new FxSettlementSearchDTO();
         }
         if (filter.getStartDate() == null) {
-            filter.setStartDate(LocalDate.now());
+            filter.setStartDate(fxSettlementService.getLastTradeDate());
         }
         if (filter.getEndDate() == null) {
             filter.setEndDate(LocalDate.now());

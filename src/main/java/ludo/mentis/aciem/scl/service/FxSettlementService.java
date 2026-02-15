@@ -12,4 +12,6 @@ import java.util.List;
 public interface FxSettlementService {
 
     List<FxSettlementView> findAllBySearchCriteria(LocalDate startDate, LocalDate endDate);
+
+    LocalDate getLastTradeDate();
 }

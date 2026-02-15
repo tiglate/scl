@@ -32,4 +32,9 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     public List<FxSettlementView> findAllBySearchCriteria(LocalDate startDate, LocalDate endDate) {
         return fxSettlementRepository.findAllBySearchCriteria(startDate, endDate);
     }
+
+    @Override
+    public LocalDate getLastTradeDate() {
+        return fxSettlementRepository.findLastTradeDate();
+    }
 }
