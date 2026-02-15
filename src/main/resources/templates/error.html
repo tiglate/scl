@@ -1,13 +1,36 @@
 <!DOCTYPE HTML>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-    <head>
-        <title>[[${status}]] - [[${error}]]</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <h1 class="mb-4">[[${status}]] - [[${error}]]</h1>
-            <p>An error has occurred. Please try again later.</p>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SCL | [[${status}]] - [[${error}]]</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}" rel="stylesheet" />
+    <link th:href="@{/css/pages/error.css}" rel="stylesheet" />
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
+    <script th:src="@{/js/app.js}" type="module" defer></script>
+</head>
+<body>
+    <div class="error-card">
+        <div class="illustration">
+            <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
-    </body>
+        <div class="error-code">[[${status}]]</div>
+        <div class="error-msg">[[${error}]]</div>
+        <p class="error-description">
+            An error has occurred. Please try again later.
+        </p>
+        <div class="d-grid gap-2">
+            <a th:href="@{/login}" class="btn btn-primary btn-home">
+                <i class="bi bi-house-door me-2"></i>Return to Home
+            </a>
+            <button onclick="history.back()" class="btn btn-link text-muted text-decoration-none small">
+                Go Back
+            </button>
+        </div>
+    </div>
+</body>
 </html>
