@@ -1,0 +1,50 @@
+:root {
+    --scl-blue: #001AFF;
+    --ios-radius: 22%;
+    --app-size: 96px;
+}
+
+html {
+    font-size: 14px;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: #343d42;
+    font-family: 'Inter', -apple-system, sans-serif;
+    padding-top: 70px;
+}
+
+a {
+    color: #001AFF;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0e186e;
+}
+
+.btn-primary {
+    background-color: #001AFF;
+    border-color: #001AFF;
+}
+
+.btn-primary:hover {
+    background-color: #0e186e;
+    border-color: #0e186e;
+}
+
+.btn-secondary {
+    background-color: #CED4DA;
+    border-color: #CED4DA;
+    color: #0e186e;
+}
+
+.btn-secondary:hover {
+    background-color: #BDC3C7;
+    color: #0e186e;
+}
+
+.unset {
+    all: unset;
+}

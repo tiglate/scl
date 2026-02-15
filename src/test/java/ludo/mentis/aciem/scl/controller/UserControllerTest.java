@@ -1,5 +1,8 @@
 package ludo.mentis.aciem.scl.controller;
 
+import ludo.mentis.aciem.scl.domain.Role;
+import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import ludo.mentis.aciem.scl.model.UserDTO;
 import ludo.mentis.aciem.scl.model.UserSearchDTO;
 import ludo.mentis.aciem.scl.repos.DepartmentRepository;
@@ -23,19 +26,20 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 @Import(TestSecurityConfig.class)
-@WithMockUser(authorities = UserRoles.ADMIN)
 class UserControllerTest {
 
     @Autowired
@@ -56,6 +60,15 @@ class UserControllerTest {
     @MockitoBean
     private DepartmentRepository departmentRepository;
 
+    private CustomUserDetails adminUser() {
+        User user = new User();
+        user.setName("Admin User");
+        Role adminRole = new Role();
+        adminRole.setCode(UserRoles.ADMIN);
+        user.setRoles(Set.of(adminRole));
+        return new CustomUserDetails(user);
+    }
+
     @Test
     void testList() throws Exception {
         when(departmentRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
@@ -63,7 +76,7 @@ class UserControllerTest {
         when(userService.findAll(any(UserSearchDTO.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        mockMvc.perform(get("/users"))
+        mockMvc.perform(get("/users").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/list"))
                 .andExpect(model().attributeExists("users", "filter"));
@@ -75,7 +88,7 @@ class UserControllerTest {
         when(roleRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
         when(userService.get(1L)).thenReturn(new UserDTO());
 
-        mockMvc.perform(get("/users/view/1"))
+        mockMvc.perform(get("/users/view/1").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/view"))
                 .andExpect(model().attributeExists("user"));
@@ -86,7 +99,7 @@ class UserControllerTest {
         when(departmentRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
         when(roleRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/users/add"))
+        mockMvc.perform(get("/users/add").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/add"))
                 .andExpect(model().attributeExists("user"));
@@ -94,7 +107,7 @@ class UserControllerTest {
 
     @Test
     void testAddPost_Success() throws Exception {
-        mockMvc.perform(post("/users/add")
+        mockMvc.perform(post("/users/add").with(user(adminUser()))
                         .with(csrf())
                         .param("name", "John Doe")
                         .param("email", "john@example.com")
@@ -115,7 +128,7 @@ class UserControllerTest {
         when(departmentRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
         when(roleRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(post("/users/add")
+        mockMvc.perform(post("/users/add").with(user(adminUser()))
                         .with(csrf())
                         .param("name", ""))
                 .andExpect(status().isOk())
@@ -129,7 +142,7 @@ class UserControllerTest {
         when(roleRepository.findAll(any(Sort.class))).thenReturn(Collections.emptyList());
         when(userService.get(1L)).thenReturn(new UserDTO());
 
-        mockMvc.perform(get("/users/edit/1"))
+        mockMvc.perform(get("/users/edit/1").with(user(adminUser())))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/edit"))
                 .andExpect(model().attributeExists("user"));
@@ -137,7 +150,7 @@ class UserControllerTest {
 
     @Test
     void testEditPost_Success() throws Exception {
-        mockMvc.perform(post("/users/edit/1")
+        mockMvc.perform(post("/users/edit/1").with(user(adminUser()))
                         .with(csrf())
                         .param("name", "John Doe Updated")
                         .param("email", "john_upd@example.com")
@@ -156,7 +169,7 @@ class UserControllerTest {
     void testDelete_Success() throws Exception {
         when(userService.getReferencedWarning(1L)).thenReturn(null);
 
-        mockMvc.perform(post("/users/delete/1")
+        mockMvc.perform(post("/users/delete/1").with(user(adminUser()))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users"))
@@ -171,7 +184,7 @@ class UserControllerTest {
         warning.setMessage("Reference error");
         when(userService.getReferencedWarning(1L)).thenReturn(warning);
 
-        mockMvc.perform(post("/users/delete/1")
+        mockMvc.perform(post("/users/delete/1").with(user(adminUser()))
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/users"))

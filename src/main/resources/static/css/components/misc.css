@@ -1,0 +1,11 @@
+.card-maximize {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1050; /* Acima de outros elementos */
+    margin: 0 !important;
+    border-radius: 0;
+    overflow-y: auto; /* Permite scroll se o conteúdo for longo */
+}

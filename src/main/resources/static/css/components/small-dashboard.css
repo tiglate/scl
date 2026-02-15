@@ -1,0 +1,17 @@
+.small-dashboard {
+    font-size: 9pt;
+}
+
+.small-dashboard .datatable-container {
+    border-bottom: 0 !important;
+}
+
+.small-dashboard .table-hover tbody tr:hover td,
+.small-dashboard .table-hover tbody tr:hover th {
+    background-color: #e1e1fa;
+}
+
+.small-dashboard .datatable-input {
+    padding: 1px;
+    outline: none;
+}
