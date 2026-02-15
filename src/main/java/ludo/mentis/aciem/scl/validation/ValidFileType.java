@@ -28,7 +28,7 @@ import java.util.Arrays;
 )
 public @interface ValidFileType {
 
-    String message() default "{file.invalidEnding}";
+    String message() default "This file type is not allowed.";
 
     Class<?>[] groups() default {};
 
@@ -54,7 +54,5 @@ public @interface ValidFileType {
             return Arrays.stream(allowedExtensions).anyMatch(extension ->
                     fileData.getFileName().toLowerCase().endsWith("." + extension.toLowerCase()));
         }
-
     }
-
 }

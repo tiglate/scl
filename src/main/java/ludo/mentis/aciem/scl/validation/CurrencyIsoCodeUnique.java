@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerMapping;
 )
 public @interface CurrencyIsoCodeUnique {
 
-    String message() default "{Exists.currency.isoCode}";
+    String message() default "This ISO Code is already taken.";
 
     Class<?>[] groups() default {};
 

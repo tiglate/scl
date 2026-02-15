@@ -51,7 +51,7 @@
                                 </ul>
                             </li>
                             <li class="navbar-item">
-                                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="nav-link">Login</a>
+                                <a sec:authorize="!isAuthenticated()" th:href="@{/login}" class="nav-link" hx-boost="false">Login</a>
                                 <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="nav-link">
                                     <input value="Logout" type="submit" class="unset" />
                                 </form>

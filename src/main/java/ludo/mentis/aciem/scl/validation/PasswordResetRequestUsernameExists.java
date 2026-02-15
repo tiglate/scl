@@ -27,7 +27,7 @@ import ludo.mentis.aciem.scl.util.WebUtils;
 )
 public @interface PasswordResetRequestUsernameExists {
 
-    String message() default "{passwordReset.start.noAccount}";
+    String message() default "No account found for the given e-mail.";
 
     Class<?>[] groups() default {};
 

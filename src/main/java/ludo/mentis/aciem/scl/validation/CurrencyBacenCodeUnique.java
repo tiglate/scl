@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerMapping;
 )
 public @interface CurrencyBacenCodeUnique {
 
-    String message() default "{Exists.currency.bacenCode}";
+    String message() default "This BACEN Code is already taken.";
 
     Class<?>[] groups() default {};
 

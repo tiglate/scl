@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerMapping;
 )
 public @interface RoleCodeUnique {
 
-    String message() default "{Exists.role.code}";
+    String message() default "This Code is already taken.";
 
     Class<?>[] groups() default {};
 

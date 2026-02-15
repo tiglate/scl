@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerMapping;
 )
 public @interface UserUsernameUnique {
 
-    String message() default "{Exists.user.username}";
+    String message() default "This username is already taken.";
 
     Class<?>[] groups() default {};
 

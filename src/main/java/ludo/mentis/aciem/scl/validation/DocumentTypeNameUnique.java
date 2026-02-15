@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerMapping;
 )
 public @interface DocumentTypeNameUnique {
 
-    String message() default "{Exists.documentType.name}";
+    String message() default "This Name is already taken.";
 
     Class<?>[] groups() default {};
 

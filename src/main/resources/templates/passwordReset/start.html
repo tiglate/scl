@@ -1,17 +1,58 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
-    <head>
-        <title>Reset Password</title>
-    </head>
-    <body>
-        <div layout:fragment="content">
-            <h1 class="mb-4">Reset Password</h1>
-            <div th:replace="~{fragments/forms::globalErrors('passwordResetRequest')}" />
-            <form th:action="${requestUri}" method="post" novalidate="">
-                <div th:replace="~{fragments/forms::inputRow(object='passwordResetRequest', field='email', label='E-mail', required=true, type='email')}" />
-                <input type="submit" value="Reset Password" class="btn btn-primary mt-4" />
-            </form>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SCL - Password Reset</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.css}" rel="stylesheet" />
+    <link th:href="@{/css/password-reset.css}" rel="stylesheet" />
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
+    <script th:src="@{/js/app.js}" type="module" defer></script>
+</head>
+<body>
+    <!--/*@thymesVar id="MSG_SUCCESS" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="MSG_INFO" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="MSG_ERROR" type="java.lang.String"*/-->
+
+    <div class="reset-card text-center">
+        <div class="icon-circle">
+            <i class="bi bi-key-fill"></i>
         </div>
-    </body>
+
+        <h4 class="fw-bold mb-2">Reset Password</h4>
+        <p class="text-muted mb-4">Enter your e-mail, and we'll send you a link to get back into your account.</p>
+
+        <p th:if="${MSG_SUCCESS}" class="alert alert-success mb-4" role="alert">[[${MSG_SUCCESS}]]</p>
+        <p th:if="${MSG_INFO}" class="alert alert-info mb-4" role="alert">[[${MSG_INFO}]]</p>
+        <p th:if="${MSG_ERROR}" class="alert alert-danger mb-4" role="alert">[[${MSG_ERROR}]]</p>
+
+        <!--/*@thymesVar id="requestUri" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="passwordResetRequest" type="ludo.mentis.aciem.scl.model.PasswordResetRequest"*/-->
+        <form th:action="${requestUri}" method="post" th:object="${passwordResetRequest}">
+            <div class="mb-4 text-start">
+                <label for="email" class="form-label fw-semibold">E-mail Address</label>
+                <input type="email"
+                       class="form-control"
+                       id="email"
+                       placeholder="name@company.com"
+                       required
+                       th:field="*{email}"
+                       th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}" />
+                <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback d-block">
+                    <p th:each="error : ${#fields.errors('email')}" class="mb-0">[[${error}]]</p>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-4">Send Reset Link</button>
+        </form>
+
+        <a th:href="@{/login}" class="back-to-login">
+            <i class="bi bi-arrow-left me-1"></i> Back to Login
+        </a>
+    </div>
+</body>
 </html>
