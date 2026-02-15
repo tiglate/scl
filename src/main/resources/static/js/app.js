@@ -3,6 +3,7 @@ import './modules/form-utils.js';
 import './components/date-picker.js';
 import './components/tool-tip.js';
 import './components/maximize-button.js';
+import './components/toast.js';
 
 import './pages/authentication.js';
 import './pages/counterparty.js';

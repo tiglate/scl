@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="toast">
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="notifToast" class="toast shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-white">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong class="me-auto">Settlement Alert</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                FX Trade <strong>#TR-8821</strong> is pending settlement approval.
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

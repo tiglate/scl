@@ -38,8 +38,12 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/departments}"><i class="bi bi-diagram-3 me-2"></i> Departments</a></li>
                             <li><a class="dropdown-item" th:href="@{/currencies}"><i class="bi bi-currency-exchange me-2"></i> Currencies</a></li>
-                            <li><a class="dropdown-item" th:href="@{/documentTypes}"><i class="bi bi-file-earmark-text me-2"></i> Document Type</a></li>
+                            <li><a class="dropdown-item" th:href="@{/documentTypes}"><i class="bi bi-file-earmark-text me-2"></i> Document Types</a></li>
                         </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/counterparties}">Counterparties</a>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -84,6 +88,8 @@
             </div>
         </div>
     </nav>
+
+    <th:block th:replace="~{fragments/toast :: toast}"></th:block>
 </th:block>
 </body>
 </html>
