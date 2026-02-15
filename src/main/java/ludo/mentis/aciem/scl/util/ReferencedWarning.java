@@ -1,9 +1,5 @@
 package ludo.mentis.aciem.scl.util;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
-
 public class ReferencedWarning {
 
     private String message = null;

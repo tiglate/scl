@@ -1,12 +1,11 @@
 package ludo.mentis.aciem.scl.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import ludo.mentis.aciem.scl.domain.FxTradeView;
 import ludo.mentis.aciem.scl.model.FxTradeDTO;
 import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public interface FxTradeService {

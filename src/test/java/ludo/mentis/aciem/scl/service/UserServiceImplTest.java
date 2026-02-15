@@ -1,7 +1,9 @@
 package ludo.mentis.aciem.scl.service;
 
-import ludo.mentis.aciem.scl.domain.*;
-import ludo.mentis.aciem.scl.model.Gender;
+import ludo.mentis.aciem.scl.domain.Department;
+import ludo.mentis.aciem.scl.domain.FxSettlementStep;
+import ludo.mentis.aciem.scl.domain.Role;
+import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.UserDTO;
 import ludo.mentis.aciem.scl.model.UserSearchDTO;
 import ludo.mentis.aciem.scl.repos.*;
@@ -21,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

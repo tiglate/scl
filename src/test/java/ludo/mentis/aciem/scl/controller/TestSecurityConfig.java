@@ -1,16 +1,14 @@
 package ludo.mentis.aciem.scl.controller;
 
+import ludo.mentis.aciem.scl.domain.Role;
+import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import ludo.mentis.aciem.scl.model.CustomUserDetails;
-import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.domain.Role;
-import ludo.mentis.aciem.scl.util.UserRoles;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

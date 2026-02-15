@@ -1,13 +1,12 @@
 package ludo.mentis.aciem.scl.service;
 
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
+import ludo.mentis.aciem.scl.repos.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import ludo.mentis.aciem.scl.model.CustomUserDetails;
-import ludo.mentis.aciem.scl.repos.UserRepository;
 
 
 @Service

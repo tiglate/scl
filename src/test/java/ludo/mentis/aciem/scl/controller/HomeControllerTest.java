@@ -1,20 +1,17 @@
 package ludo.mentis.aciem.scl.controller;
 
+import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
+import ludo.mentis.aciem.scl.service.FileDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.model.CustomUserDetails;
-import ludo.mentis.aciem.scl.service.FileDataService;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 

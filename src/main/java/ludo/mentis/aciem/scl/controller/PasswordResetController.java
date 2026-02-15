@@ -1,19 +1,16 @@
 package ludo.mentis.aciem.scl.controller;
 
 import jakarta.validation.Valid;
-import java.util.UUID;
 import ludo.mentis.aciem.scl.model.PasswordResetCompleteRequest;
 import ludo.mentis.aciem.scl.model.PasswordResetRequest;
 import ludo.mentis.aciem.scl.service.PasswordResetService;
 import ludo.mentis.aciem.scl.util.WebUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.UUID;
 
 
 @Controller

@@ -1,11 +1,5 @@
 package ludo.mentis.aciem.scl.dev;
 
-import java.util.HashSet;
-import java.util.List;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
 import ludo.mentis.aciem.scl.domain.Department;
 import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.domain.User;
@@ -16,6 +10,11 @@ import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.RandomUtils;
 import ludo.mentis.aciem.scl.util.UserRoles;
 import net.datafaker.Faker;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.List;
 
 @Component
 public class UsersLoader implements DataLoaderCommand {

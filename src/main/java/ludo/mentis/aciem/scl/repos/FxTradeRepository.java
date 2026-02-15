@@ -1,17 +1,12 @@
 package ludo.mentis.aciem.scl.repos;
 
+import ludo.mentis.aciem.scl.domain.*;
+import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import ludo.mentis.aciem.scl.domain.Counterparty;
-import ludo.mentis.aciem.scl.domain.Currency;
-import ludo.mentis.aciem.scl.domain.FxTrade;
-import ludo.mentis.aciem.scl.domain.FxTradeView;
-import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 
 public interface FxTradeRepository extends JpaRepository<FxTrade, Long> {
 

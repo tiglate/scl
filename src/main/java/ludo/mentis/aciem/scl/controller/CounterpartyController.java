@@ -1,10 +1,12 @@
 package ludo.mentis.aciem.scl.controller;
 
 
-import static java.util.Map.entry;
-
-import java.util.Map;
-
+import jakarta.validation.Valid;
+import ludo.mentis.aciem.scl.domain.DocumentType;
+import ludo.mentis.aciem.scl.model.CounterpartyDTO;
+import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
+import ludo.mentis.aciem.scl.service.CounterpartyService;
+import ludo.mentis.aciem.scl.util.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,25 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.validation.Valid;
-import ludo.mentis.aciem.scl.domain.DocumentType;
-import ludo.mentis.aciem.scl.model.CounterpartyDTO;
-import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
-import ludo.mentis.aciem.scl.service.CounterpartyService;
-import ludo.mentis.aciem.scl.util.CustomCollectors;
-import ludo.mentis.aciem.scl.util.FlashMessages;
-import ludo.mentis.aciem.scl.util.ReferencedWarning;
-import ludo.mentis.aciem.scl.util.SortUtils;
-import ludo.mentis.aciem.scl.util.UserRoles;
-import ludo.mentis.aciem.scl.util.WebUtils;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 @Controller
 @RequestMapping("/counterparties")

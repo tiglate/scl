@@ -1,8 +1,5 @@
 package ludo.mentis.aciem.scl.service;
 
-import java.time.OffsetDateTime;
-import java.util.Map;
-import java.util.UUID;
 import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.PasswordResetCompleteRequest;
 import ludo.mentis.aciem.scl.model.PasswordResetRequest;
@@ -13,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.UUID;
 
 
 @Service

@@ -1,16 +1,15 @@
 package ludo.mentis.aciem.scl.dev;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-
-import org.springframework.stereotype.Component;
-
 import ludo.mentis.aciem.scl.domain.Counterparty;
 import ludo.mentis.aciem.scl.domain.Document;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
 import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
 import ludo.mentis.aciem.scl.util.RandomUtils;
 import net.datafaker.Faker;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.HashSet;
 
 @Component
 public class CounterpartiesLoader implements DataLoaderCommand {

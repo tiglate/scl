@@ -1,27 +1,20 @@
 package ludo.mentis.aciem.scl.service;
 
-import java.util.Collections;
-import java.util.HashSet;
-
+import ludo.mentis.aciem.scl.domain.Role;
+import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.UserDTO;
+import ludo.mentis.aciem.scl.model.UserSearchDTO;
+import ludo.mentis.aciem.scl.repos.*;
+import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.util.ReferencedWarning;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ludo.mentis.aciem.scl.domain.Role;
-import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.model.UserDTO;
-import ludo.mentis.aciem.scl.model.UserSearchDTO;
-import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
-import ludo.mentis.aciem.scl.repos.DepartmentRepository;
-import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
-import ludo.mentis.aciem.scl.repos.FxSettlementStepRepository;
-import ludo.mentis.aciem.scl.repos.FxTradeRepository;
-import ludo.mentis.aciem.scl.repos.RoleRepository;
-import ludo.mentis.aciem.scl.repos.UserRepository;
-import ludo.mentis.aciem.scl.util.NotFoundException;
-import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import java.util.Collections;
+import java.util.HashSet;
 
 
 @Service

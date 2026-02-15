@@ -1,10 +1,9 @@
 package ludo.mentis.aciem.scl.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import ludo.mentis.aciem.scl.model.RoleDTO;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface RoleService {
 

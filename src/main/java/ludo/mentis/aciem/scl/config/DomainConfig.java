@@ -1,7 +1,8 @@
 package ludo.mentis.aciem.scl.config;
 
-import java.util.Optional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import org.hibernate.cfg.MappingSettings;
 import org.hibernate.type.format.jackson.JacksonJsonFormatMapper;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -17,10 +18,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ludo.mentis.aciem.scl.domain.User;
-import ludo.mentis.aciem.scl.model.CustomUserDetails;
+import java.util.Optional;
 
 
 @Configuration

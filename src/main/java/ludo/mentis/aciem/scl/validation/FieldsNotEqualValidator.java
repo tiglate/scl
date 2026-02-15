@@ -1,11 +1,10 @@
 package ludo.mentis.aciem.scl.validation;
 
-import java.util.Objects;
-
-import org.springframework.beans.BeanWrapperImpl;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.beans.BeanWrapperImpl;
+
+import java.util.Objects;
 
 public class FieldsNotEqualValidator implements ConstraintValidator<FieldsNotEqual, Object> {
 

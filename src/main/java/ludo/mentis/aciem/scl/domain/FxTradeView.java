@@ -1,18 +1,12 @@
 package ludo.mentis.aciem.scl.domain;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import org.hibernate.annotations.Immutable;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import ludo.mentis.aciem.scl.model.FxTradePurpose;
 import ludo.mentis.aciem.scl.model.Product;
+import org.hibernate.annotations.Immutable;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Immutable

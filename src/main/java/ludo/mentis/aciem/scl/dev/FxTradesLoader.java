@@ -1,15 +1,5 @@
 package ludo.mentis.aciem.scl.dev;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import org.springframework.stereotype.Component;
-
 import ludo.mentis.aciem.scl.domain.FxTrade;
 import ludo.mentis.aciem.scl.model.FxTradePurpose;
 import ludo.mentis.aciem.scl.model.Product;
@@ -19,6 +9,15 @@ import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.RandomUtils;
 import net.datafaker.Faker;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 @Component
 public class FxTradesLoader implements DataLoaderCommand {

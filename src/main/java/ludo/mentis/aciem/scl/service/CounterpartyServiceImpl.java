@@ -1,13 +1,5 @@
 package ludo.mentis.aciem.scl.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import ludo.mentis.aciem.scl.domain.Counterparty;
 import ludo.mentis.aciem.scl.domain.Document;
 import ludo.mentis.aciem.scl.model.CounterpartyDTO;
@@ -18,6 +10,13 @@ import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Service
 @Transactional(rollbackFor = Exception.class)

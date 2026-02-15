@@ -1,13 +1,5 @@
 package ludo.mentis.aciem.scl.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLConnection;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.time.Duration;
-import java.util.UUID;
-import javax.sql.rowset.serial.SerialBlob;
 import ludo.mentis.aciem.scl.domain.FileContent;
 import ludo.mentis.aciem.scl.model.FileData;
 import ludo.mentis.aciem.scl.repos.FileContentRepository;
@@ -25,6 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.util.UUID;
 
 
 @Service

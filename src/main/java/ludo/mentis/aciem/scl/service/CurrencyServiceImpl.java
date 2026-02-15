@@ -1,15 +1,14 @@
 package ludo.mentis.aciem.scl.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import ludo.mentis.aciem.scl.domain.Currency;
 import ludo.mentis.aciem.scl.model.CurrencyDTO;
 import ludo.mentis.aciem.scl.repos.CurrencyRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {

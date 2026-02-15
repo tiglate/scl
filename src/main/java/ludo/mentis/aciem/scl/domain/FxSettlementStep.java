@@ -1,12 +1,12 @@
 package ludo.mentis.aciem.scl.domain;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 import ludo.mentis.aciem.scl.model.FxSettlementStepType;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 
 @Audited

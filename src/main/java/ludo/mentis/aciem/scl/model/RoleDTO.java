@@ -1,10 +1,10 @@
 package ludo.mentis.aciem.scl.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import ludo.mentis.aciem.scl.validation.RoleCodeUnique;
+
+import java.time.LocalDateTime;
 
 
 public class RoleDTO {

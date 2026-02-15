@@ -1,9 +1,5 @@
 package ludo.mentis.aciem.scl.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import ludo.mentis.aciem.scl.domain.Document;
 import ludo.mentis.aciem.scl.domain.DocumentType;
 import ludo.mentis.aciem.scl.model.DocumentTypeDTO;
@@ -11,6 +7,9 @@ import ludo.mentis.aciem.scl.repos.DocumentRepository;
 import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DocumentTypeServiceImpl implements DocumentTypeService {

@@ -1,11 +1,11 @@
 package ludo.mentis.aciem.scl.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import ludo.mentis.aciem.scl.validation.DepartmentNameUnique;
+
+import java.time.LocalDateTime;
 
 @SuppressWarnings("unused")
 public class DepartmentDTO {
