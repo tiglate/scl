@@ -75,13 +75,13 @@ public class FxTradeController {
         model.addAttribute("purposeValues", FxTradePurpose.values());
         model.addAttribute("counterpartyValues", counterpartyRepository.findAll(Sort.by("shortName"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(Counterparty::getId, Counterparty::getLongName)));
+                .collect(CustomCollectors.toLinkedHashMap(Counterparty::getId, Counterparty::getLongName)));
         model.addAttribute("currencyValues", currencyRepository.findAll(Sort.by("isoCode"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(Currency::getId, Currency::getIsoCode)));
+                .collect(CustomCollectors.toLinkedHashMap(Currency::getId, Currency::getIsoCode)));
         model.addAttribute("userValues", userRepository.findAll(Sort.by("id"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(User::getId, User::getName)));
+                .collect(CustomCollectors.toLinkedHashMap(User::getId, User::getName)));
     }
 
     @GetMapping
@@ -169,8 +169,7 @@ public class FxTradeController {
                          final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = fxTradeService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(FlashMessages.MSG_ERROR,
-                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
+            FlashMessages.referencedWarning(redirectAttributes, referencedWarning);
         } else {
             fxTradeService.delete(id);
             FlashMessages.deleteSuccess(redirectAttributes, ENTITY_NAME);

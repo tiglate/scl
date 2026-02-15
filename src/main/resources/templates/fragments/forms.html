@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <body>
-        <div th:fragment="inputRow(object, field)" th:with="type=${type} ?: 'text', required=${required}, disabled=${disabled},
+        <div th:fragment="inputRow(object, field, label)" th:with="type=${type} ?: 'text', required=${required}, disabled=${disabled},
                 inputClassappend=${#fields.hasErrors(field) || (type == 'textarea' && #fields.hasErrors(field + '*')) ? 'is-invalid ' : ''} + ${inputClass ?: ''}"
                 th:object="${__${object}__}" class="row mb-3">
             <div th:if="${type == 'checkbox'}" class="col-md-10 offset-md-2">
@@ -9,13 +9,13 @@
                     <input th:type="${type}" th:field="*{__${field}__}" th:disabled="${disabled}"
                             th:classappend="${inputClassappend}" class="form-check-input" />
                     <label th:for="${#ids.prev(field)}" class="form-check-label">
-                        <span>[[#{__${object}__.__${field}__.label} + ${required == true ? '*' : ''}]]</span>
+                        <span>[[${label} + ${required == true ? '*' : ''}]]</span>
                     </label>
                 </div>
                 <div th:replace="~{:: fieldErrors(${object}, ${field})}" />
             </div>
             <label th:if="${type != 'checkbox'}" th:for="${type == 'radio' || type == 'file' ? '' : field}" class="col-md-2 col-form-label">
-                <span>[[#{__${object}__.__${field}__.label} + ${required == true ? '*' : ''}]]</span>
+                <span>[[${label} + ${required == true ? '*' : ''}]]</span>
             </label>
             <div th:if="${type != 'checkbox'}" class="col-md-10">
                 <input th:if="${type == 'text' || type == 'password' || type == 'email' || type == 'tel' || type == 'number'}"
@@ -25,7 +25,7 @@
                         th:classappend="${inputClassappend}" class="form-control" />
                 <select th:if="${type == 'select' || type == 'multiselect'}" th:field="*{__${field}__}" th:disabled="${disabled}"
                         th:multiple="${type == 'multiselect'}" th:classappend="${inputClassappend}" class="form-select">
-                    <option th:if="${type == 'select'}" value="">[[#{select.empty.label}]]</option>
+                    <option th:if="${type == 'select'}" value="">Select...</option>
                     <option th:if="${!(__${field}__Values instanceof T(java.util.Map))}"
                             th:each="optionValue : ${__${field}__Values}" th:value="${optionValue}">[[${optionValue}]]</option>
                     <option th:if="${__${field}__Values instanceof T(java.util.Map)}"
@@ -34,7 +34,7 @@
                 <div th:if="${type == 'radio' && required != true}" class="form-check form-check-inline pt-2">
                     <input value="" th:checked="*{__${field}__} == null" th:name="${field}" th:disabled="${disabled}"
                             th:classappend="${inputClassappend}" type="radio" class="form-check-input" />
-                    <label class="form-check-label">[[#{select.empty.label}]]</label>
+                    <label class="form-check-label">Select...</label>
                 </div>
                 <div th:if="${type == 'radio'}" th:each="radioValue : ${__${field}__Values}" class="form-check form-check-inline pt-2">
                     <input th:field="*{__${field}__}" th:value="${radioValue}" th:disabled="${disabled}"
@@ -51,8 +51,8 @@
                             th:classappend="${inputClassappend}" type="hidden" />
                     <span>[[${__${object}__.__${field}__.fileName}]]</span>
                     <a th:if="${downloadLink != null}" th:href="${downloadLink + '/' + __${object}__.__${field}__.fileName}"
-                        target="_blank" class="small text-secondary">[[#{file.open}]]</a>
-                    <span role="button" class="small text-secondary text-decoration-underline js-file-delete">[[#{file.delete}]]</span>
+                        target="_blank" class="small text-secondary">Open</a>
+                    <span role="button" class="small text-secondary text-decoration-underline js-file-delete">Delete</span>
                 </div>
                 <div th:replace="~{:: fieldErrors(${object}, ${field})}" />
             </div>

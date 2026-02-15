@@ -87,8 +87,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                 .orElseThrow(NotFoundException::new);
         final Document documentTypeDocument = documentRepository.findFirstByDocumentType(documentType);
         if (documentTypeDocument != null) {
-            referencedWarning.setKey("documentType.document.documentType.referenced");
-            referencedWarning.addParam(documentTypeDocument.getId());
+            referencedWarning.setMessage("This entity is still referenced by Document %d via field Document Type.", documentTypeDocument.getId());
             return referencedWarning;
         }
         return null;

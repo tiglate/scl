@@ -15,7 +15,7 @@ public class HomeController {
             @RequestParam(name = "logoutSuccess", required = false) final Boolean logoutSuccess,
             final Model model) {
         if (logoutSuccess == Boolean.TRUE) {
-            model.addAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("authentication.logout.success"));
+            model.addAttribute(WebUtils.MSG_INFO, "Logout successful.");
         }
         return "home/index";
     }

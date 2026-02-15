@@ -91,8 +91,7 @@ public class RoleServiceImpl implements RoleService {
         final var roleUser    = userRepository.findFirstByRoles(Set.of(role));
 
         if (roleUser != null) {
-            referencedWarning.setKey("role.user.role.referenced");
-            referencedWarning.addParam(roleUser.getId());
+            referencedWarning.setMessage("This entity is still referenced by User %d via field Roles.", roleUser.getId());
             return referencedWarning;
         }
 

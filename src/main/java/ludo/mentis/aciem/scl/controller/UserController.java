@@ -56,10 +56,10 @@ public class UserController {
         model.addAttribute("genderValues", Gender.values());
         model.addAttribute("departmentValues", departmentRepository.findAll(Sort.by("id"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(Department::getId, Department::getName)));
+                .collect(CustomCollectors.toLinkedHashMap(Department::getId, Department::getName)));
         model.addAttribute("rolesValues", roleRepository.findAll(Sort.by("id"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(Role::getId, Role::getCode)));
+                .collect(CustomCollectors.toLinkedHashMap(Role::getId, Role::getCode)));
     }
 
     @SuppressWarnings("SameReturnValue")
@@ -140,8 +140,7 @@ public class UserController {
             final RedirectAttributes redirectAttributes) {
         final var referencedWarning = userService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(FlashMessages.MSG_ERROR,
-                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
+            FlashMessages.referencedWarning(redirectAttributes, referencedWarning);
         } else {
             userService.delete(id);
             FlashMessages.deleteSuccess(redirectAttributes, ENTITY_NAME);

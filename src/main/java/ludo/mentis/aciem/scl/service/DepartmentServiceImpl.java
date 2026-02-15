@@ -89,8 +89,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         final var departmentUser    = userRepository.findFirstByDepartment(department);
 
         if (departmentUser != null) {
-            referencedWarning.setKey("department.person.department.referenced");
-            referencedWarning.addParam(departmentUser.getId());
+            referencedWarning.setMessage("This entity is still referenced by User %d via field Department.", departmentUser.getId());
             return referencedWarning;
         }
 

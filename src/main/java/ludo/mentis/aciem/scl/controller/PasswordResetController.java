@@ -36,7 +36,7 @@ public class PasswordResetController {
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasErrors()) {
             passwordResetService.startProcess(passwordResetRequest);
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("passwordReset.started"));
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, "Password reset process started. Please check your e-mail.");
             return "redirect:/login";
         }
         return "passwordReset/start";
@@ -48,7 +48,7 @@ public class PasswordResetController {
             final RedirectAttributes redirectAttributes) {
         passwordResetCompleteRequest.setUid(passwordResetUid);
         if (!passwordResetService.isValidPasswordResetUid(passwordResetUid)) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, WebUtils.getMessage("passwordReset.invalid"));
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, "Invalid or expired password reset request.");
             return "redirect:/login";
         }
         return "passwordReset/complete";
@@ -60,7 +60,7 @@ public class PasswordResetController {
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasErrors()) {
             passwordResetService.completeProcess(passwordResetCompleteRequest);
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("passwordReset.completed"));
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, "Password was updated successfully.");
             return "redirect:/login";
         }
         return "passwordReset/complete";

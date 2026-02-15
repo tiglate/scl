@@ -86,7 +86,7 @@
                                        title="Edit"></a>
                                     <form th:action="@{/departments/delete/{id}(id=${department.id})}"
                                           sec:authorize="hasAuthority('DEPARTMENT_WRITE')"
-                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                          th:hx-confirm="'Do you really want to delete this record?'" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
                                         </button>
                                     </form>

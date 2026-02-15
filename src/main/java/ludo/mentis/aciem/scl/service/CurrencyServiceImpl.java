@@ -99,14 +99,12 @@ public class CurrencyServiceImpl implements CurrencyService {
                 .orElseThrow(NotFoundException::new);
         final var buyCurrencyFxTrade = fxTradeRepository.findFirstByBuyCurrency(currency);
         if (buyCurrencyFxTrade != null) {
-            referencedWarning.setKey("currency.fxTrade.buyCurrency.referenced");
-            referencedWarning.addParam(buyCurrencyFxTrade.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Trade %d via field Buy Currency.", buyCurrencyFxTrade.getId());
             return referencedWarning;
         }
         final var sellCurrencyFxTrade = fxTradeRepository.findFirstBySellCurrency(currency);
         if (sellCurrencyFxTrade != null) {
-            referencedWarning.setKey("currency.fxTrade.sellCurrency.referenced");
-            referencedWarning.addParam(sellCurrencyFxTrade.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Trade %d via field Sell Currency.", sellCurrencyFxTrade.getId());
             return referencedWarning;
         }
         return null;

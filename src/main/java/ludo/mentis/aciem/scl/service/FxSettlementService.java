@@ -12,15 +12,4 @@ import java.util.List;
 public interface FxSettlementService {
 
     List<FxSettlementView> findAllBySearchCriteria(LocalDate startDate, LocalDate endDate);
-
-    Page<FxSettlementDTO> findAll(String filter, Pageable pageable);
-
-    FxSettlementDTO get(Long id);
-
-    Long create(FxSettlementDTO fxSettlementDTO);
-
-    void update(Long id, FxSettlementDTO fxSettlementDTO);
-
-    void delete(Long id);
-
 }

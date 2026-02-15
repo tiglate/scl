@@ -141,8 +141,7 @@ public class CounterpartyServiceImpl implements CounterpartyService {
                 .orElseThrow(NotFoundException::new);
         final var counterpartyFxTrade = fxTradeRepository.findFirstByCounterparty(counterparty);
         if (counterpartyFxTrade != null) {
-            referencedWarning.setKey("counterparty.trade.counterparty.referenced");
-            referencedWarning.addParam(counterpartyFxTrade.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Trade %d via field Counterparty.", counterpartyFxTrade.getId());
             return referencedWarning;
         }
         return null;

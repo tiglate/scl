@@ -130,8 +130,7 @@ public class FxTradeServiceImpl implements FxTradeService {
         final var fxTrade = fxTradeRepository.findById(id).orElseThrow(NotFoundException::new);
         final var tradeFxSettlement = fxSettlementRepository.findFirstByTrade(fxTrade);
         if (tradeFxSettlement != null) {
-            referencedWarning.setKey("fxTrade.fxSettlement.trade.referenced");
-            referencedWarning.addParam(tradeFxSettlement.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Settlement %d via field Trade.", tradeFxSettlement.getId());
             return referencedWarning;
         }
         return null;

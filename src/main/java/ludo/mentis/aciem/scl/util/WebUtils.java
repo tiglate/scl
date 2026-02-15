@@ -6,12 +6,10 @@ import java.util.Map;
 import ludo.mentis.aciem.scl.model.PaginationModel;
 import ludo.mentis.aciem.scl.model.PaginationStep;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.LocaleResolver;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -23,15 +21,10 @@ public class WebUtils {
     public static final String MSG_SUCCESS = "MSG_SUCCESS";
     public static final String MSG_INFO = "MSG_INFO";
     public static final String MSG_ERROR = "MSG_ERROR";
-    private static MessageSource messageSource;
-    private static LocaleResolver localeResolver;
     private static TemplateEngine templateEngine;
     private static String baseHost;
 
-    public WebUtils(final MessageSource messageSource, final LocaleResolver localeResolver,
-            final TemplateEngine templateEngine, @Value("${app.baseHost}") final String baseHost) {
-        WebUtils.messageSource = messageSource;
-        WebUtils.localeResolver = localeResolver;
+    public WebUtils(final TemplateEngine templateEngine, @Value("${app.baseHost}") final String baseHost) {
         WebUtils.templateEngine = templateEngine;
         WebUtils.baseHost = baseHost;
     }
@@ -40,9 +33,6 @@ public class WebUtils {
         return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
-    public static String getMessage(final String code, final Object... args) {
-        return messageSource.getMessage(code, args, code, localeResolver.resolveLocale(getRequest()));
-    }
 
     public static String renderTemplate(final String templateName,
             final Map<String, Object> templateModel) {
@@ -71,7 +61,7 @@ public class WebUtils {
         final ArrayList<PaginationStep> steps = new ArrayList<>();
         final PaginationStep previous = new PaginationStep();
         previous.setDisabled(!page.hasPrevious());
-        previous.setLabel(getMessage("pagination.previous"));
+        previous.setLabel("Previous");
         previous.setUrl(getStepUrl(page, page.previousOrFirstPageable().getPageNumber()));
         steps.add(previous);
         // find a range of up to 5 pages around the current active page
@@ -86,7 +76,7 @@ public class WebUtils {
         }
         final PaginationStep next = new PaginationStep();
         next.setDisabled(!page.hasNext());
-        next.setLabel(getMessage("pagination.next"));
+        next.setLabel("Next");
         next.setUrl(getStepUrl(page, page.nextOrLastPageable().getPageNumber()));
         steps.add(next);
 
@@ -95,7 +85,7 @@ public class WebUtils {
         final String range = rangeStart == rangeEnd ? "" + rangeStart : rangeStart + " - " + rangeEnd;
         final PaginationModel paginationModel = new PaginationModel();
         paginationModel.setSteps(steps);
-        paginationModel.setElements(getMessage("pagination.elements", range, page.getTotalElements()));
+        paginationModel.setElements(range + " of " + page.getTotalElements());
         return paginationModel;
     }
 

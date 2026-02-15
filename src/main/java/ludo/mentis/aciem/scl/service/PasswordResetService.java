@@ -52,7 +52,7 @@ public class PasswordResetService {
         user.setResetStart(OffsetDateTime.now());
         userRepository.save(user);
 
-        mailService.sendMail(passwordResetRequest.getEmail(), WebUtils.getMessage("passwordReset.mail.subject"),
+        mailService.sendMail(passwordResetRequest.getEmail(), "Password Reset",
                 WebUtils.renderTemplate("/mails/passwordReset", Map.of("passwordResetUid", user.getResetUID())));
     }
 

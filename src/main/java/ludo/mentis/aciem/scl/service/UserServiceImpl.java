@@ -155,26 +155,22 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(NotFoundException::new);
         final var userFxSettlementStep = fxSettlementStepRepository.findFirstByUser(user);
         if (userFxSettlementStep != null) {
-            referencedWarning.setKey("user.fxSettlementStep.user.referenced");
-            referencedWarning.addParam(userFxSettlementStep.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Settlement Step %d via field User.", userFxSettlementStep.getId());
             return referencedWarning;
         }
         final var updatedByFxTrade = fxTradeRepository.findFirstByUpdatedBy(user);
         if (updatedByFxTrade != null) {
-            referencedWarning.setKey("user.fxTrade.updatedBy.referenced");
-            referencedWarning.addParam(updatedByFxTrade.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Trade %d via field Updated By.", updatedByFxTrade.getId());
             return referencedWarning;
         }
         final var updatedByCounterparty = counterpartyRepository.findFirstByUpdatedBy(user);
         if (updatedByCounterparty != null) {
-            referencedWarning.setKey("user.counterparty.updatedBy.referenced");
-            referencedWarning.addParam(updatedByCounterparty.getId());
+            referencedWarning.setMessage("This entity is still referenced by Counterparty %d via field Updated By.", updatedByCounterparty.getId());
             return referencedWarning;
         }
         final var completedByFxSettlement = fxSettlementRepository.findFirstByCompletedBy(user);
         if (completedByFxSettlement != null) {
-            referencedWarning.setKey("user.fxSettlement.completedBy.referenced");
-            referencedWarning.addParam(completedByFxSettlement.getId());
+            referencedWarning.setMessage("This entity is still referenced by Fx Settlement %d via field Completed By.", completedByFxSettlement.getId());
             return referencedWarning;
         }
         return null;

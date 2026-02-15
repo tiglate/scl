@@ -2,21 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{layout}">
     <head>
-        <title>[[#{authentication.login.headline}]]</title>
+        <title>Login</title>
     </head>
     <body>
         <div layout:fragment="content">
-            <h1 class="mb-4">[[#{authentication.login.headline}]]</h1>
+            <h1 class="mb-4">Login</h1>
             <div th:replace="~{fragments/forms::globalErrors('authentication')}" />
             <form th:action="${requestUri}" method="post" novalidate="">
-                <div th:replace="~{fragments/forms::inputRow(object='authentication', field='username', required=true, type='email')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='authentication', field='password', required=true, type='password')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='authentication', field='rememberMe', type='checkbox')}" />
-                <input type="submit" th:value="#{authentication.login.headline}" class="btn btn-primary mt-4" />
+                <div th:replace="~{fragments/forms::inputRow(object='authentication', field='username', label='Username', required=true, type='email')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='authentication', field='password', label='Password', required=true, type='password')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='authentication', field='rememberMe', label='Remember Me', type='checkbox')}" />
+                <input type="submit" value="Login" class="btn btn-primary mt-4" />
             </form>
             <p class="mt-5">
-                <span>[[#{authentication.resetPasswort.text}]]</span>
-                <a th:href="@{/passwordReset/start}">[[#{authentication.resetPasswort.link}]]</a>
+                <span>If you forgot your password, you can</span>
+                <a th:href="@{/passwordReset/start}">reset it here.</a>
             </p>
         </div>
     </body>

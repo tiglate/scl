@@ -4,8 +4,6 @@ import ludo.mentis.aciem.scl.domain.FxSettlement;
 import ludo.mentis.aciem.scl.domain.FxSettlementView;
 import ludo.mentis.aciem.scl.domain.FxTrade;
 import ludo.mentis.aciem.scl.domain.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,8 +15,6 @@ public interface FxSettlementRepository extends JpaRepository<FxSettlement, Long
 
     @Query("SELECT v FROM FxSettlementView v WHERE v.tradeDate BETWEEN :startDate AND :endDate")
     List<FxSettlementView> findAllBySearchCriteria(LocalDate startDate, LocalDate endDate);
-
-    Page<FxSettlement> findAllById(Long id, Pageable pageable);
 
     FxSettlement findFirstByTrade(FxTrade fxTrade);
 

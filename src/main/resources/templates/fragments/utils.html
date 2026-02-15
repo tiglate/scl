@@ -17,14 +17,14 @@
                 <option th:each="sortOption : ${sortOptions}"
                         th:value="@{${requestUri}(sort=${sortOption},filter=${filter})}"
                         th:selected="${(param.sort == null && sortOptionStat.first) || (param.sort != null && param.sort[0] == sortOption)}"
-                        >[[#{__${object}__.list.sort.__${sortOption}__}]]</option>
+                        >Sort by [[${sortOption}]]</option>
             </select>
         </div>
 
         <form th:fragment="searchFilter(object)" th:action="${requestUri}" method="get" class="col-md-6 col-lg-4">
             <div class="input-group mb-3">
-                <input type="text" name="filter" th:value="${filter == null ? '' : filter}" th:placeholder="#{__${object}__.list.filter}" class="form-control" />
-                <button type="submit" class="btn btn-secondary">[[#{searchFilter.apply}]]</button>
+                <input type="text" name="filter" th:value="${filter == null ? '' : filter}" placeholder="Filter by Id" class="form-control" />
+                <button type="submit" class="btn btn-secondary">Apply</button>
             </div>
         </form>
     </body>

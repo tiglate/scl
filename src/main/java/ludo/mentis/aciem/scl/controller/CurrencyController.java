@@ -118,8 +118,7 @@ public class CurrencyController {
                          final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = currencyService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(FlashMessages.MSG_ERROR,
-                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
+            FlashMessages.referencedWarning(redirectAttributes, referencedWarning);
         } else {
             currencyService.delete(id);
             FlashMessages.deleteSuccess(redirectAttributes, ENTITY_NAME);

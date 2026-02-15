@@ -19,10 +19,10 @@ public class AuthenticationController {
         // dummy for using the inputRow fragment
         model.addAttribute("authentication", new AuthenticationRequest());
         if (loginRequired == Boolean.TRUE) {
-            model.addAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("authentication.login.required"));
+            model.addAttribute(WebUtils.MSG_INFO, "Login required for the requested page.");
         }
         if (loginError == Boolean.TRUE) {
-            model.addAttribute(WebUtils.MSG_ERROR, WebUtils.getMessage("authentication.login.error"));
+            model.addAttribute(WebUtils.MSG_ERROR, "Invalid username or password.");
         }
         return "authentication/login";
     }

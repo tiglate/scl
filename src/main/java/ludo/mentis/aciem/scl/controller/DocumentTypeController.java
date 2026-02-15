@@ -116,8 +116,7 @@ public class DocumentTypeController {
                          final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = documentTypeService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(FlashMessages.MSG_ERROR,
-                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
+            FlashMessages.referencedWarning(redirectAttributes, referencedWarning);
         } else {
             documentTypeService.delete(id);
             FlashMessages.deleteSuccess(redirectAttributes, ENTITY_NAME);

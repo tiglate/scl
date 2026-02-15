@@ -2,15 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{layout}">
     <head>
-        <title>[[#{passwordReset.start.headline}]]</title>
+        <title>Reset Password</title>
     </head>
     <body>
         <div layout:fragment="content">
-            <h1 class="mb-4">[[#{passwordReset.start.headline}]]</h1>
+            <h1 class="mb-4">Reset Password</h1>
             <div th:replace="~{fragments/forms::globalErrors('passwordResetRequest')}" />
             <form th:action="${requestUri}" method="post" novalidate="">
-                <div th:replace="~{fragments/forms::inputRow(object='passwordResetRequest', field='email', required=true, type='email')}" />
-                <input type="submit" th:value="#{passwordReset.start.submit}" class="btn btn-primary mt-4" />
+                <div th:replace="~{fragments/forms::inputRow(object='passwordResetRequest', field='email', label='E-mail', required=true, type='email')}" />
+                <input type="submit" value="Reset Password" class="btn btn-primary mt-4" />
             </form>
         </div>
     </body>

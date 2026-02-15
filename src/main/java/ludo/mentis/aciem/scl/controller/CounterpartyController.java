@@ -60,7 +60,7 @@ public class CounterpartyController {
         model.addAttribute("documentTypeValues", documentTypeRepository
         		.findAll(Sort.by("id"))
         		.stream()
-        		.collect(CustomCollectors.toSortedMap(DocumentType::getId, DocumentType::getName)));
+        		.collect(CustomCollectors.toLinkedHashMap(DocumentType::getId, DocumentType::getName)));
     }
 
     @GetMapping
@@ -139,8 +139,7 @@ public class CounterpartyController {
                          final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = counterpartyService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(FlashMessages.MSG_ERROR,
-                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
+            FlashMessages.referencedWarning(redirectAttributes, referencedWarning);
         } else {
             counterpartyService.delete(id);
             FlashMessages.deleteSuccess(redirectAttributes, ENTITY_NAME);

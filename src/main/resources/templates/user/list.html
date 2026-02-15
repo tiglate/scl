@@ -106,7 +106,7 @@
                                        class="btn btn-sm btn-secondary bi-pencil-square"
                                        title="Edit"></a>
                                     <form th:action="@{/users/delete/{id}(id=${user.id})}"
-                                          th:hx-confirm="#{delete.confirm}" method="post" class="d-inline">
+                                          th:hx-confirm="'Do you really want to delete this record?'" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-secondary bi-trash" title="Delete">
                                         </button>
                                     </form>

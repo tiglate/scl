@@ -12,8 +12,8 @@ public class FlashMessages {
     private FlashMessages() {
     }
 
-    public static void referencedWarning(RedirectAttributes redirectAttributes, String referencedBy, Integer id) {
-        redirectAttributes.addFlashAttribute(MSG_ERROR, "This entity is still referenced by %s %d via field Software.".formatted(referencedBy, id));
+    public static void referencedWarning(RedirectAttributes redirectAttributes, ReferencedWarning referencedWarning) {
+        redirectAttributes.addFlashAttribute(MSG_ERROR, referencedWarning.toMessage());
     }
 
     public static void createSuccess(RedirectAttributes redirectAttributes, String entityName) {

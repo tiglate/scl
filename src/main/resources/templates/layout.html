@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
             xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
-        <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">[[#{app.title}]]</title>
+        <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">SCL</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -26,10 +26,10 @@
                 <nav class="navbar navbar-expand-md">
                     <a th:href="@{/}" class="navbar-brand">
                         <img th:src="@{/images/logo.svg}" alt="SCL" width="30" height="30" class="d-inline-block align-top" style="filter: invert(100%);">
-                        <span class="ps-1">[[#{app.title}]]</span>
+                        <span class="ps-1">SCL</span>
                     </a>
                     <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarToggle"
-                            th:aria-label="#{navigation.toggle}" aria-controls="navbarToggle" aria-expanded="false">
+                            aria-label="Toggle navigation" aria-controls="navbarToggle" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarToggle">
@@ -42,13 +42,13 @@
                                         aria-expanded="false">Menu</button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarEntitiesLink">
                                     <li><a th:href="@{/departments}" class="dropdown-item">Departments</a></li>
-                                    <li><a th:href="@{/users}" class="dropdown-item">[[#{user.list.headline}]]</a></li>
-                                    <li><a th:href="@{/roles}" class="dropdown-item">[[#{role.list.headline}]]</a></li>
-                                    <li><a th:href="@{/counterparties}" class="dropdown-item">[[#{counterparty.list.headline}]]</a></li>
-                                    <li><a th:href="@{/currencies}" class="dropdown-item">[[#{currency.list.headline}]]</a></li>
-                                    <li><a th:href="@{/fxTrades}" class="dropdown-item">[[#{fxTrade.list.headline}]]</a></li>
-                                    <li><a th:href="@{/fxSettlements}" class="dropdown-item">[[#{fxSettlement.list.headline}]]</a></li>
-                                    <li><a th:href="@{/documentTypes}" class="dropdown-item">[[#{documentType.list.headline}]]</a></li>
+                                    <li><a th:href="@{/users}" class="dropdown-item">Users</a></li>
+                                    <li><a th:href="@{/roles}" class="dropdown-item">Roles</a></li>
+                                    <li><a th:href="@{/counterparties}" class="dropdown-item">Counterparties</a></li>
+                                    <li><a th:href="@{/currencies}" class="dropdown-item">Currencies</a></li>
+                                    <li><a th:href="@{/fxTrades}" class="dropdown-item">FX Trades</a></li>
+                                    <li><a th:href="@{/fxSettlements}" class="dropdown-item">FX Settlements</a></li>
+                                    <li><a th:href="@{/documentTypes}" class="dropdown-item">Document Types</a></li>
                                 </ul>
                             </li>
                             <li class="navbar-item">
