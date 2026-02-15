@@ -16,7 +16,7 @@ class CounterpartyDocumentsManager {
         if (this.#documents) {
             this.#documents.forEach(doc => this.#renderDocumentRow(doc));
         }
-        
+
         this.#bindAddButton();
     }
 
@@ -56,7 +56,7 @@ class CounterpartyDocumentsManager {
 
         const row = wrapper.firstElementChild;
 
-        // Set selected documentTypeId (AFTER row is part of the DOM)
+        // Set the selected documentTypeId (AFTER row is part of the DOM)
         const select = row.querySelector(`select[name="documents[${this.#index}].documentTypeId"]`);
         if (select && doc.documentTypeId) {
             select.value = String(doc.documentTypeId);
@@ -71,7 +71,7 @@ class CounterpartyDocumentsManager {
         this.#container.appendChild(row);
         this.#index++;
     }
-    
+
     validateAll() {
         let valid = true;
 
@@ -101,3 +101,35 @@ class CounterpartyDocumentsManager {
         return valid;
     }
 }
+
+function getExistingDocuments() {
+    const raw = document.getElementById("existing-documents-json");
+    if (!raw) return [];
+    try {
+        return JSON.parse(raw.textContent);
+    } catch (e) {
+        console.error("Invalid JSON for existingDocuments:", e);
+        return [];
+    }
+}
+
+function initCounterpartyDocuments() {
+    const existingDocs = getExistingDocuments();
+    const manager = new CounterpartyDocumentsManager("#documents-container", "#document-template", existingDocs);
+    manager.init();
+    const form = document.getElementById("counterpartyForm");
+    if (form) {
+        form.addEventListener("submit", (e) => {
+            if (!manager.validateAll()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+    }
+}
+
+document.addEventListener("htmx:load", (e) => {
+    if (e.target.querySelector("#documents-container")) {
+        initCounterpartyDocuments();
+    }
+});

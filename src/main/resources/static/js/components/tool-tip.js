@@ -1,0 +1,7 @@
+export function initTooltips() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    [...tooltipTriggerList].forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+}
+
+document.addEventListener('DOMContentLoaded', initTooltips);
+document.addEventListener('htmx:afterSwap', initTooltips);
