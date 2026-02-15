@@ -22,3 +22,9 @@ handleEvent('click', '.js-file-delete', function (event) {
     $fileRow.classList.remove('d-none');
     $fileDiv.remove();
 });
+
+document.addEventListener("htmx:beforeSwap", (evt) => {
+    if (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 400) {
+        evt.detail.shouldSwap = true;
+    }
+});

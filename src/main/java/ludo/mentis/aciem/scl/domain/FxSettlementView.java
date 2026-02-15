@@ -17,6 +17,12 @@ public class FxSettlementView {
     @Column(name = "id_fx_settlement")
     private Long id;
 
+    @Column(name = "id_fx_trade")
+    private Long idFxTrade;
+
+    @Column(name = "id_counterparty")
+    private Long idCounterparty;
+
     @Column(name = "counterparty")
     private String counterparty;
 
@@ -158,5 +164,29 @@ public class FxSettlementView {
 
     public void setIon(boolean ion) {
         this.ion = ion;
+    }
+
+    public Long getIdCounterparty() {
+        return idCounterparty;
+    }
+
+    public void setIdCounterparty(Long idCounterparty) {
+        this.idCounterparty = idCounterparty;
+    }
+
+    public Long getIdFxTrade() {
+        return idFxTrade;
+    }
+
+    public void setIdFxTrade(Long idFxTrade) {
+        this.idFxTrade = idFxTrade;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

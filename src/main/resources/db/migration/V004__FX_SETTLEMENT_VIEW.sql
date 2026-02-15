@@ -2,6 +2,8 @@ CREATE OR ALTER VIEW vw_fx_settlement
 AS
 SELECT
     id_fx_settlement = trd.id_fx_trade,
+    id_fx_trade      = trd.id_fx_trade,
+    id_counterparty  = trd.id_counterparty,
     counterparty     = trd.counterparty_long_name,
     investor_manager = trd.investor_manager,
     contract_id      = trd.trade_id,

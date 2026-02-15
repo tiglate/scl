@@ -69,9 +69,9 @@
                             </thead>
                             <tbody class="table-group-divider">
                                 <tr th:each="fxSettlement : ${fxSettlements}" class="text-nowrap">
-                                    <td>[[${fxSettlement.counterparty}]]</td>
+                                    <td><a th:href="@{/counterparties/view/{id}(id=${fxSettlement.idCounterparty})}" target="_blank">[[${fxSettlement.counterparty}]]</a></td>
                                     <td>[[${fxSettlement.investorManager}]]</td>
-                                    <td>[[${fxSettlement.contractId}]]</td>
+                                    <td><a th:href="@{/fxTrades/view/{id}(id=${fxSettlement.idFxTrade})}" target="_blank">[[${fxSettlement.contractId}]]</a></td>
                                     <td class="text-center">[[${fxSettlement.currency}]]</td>
                                     <td>[[${fxSettlement.tradeType}]]</td>
                                     <td th:styleappend="${fxSettlement.g10Amount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.g10Amount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
@@ -85,24 +85,6 @@
                                 </tr>
                             </tbody>
                         </table>
-
-                        <script>
-                            (function () {
-                                function initDataTable() {
-                                    const table = document.getElementById("fxSettlementTable");
-                                    if (!table) {
-                                        return;
-                                    }
-                                    if (table.classList.contains("dataTable")) {
-                                        return;
-                                    }
-                                    new DataTable("#fxSettlementTable", { paging: false });
-                                    console.log("DataTable initialized");
-                                }
-                                document.addEventListener('DOMContentLoaded', initDataTable);
-                                document.addEventListener('htmx:afterSwap', initDataTable);
-                            })();
-                        </script>
                     </div>
                 </div>
             </div>
