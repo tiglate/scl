@@ -1,4 +1,14 @@
+function fixPaginationLinksWhenMaximized() {
+    const buttons = document.getElementsByClassName("page-link");
+    for (const btn of buttons) {
+        btn.addEventListener('click', function() {
+            document.body.style.overflow = '';
+        });
+    }
+}
+
 export function initMaximizeButtons() {
+    fixPaginationLinksWhenMaximized();
     const buttons = document.getElementsByClassName("toggle-maximize");
     for (const btn of buttons) {
         const card = document.getElementById(btn.dataset.target);

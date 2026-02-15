@@ -137,7 +137,7 @@
             <div class="card-body">
                 <p class="card-text" th:if="${#lists.isEmpty(fxTrades)}">No records were found</p>
                 <div th:if="${not #lists.isEmpty(fxTrades)}" class="table-responsive">
-                    <table class="table table-sm table-striped table-hover align-middle">
+                    <table class="table table-sm table-striped table-hover align-middle" id="fxTradeTable">
                         <thead>
                         <tr class="text-nowrap">
 							<th th:replace="~{fragments/table-utils :: sortableColumnHeader('Id'              , ${sortByIdLink}             , ${sortByIdDirection}             , 'id')}"></th>
