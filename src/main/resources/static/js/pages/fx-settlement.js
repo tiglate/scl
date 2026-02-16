@@ -7,7 +7,6 @@ export function initDataTable() {
         return;
     }
     new DataTable("#fxSettlementTable", { paging: false });
-    console.log("DataTable initialized");
 }
 document.addEventListener("htmx:load", initDataTable);
 
@@ -16,7 +15,7 @@ class SettlementWorkflow {
         this.modalElement = document.getElementById(modalId);
         this.tableElement = document.getElementById(tableId);
         this.form = document.getElementById('workflowForm');
-        this.bsModal = new bootstrap.Modal(this.modalElement);
+        this.bsModal = bootstrap.Modal.getOrCreateInstance(this.modalElement);
 
         this.btnConfirm = this.modalElement.querySelector('.btn-success');
         this.btnReject = this.modalElement.querySelector('.btn-outline-danger');
@@ -32,8 +31,6 @@ class SettlementWorkflow {
             tradeDate: '.detail-value:contains-label("Trade Date")',
             beneficiary: '.detail-value:contains-label("Beneficiary")'
         };
-
-        this.init();
     }
 
     init() {
@@ -63,20 +60,65 @@ class SettlementWorkflow {
             beneficiary: row.cells[8].innerText.trim()
         };
 
+        // Set hidden fields
         document.getElementById('currentStep').value = step;
         document.getElementById('fxTradeId').value = data.id;
 
-        this.populateModal(data, step);
+        // Synchronize Stepper visual state based on table row icons
+        this.syncStepperState(row, step);
+
+        this.populateModal(data);
         this.resetButtons()
         this.bsModal.show();
     }
 
+    /**
+     * Synchronizes the modal stepper with the current row state.
+     * @param {HTMLElement} row - The active table row.
+     * @param {string} activeStep - The step code clicked by the user.
+     */
+    syncStepperState(row, activeStep) {
+        const stepsInModal = this.modalElement.querySelectorAll('.step');
+
+        stepsInModal.forEach(stepDiv => {
+            const stepId = stepDiv.dataset.stepId;
+            const iconContainer = stepDiv.querySelector('.step-icon');
+
+            // 1. Reset classes
+            stepDiv.classList.remove('active');
+            iconContainer.innerHTML = ''; // Clear previous icons
+
+            // 2. Find the corresponding button in the table row to check status
+            const tableBtn = row.querySelector(`button[data-step="${stepId}"]`);
+            const btnIcon = tableBtn ? tableBtn.querySelector('i') : null;
+
+            if (btnIcon) {
+                // If it contains bi-check-square, it means it's already completed
+                if (btnIcon.classList.contains('bi-check-square')) {
+                    iconContainer.innerHTML = '<i class="bi bi-check"></i>';
+                }
+            }
+
+            // 3. Highlight the current active step
+            if (stepId === activeStep) {
+                stepDiv.classList.add('active');
+                // If not completed yet, we can show the current step ID or icon
+                if (iconContainer.innerHTML === '') {
+                    iconContainer.innerText = stepId.charAt(0);
+                }
+            }
+        });
+    }
+
     async submitWorkflow(action) {
-        // 1. Proteção contra cliques múltiplos
         this.setLoadingState(true, action);
 
-        const formData = new FormData(this.form);
-        formData.append('action', action); // APPROVED ou REJECTED
+        const formData = new FormData();
+        formData.append('action', action);
+
+        for (const el of this.form.elements) {
+            formData.append(el.name, el.value);
+        }
 
         console.log(`Enviando ${action} para o contrato ${formData.get('fxTradeId')} no passo ${formData.get('currentStep')}`);
 
@@ -97,7 +139,7 @@ class SettlementWorkflow {
         }
     }
 
-    populateModal(data, step) {
+    populateModal(data) {
         this.setDetailValue('Counterparty', data.counterparty);
         this.setDetailValue('IM', data.im);
         this.setDetailValue('Contract', data.contract);
@@ -108,8 +150,6 @@ class SettlementWorkflow {
 
         this.setFormattedAmount('G10 AMT', data.g10Amt);
         this.setFormattedAmount('BRL AMT', data.brlAmt);
-
-        this.updateStepper(step);
     }
 
     setDetailValue(label, value) {
@@ -141,10 +181,6 @@ class SettlementWorkflow {
                 }
             }
         });
-    }
-
-    updateStepper(stepCode) {
-        console.log(`Iniciando workflow para o step: ${stepCode}`);
     }
 
     setLoadingState(isLoading, action = null) {
@@ -187,5 +223,6 @@ class SettlementWorkflow {
 }
 
 document.addEventListener("htmx:load", () => {
-    const fxWorkflow = new SettlementWorkflow('workflowModal', 'fxSettlementTable');
+    if (!document.getElementById('fxSettlementTable')) return;
+    new SettlementWorkflow('workflowModal', 'fxSettlementTable').init();
 });

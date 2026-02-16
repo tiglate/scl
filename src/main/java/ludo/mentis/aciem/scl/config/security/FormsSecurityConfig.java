@@ -37,8 +37,10 @@ public class FormsSecurityConfig {
             @Value("${formsSecurityConfig.rememberMeKey}") final String rememberMeKey) throws
             Exception {
         return http.cors(withDefaults())
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/actuator/**"))
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/actuator/**", "/api/**"))
+                .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                    .anyRequest().permitAll())
                 .formLogin(form -> form
                     .loginPage("/login")
                     .successHandler(new HtmxAwareAuthenticationSuccessHandler())

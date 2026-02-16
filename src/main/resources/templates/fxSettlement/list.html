@@ -99,10 +99,10 @@
 
                     <div class="modal-body p-4">
                         <div class="step-indicator">
-                            <div class="step"><span class="step-icon"><i class="bi bi-check"></i></span>Instruction</div>
-                            <div class="step active"><span class="step-icon"></span>G10</div>
-                            <div class="step"><span class="step-icon"></span>BRL</div>
-                            <div class="step"><span class="step-icon"></span>ION</div>
+                            <div class="step" data-step-id="INS"><span class="step-icon"></span>INS</div>
+                            <div class="step" data-step-id="G10"><span class="step-icon"></span>G10</div>
+                            <div class="step" data-step-id="BRL"><span class="step-icon"></span>BRL</div>
+                            <div class="step" data-step-id="ION"><span class="step-icon"></span>ION</div>
                         </div>
 
                         <div class="card bg-light border-0 mb-4">
@@ -148,12 +148,12 @@
                             </div>
                         </div>
 
-                        <form id="workflowForm">
+                        <form id="workflowForm" method="post" enctype="multipart/form-data">
                             <input type="hidden" id="currentStep" name="currentStep" />
                             <input type="hidden" id="fxTradeId" name="fxTradeId" />
                             <div class="mb-3">
                                 <label for="comments" class="form-label small fw-bold">Comments</label>
-                                <textarea class="form-control" id="comments" rows="3" placeholder="Optional comments or notes..."></textarea>
+                                <textarea class="form-control" name="comments" id="comments" rows="3" placeholder="Optional comments or notes..."></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="fileUpload" class="form-label small fw-bold">File</label>
