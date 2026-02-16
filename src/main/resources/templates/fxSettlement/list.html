@@ -78,7 +78,7 @@
                                 <td th:styleappend="${fxSettlement.brlAmount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.brlAmount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
                                 <td th:text="${#temporals.format(fxSettlement.tradeDate, 'dd-MMM-yy')}"></td>
                                 <td>[[${fxSettlement.beneficiary}]]</td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i href="#" th:classappend="${fxSettlement.instruction ? 'bi bi-check-square' : 'bi-square'}" /></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.instruction ? 'bi bi-check-square' : 'bi-square'}" /></button></td>
                                 <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.g10 ? 'bi-check-square' : 'bi-square'}" /></button></td>
                                 <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.brl ? 'bi-check-square' : 'bi-square'}" /></button></td>
                                 <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.ion ? 'bi-check-square' : 'bi-square'}" /></button></td>
