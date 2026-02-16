@@ -68,7 +68,7 @@
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
-                            <tr th:each="fxSettlement : ${fxSettlements}" class="text-nowrap">
+                            <tr th:each="fxSettlement : ${fxSettlements}" class="text-nowrap" th:data-fx-trade-id="${fxSettlement.idFxTrade}">
                                 <td><a th:href="@{/counterparties/view/{id}(id=${fxSettlement.idCounterparty})}" target="_blank">[[${fxSettlement.counterparty}]]</a></td>
                                 <td>[[${fxSettlement.investorManager}]]</td>
                                 <td><a th:href="@{/fxTrades/view/{id}(id=${fxSettlement.idFxTrade})}" target="_blank">[[${fxSettlement.contractId}]]</a></td>
@@ -78,10 +78,10 @@
                                 <td th:styleappend="${fxSettlement.brlAmount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.brlAmount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
                                 <td th:text="${#temporals.format(fxSettlement.tradeDate, 'dd-MMM-yy')}"></td>
                                 <td>[[${fxSettlement.beneficiary}]]</td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.instruction ? 'bi bi-check-square' : 'bi-square'}" /></button></td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.g10 ? 'bi-check-square' : 'bi-square'}" /></button></td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.brl ? 'bi-check-square' : 'bi-square'}" /></button></td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#workflowModal"><i th:classappend="${fxSettlement.ion ? 'bi-check-square' : 'bi-square'}" /></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-ins-workflow" data-step="INS"><i th:classappend="${fxSettlement.instruction ? 'bi bi-check-square' : 'bi-square'}"></i></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-g10-workflow" data-step="G10"><i th:classappend="${fxSettlement.g10 ? 'bi-check-square' : 'bi-square'}"></i></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-brl-workflow" data-step="BRL"><i th:classappend="${fxSettlement.brl ? 'bi-check-square' : 'bi-square'}"></i></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-ion-workflow" data-step="ION"><i th:classappend="${fxSettlement.ion ? 'bi-check-square' : 'bi-square'}"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -100,9 +100,9 @@
                     <div class="modal-body p-4">
                         <div class="step-indicator">
                             <div class="step"><span class="step-icon"><i class="bi bi-check"></i></span>Instruction</div>
-                            <div class="step active"><span class="step-icon">2</span>G10</div>
-                            <div class="step"><span class="step-icon">3</span>BRL</div>
-                            <div class="step"><span class="step-icon">4</span>ION</div>
+                            <div class="step active"><span class="step-icon"></span>G10</div>
+                            <div class="step"><span class="step-icon"></span>BRL</div>
+                            <div class="step"><span class="step-icon"></span>ION</div>
                         </div>
 
                         <div class="card bg-light border-0 mb-4">
@@ -149,23 +149,25 @@
                         </div>
 
                         <form id="workflowForm">
+                            <input type="hidden" id="currentStep" name="currentStep" />
+                            <input type="hidden" id="fxTradeId" name="fxTradeId" />
                             <div class="mb-3">
                                 <label for="comments" class="form-label small fw-bold">Comments</label>
                                 <textarea class="form-control" id="comments" rows="3" placeholder="Optional comments or notes..."></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="fileUpload" class="form-label small fw-bold">File</label>
-                                <input class="form-control form-control-sm" type="file" id="fileUpload">
+                                <input class="form-control form-control-sm" type="file" id="fileUpload" name="fileUpload" />
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer bg-light justify-content-between">
-                        <button type="button" class="btn btn-outline-danger px-4 fw-bold" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-outline-danger px-4 fw-bold">
                             <i class="bi bi-x-circle me-1"></i> REJECT
                         </button>
                         <div>
-                            <button type="button" class="btn btn-secondary px-3 me-2" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary px-3 me-2" data-bs-dismiss="modal" aria-label="Cancel">Cancel</button>
                             <button type="button" class="btn btn-success px-4 fw-bold shadow-sm">
                                 <i class="bi bi-check2-circle me-1"></i> CONFIRM
                             </button>
