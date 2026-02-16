@@ -1,0 +1,46 @@
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    padding: 0 10px;
+}
+.step {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    font-size: 0.75rem;
+    color: #adb5bd;
+    font-weight: 600;
+}
+.step.active { color: var(--scl-blue); }
+.step.active .step-icon { background: var(--scl-blue); color: white; border-color: var(--scl-blue); }
+.step-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #dee2e6;
+    background: white;
+    display: block;
+    margin: 0 auto 5px;
+    line-height: 20px;
+}
+
+/* Labels compactos para os detalhes */
+.detail-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    font-weight: 700;
+    margin-bottom: 1px;
+    display: block;
+}
+.detail-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #212529;
+    word-break: break-word;
+}
+.amount-highlight { color: #d63384; font-family: 'Courier New', monospace; }
+
+.modal-header { background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+.modal-content { border-radius: 15px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
