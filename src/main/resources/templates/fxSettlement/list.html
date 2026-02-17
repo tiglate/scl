@@ -18,23 +18,19 @@
             </div>
             <div class="card-body">
                 <div class="card-text">
-                    <form id="searchForm" th:action="${requestUri}" th:object="${fxSettlementSearch}" method="get">
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-3">
-                                <label for="startDateEdit" class="form-label">Start Date</label>
-                                <input type="date" class="form-control" id="startDateEdit" th:field="*{startDate}">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="endDateEdit" class="form-label">End Date</label>
-                                <input type="date" class="form-control" id="endDateEdit" th:field="*{endDate}">
-                            </div>
-                            <div class="col-md-6 d-flex justify-content-end align-items-end">
-                                <input type="reset" value="Clear" class="btn btn-secondary me-2"
-                                       onClick="return clearForm();" onKeyDown="return clearForm();"/>
-                                <input type="submit" value="Refresh" class="btn btn-primary" />
-                            </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label for="startDateEdit" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDateEdit" />
                         </div>
-                    </form>
+                        <div class="col-md-3">
+                            <label for="endDateEdit" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDateEdit" />
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-end align-items-end">
+                            <input type="button" value="Refresh" id="workflowRefreshButton" class="btn btn-primary" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -42,48 +38,29 @@
         <div class="card shadow mb-3" id="resultsCard">
             <div class="card-header d-flex justify-content-between align-items-center">
                 Results
-                <button class="btn btn-sm btn-dark toggle-maximize" data-target="resultsCard">
-                    Maximize
-                </button>
+                <button class="btn btn-sm btn-dark toggle-maximize" data-target="resultsCard">Maximize</button>
             </div>
-            <div class="card-body small-dashboard">
-                <p class="card-text" th:if="${#lists.isEmpty(fxSettlements)}">No records were found</p>
-                <div th:if="${not #lists.isEmpty(fxSettlements)}" class="table-responsive">
-                    <table class="table table-sm table-striped table-hover align-middle" id="fxSettlementTable">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped table-hover align-middle w-100" id="fxSettlementTable">
                         <thead>
-                            <tr class="text-nowrap">
-                                <th>Counterparty</th>
-                                <th>IM</th>
-                                <th>Contract</th>
-                                <th class="text-center">Curr</th>
-                                <th>Trade Type</th>
-                                <th class="text-end">G10 AMT</th>
-                                <th class="text-end">BRL AMT</th>
-                                <th>Trade</th>
-                                <th>Beneficiary</th>
-                                <th class="text-center">Instruction</th>
-                                <th class="text-center">G10</th>
-                                <th class="text-center">BRL</th>
-                                <th class="text-center">ION</th>
-                            </tr>
+                        <tr class="text-nowrap">
+                            <th>Counterparty</th>
+                            <th>IM</th>
+                            <th>Contract</th>
+                            <th class="text-center">Curr</th>
+                            <th>Trade Type</th>
+                            <th class="text-end">G10 AMT</th>
+                            <th class="text-end">BRL AMT</th>
+                            <th>Trade</th>
+                            <th>Beneficiary</th>
+                            <th class="text-center">INS</th>
+                            <th class="text-center">G10</th>
+                            <th class="text-center">BRL</th>
+                            <th class="text-center">ION</th>
+                        </tr>
                         </thead>
-                        <tbody class="table-group-divider">
-                            <tr th:each="fxSettlement : ${fxSettlements}" class="text-nowrap" th:data-fx-trade-id="${fxSettlement.idFxTrade}">
-                                <td><a th:href="@{/counterparties/view/{id}(id=${fxSettlement.idCounterparty})}" target="_blank">[[${fxSettlement.counterparty}]]</a></td>
-                                <td>[[${fxSettlement.investorManager}]]</td>
-                                <td><a th:href="@{/fxTrades/view/{id}(id=${fxSettlement.idFxTrade})}" target="_blank">[[${fxSettlement.contractId}]]</a></td>
-                                <td class="text-center">[[${fxSettlement.currency}]]</td>
-                                <td>[[${fxSettlement.tradeType}]]</td>
-                                <td th:styleappend="${fxSettlement.g10Amount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.g10Amount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
-                                <td th:styleappend="${fxSettlement.brlAmount < 0} ? 'color: red;' : ''" th:text="${#numbers.formatDecimal(fxSettlement.brlAmount, 0, 'COMMA', 2, 'POINT')}" class="text-end"></td>
-                                <td th:text="${#temporals.format(fxSettlement.tradeDate, 'dd-MMM-yy')}"></td>
-                                <td>[[${fxSettlement.beneficiary}]]</td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-ins-workflow" data-step="INS"><i th:classappend="${fxSettlement.instruction ? 'bi bi-check-square' : 'bi-square'}"></i></button></td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-g10-workflow" data-step="G10"><i th:classappend="${fxSettlement.g10 ? 'bi-check-square' : 'bi-square'}"></i></button></td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-brl-workflow" data-step="BRL"><i th:classappend="${fxSettlement.brl ? 'bi-check-square' : 'bi-square'}"></i></button></td>
-                                <td class="text-center"><button type="button" class="btn btn-link p-0 btn-ion-workflow" data-step="ION"><i th:classappend="${fxSettlement.ion ? 'bi-check-square' : 'bi-square'}"></i></button></td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>

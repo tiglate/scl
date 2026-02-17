@@ -25,18 +25,7 @@ public class FxSettlementController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('" + UserRoles.ADMIN + "', '" + UserRoles.SETTLEMENT_READ + "', '" + UserRoles.SETTLEMENT_WRITE + "')")
-    public String list(@ModelAttribute("fxSettlementSearch") FxSettlementSearchDTO filter, final Model model) {
-        if (filter == null) {
-            filter = new FxSettlementSearchDTO();
-        }
-        if (filter.getStartDate() == null) {
-            filter.setStartDate(fxSettlementService.getLastTradeDate());
-        }
-        if (filter.getEndDate() == null) {
-            filter.setEndDate(LocalDate.now());
-        }
-        final var fxSettlements = fxSettlementService.findAllBySearchCriteria(filter.getStartDate(), filter.getEndDate());
-        model.addAttribute("fxSettlements", fxSettlements);
+    public String list() {
         return "fxSettlement/list";
     }
 }

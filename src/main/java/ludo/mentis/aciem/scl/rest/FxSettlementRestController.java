@@ -37,6 +37,11 @@ public class FxSettlementRestController {
         return ResponseEntity.ok(fxSettlementService.findAllBySearchCriteria(startDate, endDate));
     }
 
+    @GetMapping("/lastTradeDate")
+    public LocalDate getLastTradeDate() {
+        return fxSettlementService.getLastTradeDate();
+    }
+
     @PostMapping(value = "/step", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> processSettlementStep(@RequestPart(value = "file", required = false) MultipartFile file,
                                                         @RequestPart("details") @Valid final FxSettlementStepDTO dto,
