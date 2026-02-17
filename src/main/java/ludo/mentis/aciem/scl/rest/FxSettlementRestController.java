@@ -3,6 +3,7 @@ package ludo.mentis.aciem.scl.rest;
 import jakarta.validation.Valid;
 import ludo.mentis.aciem.scl.domain.FxSettlementView;
 import ludo.mentis.aciem.scl.model.CustomUserDetails;
+import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
 import ludo.mentis.aciem.scl.service.FxSettlementService;
 import org.springframework.http.MediaType;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/fxSettlements")
@@ -62,5 +65,40 @@ public class FxSettlementRestController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error processing settlement step: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/history/{id}")
+    public ResponseEntity<Iterable<FxSettlementHistoryDTO>> getHistory(@PathVariable final Long id) {
+        List<FxSettlementHistoryDTO> list = new ArrayList<FxSettlementHistoryDTO>();
+
+        FxSettlementHistoryDTO item1 = new FxSettlementHistoryDTO();
+        item1.setUserName("John Doe");
+        item1.setTimestamp(LocalDate.now().atTime(10, 30));
+        item1.setAction("CREATE");
+        item1.setStep("INSTRUCTION");
+        item1.setComments("Initial instruction created");
+        item1.setFileId(1001L);
+        item1.setFileName("instruction_document.pdf");
+        list.add(item1);
+
+        FxSettlementHistoryDTO item2 = new FxSettlementHistoryDTO();
+        item2.setUserName("Jane Smith");
+        item2.setTimestamp(LocalDate.now().atTime(14, 15));
+        item2.setAction("UPDATE");
+        item2.setStep("G10");
+        item2.setComments("G10 settlement confirmed");
+        list.add(item2);
+
+        FxSettlementHistoryDTO item3 = new FxSettlementHistoryDTO();
+        item3.setUserName("Bob Johnson");
+        item3.setTimestamp(LocalDate.now().atTime(16, 45));
+        item3.setAction("COMPLETE");
+        item3.setStep("ION");
+        item3.setComments("ION settlement finalized");
+        item3.setFileId(1003L);
+        item3.setFileName("ion_final_report.pdf");
+        list.add(item3);
+
+        return ResponseEntity.ok(list);
     }
 }
