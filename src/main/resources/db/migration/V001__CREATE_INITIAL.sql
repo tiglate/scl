@@ -382,37 +382,24 @@ END
 IF OBJECT_ID('tb_fx_settlement', 'U') IS NULL
 BEGIN
     CREATE TABLE tb_fx_settlement (
-        id_fx_settlement BIGINT        NOT NULL IDENTITY(1, 1),
-        id_fx_trade      BIGINT        NOT NULL,
-        id_completed_by  BIGINT        NULL,
-        completed_at     DATETIME      NOT NULL,
-        failure_motive   VARCHAR(100)  NOT NULL,
-        failure_details  VARCHAR(1000) NULL,
-        comments         VARCHAR(1000) NULL,
-        created_at       DATETIME2     NOT NULL DEFAULT (SYSDATETIME()),
-        updated_at       DATETIME2     NULL,
+        id_fx_settlement BIGINT    NOT NULL IDENTITY(1, 1),
+        id_fx_trade      BIGINT    NOT NULL,
+        created_at       DATETIME2 NOT NULL DEFAULT (SYSDATETIME()),
+        updated_at       DATETIME2 NULL,
 
         CONSTRAINT pk_fx_settlement PRIMARY KEY (id_fx_settlement),
         CONSTRAINT fk_fx_settlement_trade_id FOREIGN KEY (id_fx_trade) REFERENCES tb_fx_trade (id_fx_trade)
-            ON UPDATE NO ACTION
-            ON DELETE NO ACTION,
-        CONSTRAINT fk_fx_settlement_completed_by_id FOREIGN KEY (id_completed_by) REFERENCES tb_user (id_user)
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
     );
 
     CREATE TABLE tb_fx_settlement_aud (
-        id_fx_settlement BIGINT        NOT NULL,
-        id_revision      INT           NOT NULL,
-        id_revision_type TINYINT       NULL,
-        id_fx_trade      BIGINT        NULL,
-        id_completed_by  BIGINT        NULL,
-        completed_at     DATETIME      NULL,
-        failure_motive   VARCHAR(100)  NULL,
-        failure_details  VARCHAR(1000) NULL,
-        comments         VARCHAR(1000) NULL,
-        created_at       DATETIME2     NULL,
-        updated_at       DATETIME2     NULL,
+        id_fx_settlement BIGINT    NOT NULL,
+        id_revision      INT       NOT NULL,
+        id_revision_type TINYINT   NULL,
+        id_fx_trade      BIGINT    NULL,
+        created_at       DATETIME2 NULL,
+        updated_at       DATETIME2 NULL,
 
         CONSTRAINT pk_fx_settlement_aud PRIMARY KEY (id_fx_settlement, id_revision),
         CONSTRAINT fk_fx_settlement_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
@@ -444,7 +431,7 @@ END
 IF OBJECT_ID('tb_fx_settlement_step', 'U') IS NULL
 BEGIN
     CREATE TABLE tb_fx_settlement_step (
-        id_fx_settlement_step BIGINT       NOT NULL,
+        id_fx_settlement_step BIGINT       NOT NULL IDENTITY(1, 1),
         id_user               BIGINT       NOT NULL,
         id_evidence           BIGINT       NULL,
         step                  VARCHAR(100) NOT NULL,

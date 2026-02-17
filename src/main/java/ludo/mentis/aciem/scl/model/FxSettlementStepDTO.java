@@ -11,12 +11,12 @@ public class FxSettlementStepDTO {
     private String currentStep;
 
     @NotNull
-    private Integer fxTradeId;
+    private Long fxTradeId;
 
     @Size(max = 255)
     private String comments;
 
-    private MultipartFile fileUpload;
+    private Long userId;
 
     public String getCurrentStep() {
         return currentStep;
@@ -26,11 +26,11 @@ public class FxSettlementStepDTO {
         this.currentStep = currentStep;
     }
 
-    public Integer getFxTradeId() {
+    public Long getFxTradeId() {
         return fxTradeId;
     }
 
-    public void setFxTradeId(final Integer fxTradeId) {
+    public void setFxTradeId(final Long fxTradeId) {
         this.fxTradeId = fxTradeId;
     }
 
@@ -42,11 +42,11 @@ public class FxSettlementStepDTO {
         this.comments = comments;
     }
 
-    public MultipartFile getFileUpload() {
-        return fileUpload;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setFileUpload(final MultipartFile fileUpload) {
-        this.fileUpload = fileUpload;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

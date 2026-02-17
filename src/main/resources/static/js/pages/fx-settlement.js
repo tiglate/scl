@@ -114,22 +114,25 @@ class SettlementWorkflow {
         this.setLoadingState(true, action);
 
         const formData = new FormData();
-        formData.append('action', action);
+
+        const file = this.form.elements['fileUpload'].files[0];
+        formData.append('file', file);
+
+        const details = {'action': action};
 
         for (const el of this.form.elements) {
-            formData.append(el.name, el.value);
+            if (el.name === 'fileUpload') continue;
+            details[el.name] = el.value;
         }
 
-        console.log(`Enviando ${action} para o contrato ${formData.get('fxTradeId')} no passo ${formData.get('currentStep')}`);
+        formData.append('details', new Blob([JSON.stringify(details)], {
+            type: "application/json"
+        }));
 
         try {
-            // Exemplo de chamada API (Simulada)
-            // const response = await fetch('/api/settlement/process', { method: 'POST', body: formData });
+            const response = await fetch('/api/v1/fxSettlements/step', { method: 'POST', body: formData });
+            alert(await response.text());
 
-            // Simulação de delay de rede
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            alert("Operação realizada com sucesso!");
             this.bsModal.hide();
             this.form.reset();
         } catch (error) {
@@ -222,7 +225,11 @@ class SettlementWorkflow {
     }
 }
 
-document.addEventListener("htmx:load", () => {
+function initSettlementWorkflow() {
     if (!document.getElementById('fxSettlementTable')) return;
+    console.log("Initializing FX Settlement Workflow");
     new SettlementWorkflow('workflowModal', 'fxSettlementTable').init();
-});
+}
+
+document.addEventListener('htmx:afterSwap', initSettlementWorkflow);
+document.addEventListener('DOMContentLoaded', initSettlementWorkflow);

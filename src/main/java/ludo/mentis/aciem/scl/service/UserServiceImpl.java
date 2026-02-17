@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService {
     private final FxTradeRepository fxTradeRepository;
     private final DepartmentRepository departmentRepository;
     private final CounterpartyRepository counterpartyRepository;
-    private final FxSettlementRepository fxSettlementRepository;
     private final FxSettlementStepRepository fxSettlementStepRepository;
 
     public UserServiceImpl(final UserRepository userRepository,
@@ -36,7 +35,6 @@ public class UserServiceImpl implements UserService {
     		               final FxTradeRepository fxTradeRepository,
     		               final DepartmentRepository departmentRepository,
     		               final CounterpartyRepository counterpartyRepository,
-    		               final FxSettlementRepository fxSettlementRepository,
     		               final FxSettlementStepRepository fxSettlementStepRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -44,7 +42,6 @@ public class UserServiceImpl implements UserService {
         this.fxTradeRepository = fxTradeRepository;
         this.departmentRepository = departmentRepository;
         this.counterpartyRepository = counterpartyRepository;
-        this.fxSettlementRepository = fxSettlementRepository;
         this.fxSettlementStepRepository = fxSettlementStepRepository;
     }
 
@@ -159,11 +156,6 @@ public class UserServiceImpl implements UserService {
         final var updatedByCounterparty = counterpartyRepository.findFirstByUpdatedBy(user);
         if (updatedByCounterparty != null) {
             referencedWarning.setMessage("This entity is still referenced by Counterparty %d via field Updated By.", updatedByCounterparty.getId());
-            return referencedWarning;
-        }
-        final var completedByFxSettlement = fxSettlementRepository.findFirstByCompletedBy(user);
-        if (completedByFxSettlement != null) {
-            referencedWarning.setMessage("This entity is still referenced by Fx Settlement %d via field Completed By.", completedByFxSettlement.getId());
             return referencedWarning;
         }
         return null;

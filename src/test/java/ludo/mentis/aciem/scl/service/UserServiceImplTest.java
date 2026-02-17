@@ -172,7 +172,6 @@ class UserServiceImplTest {
         when(fxSettlementStepRepository.findFirstByUser(user)).thenReturn(null);
         when(fxTradeRepository.findFirstByUpdatedBy(user)).thenReturn(null);
         when(counterpartyRepository.findFirstByUpdatedBy(user)).thenReturn(null);
-        when(fxSettlementRepository.findFirstByCompletedBy(user)).thenReturn(null);
 
         ReferencedWarning warning = userService.getReferencedWarning(id);
 
