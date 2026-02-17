@@ -1,6 +1,7 @@
-package ludo.mentis.aciem.scl.controller;
+package ludo.mentis.aciem.scl.rest;
 
 import jakarta.validation.Valid;
+import ludo.mentis.aciem.scl.domain.FxSettlementView;
 import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
 import ludo.mentis.aciem.scl.service.FxSettlementService;
@@ -8,11 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/v1/fxSettlements")
@@ -22,6 +22,19 @@ public class FxSettlementRestController {
 
     public FxSettlementRestController(FxSettlementService fxSettlementService) {
         this.fxSettlementService = fxSettlementService;
+    }
+
+    @GetMapping("/steps")
+    public ResponseEntity<Iterable<FxSettlementView>> getSettlementSteps(
+            @RequestParam(name = "startDate", required = false) LocalDate startDate,
+            @RequestParam(name = "endDate", required = false) LocalDate endDate) {
+        if (startDate == null) {
+            startDate = fxSettlementService.getLastTradeDate();
+        }
+        if (endDate == null) {
+            endDate = LocalDate.now();
+        }
+        return ResponseEntity.ok(fxSettlementService.findAllBySearchCriteria(startDate, endDate));
     }
 
     @PostMapping(value = "/step", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
