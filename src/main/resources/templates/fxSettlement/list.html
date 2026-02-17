@@ -37,8 +37,19 @@
 
         <div class="card shadow mb-3" id="resultsCard">
             <div class="card-header d-flex justify-content-between align-items-center">
-                Results
-                <button class="btn btn-sm btn-dark toggle-maximize" data-target="resultsCard">Maximize</button>
+                <div class="d-flex align-items-center">
+                    <span class="fw-bold me-3">Results</span>
+                    <small id="syncStatus" class="text-muted border-start ps-3" style="transition: all 0.3s ease;">
+                        <i class="bi bi-arrow-repeat me-1"></i> Initializing...
+                    </small>
+                </div>
+                <button class="btn btn-sm btn-dark toggle-maximize" data-target="resultsCard">
+                    Maximize
+                </button>
+            </div>
+            <div id="serverErrorBanner" class="alert alert-danger m-0 rounded-0 d-none" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>CONECTION ERROR:</strong> The server is not responding. Check your connection or contact local IT support.
             </div>
             <div class="card-body">
                 <div class="table-responsive">
