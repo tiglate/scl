@@ -11,7 +11,15 @@ export class SettlementGrid {
     }
 
     init() {
-        this.table = $(`#${this.tableId}`).DataTable({
+        this.table = $(`#${this.tableId}`).on('preXhr.dt', () => {
+            if (window.pageInstance) {
+                window.pageInstance.toggleLoader(true);
+            }
+        }).on('xhr.dt', () => {
+            if (window.pageInstance) {
+                window.pageInstance.toggleLoader(false);
+            }
+        }).DataTable({
             ajax: {
                 url: '/api/v1/fxSettlements/steps',
                 dataSrc: '',

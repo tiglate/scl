@@ -9,37 +9,47 @@ class SettlementPage {
     constructor() {
         this.startDateInput = document.getElementById('startDateEdit');
         this.endDateInput = document.getElementById('endDateEdit');
+        this.loader = document.getElementById('globalLoader');
         this.grid = null;
         this.workflow = null;
     }
 
+    /**
+     * Toggles the global loading screen
+     */
+    toggleLoader(show) {
+        if (show) {
+            this.loader.classList.remove('d-none');
+            this.loader.style.display = 'flex';
+        } else {
+            this.loader.classList.add('d-none');
+            this.loader.style.display = 'none';
+        }
+    }
+
     async init() {
-        await this.initializeDates();
+        this.toggleLoader(true); // Start loading
 
-        // Initialize Grid
-        this.grid = new SettlementGrid('fxSettlementTable', 'workflowRefreshButton');
+        try {
+            await this.initializeDates();
 
-        // Initialize Workflow Popup and pass a callback to refresh the grid on success
-        this.workflow = new SettlementWorkflow('workflowModal', 'fxSettlementTable', this.grid, () => {
-            this.grid.refresh();
-        });
+            this.grid = new SettlementGrid('fxSettlementTable', 'workflowRefreshButton', this);
 
-        this.workflow.init();
+            this.workflow = new SettlementWorkflow('workflowModal', 'fxSettlementTable', this.grid, () => {
+                this.grid.refresh();
+            });
+
+            this.workflow.init();
+        } finally {
+            this.toggleLoader(false); // End loading
+        }
     }
 
     async initializeDates() {
-        try {
-            // 2.1 Get the last trade date from REST
-            const response = await fetch('/api/v1/fxSettlements/lastTradeDate');
-            const lastDate = await response.text(); // Expected: "2026-02-17"
-            this.startDateInput.value = lastDate.replace(/"/g, "");
-
-            // 2.2 Set the end date as today (local time)
-            const today = new Date().toISOString().split('T')[0];
-            this.endDateInput.value = today;
-        } catch (error) {
-            console.error("Failed to initialize dates", error);
-        }
+        const response = await fetch('/api/v1/fxSettlements/lastTradeDate');
+        const lastDate = await response.text();
+        this.startDateInput.value = lastDate?.toString().replace(/"/g, "");
+        this.endDateInput.value = new Date().toISOString().split('T')[0];
     }
 }
 
