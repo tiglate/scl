@@ -141,14 +141,16 @@ export class SettlementWorkflow {
 
         if (isCompleted) {
             // Delete Mode
-            comments.readOnly = true;
+            comments.disabled = true;
+            comments.placeholder = ""; // Remove placeholder in read-only mode
             fileInput.classList.add('d-none');
             this.btnConfirm.classList.add('d-none');
             this.btnReject.classList.remove('d-none');
             this.btnReject.innerHTML = `<i class="bi bi-trash me-1"></i> DELETE STEP`;
         } else {
             // Confirm Mode
-            comments.readOnly = false;
+            comments.disabled = false;
+            comments.placeholder = "Optional comments or notes...";
             fileInput.classList.remove('d-none');
             this.btnConfirm.classList.remove('d-none');
             this.btnReject.classList.add('d-none'); // Hide Reject/Delete button
@@ -160,18 +162,31 @@ export class SettlementWorkflow {
 
     renderExistingFile(name, id) {
         this.removeExistingFileLink();
-        if (!name) return;
-        const html = `
-            <div id="existingFileLink" class="mt-2 p-2 bg-light border rounded small">
-                <i class="bi bi-paperclip me-2"></i>
-                <a href="/api/v1/download/${id}" target="_blank" class="text-decoration-none">${name}</a>
-            </div>`;
+
+        let html = "";
+        if (name && id) {
+            // File exists: Show download link
+            html = `
+                <div id="existingFileContainer" class="mt-2 p-2 bg-light border rounded small">
+                    <i class="bi bi-paperclip me-2 text-primary"></i>
+                    <a href="/api/v1/download/${id}" target="_blank" class="text-decoration-none fw-bold">${name}</a>
+                </div>`;
+        } else {
+            // No file: Show informative text
+            html = `
+                <div id="existingFileContainer" class="mt-2 p-2 bg-light border border-dashed rounded small text-muted italic">
+                    <i class="bi bi-file-earmark-x me-2"></i>
+                    No file was attached to this step.
+                </div>`;
+        }
+
+        // Insert after the hidden file input
         document.getElementById('fileUpload').insertAdjacentHTML('afterend', html);
     }
 
     removeExistingFileLink() {
-        const link = document.getElementById('existingFileLink');
-        if (link) link.remove();
+        const container = document.getElementById('existingFileContainer');
+        if (container) container.remove();
     }
 
     async submitWorkflow(action) {
