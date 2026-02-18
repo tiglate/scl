@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class FxSettlementHistoryDTO {
 
@@ -9,8 +10,22 @@ public class FxSettlementHistoryDTO {
     private String action;
     private String step;
     private String comments;
-    private Long fileId;
+    private UUID fileId;
     private String fileName;
+
+    public FxSettlementHistoryDTO() {
+    }
+
+    public FxSettlementHistoryDTO(String userName, LocalDateTime timestamp, String action, String step,
+                                  String comments, UUID fileId, String fileName) {
+        this.userName = userName;
+        this.timestamp = timestamp;
+        this.action = action;
+        this.step = step;
+        this.comments = comments;
+        this.fileId = fileId;
+        this.fileName = fileName;
+    }
 
     public String getUserName() {
         return userName;
@@ -52,11 +67,11 @@ public class FxSettlementHistoryDTO {
         this.comments = comments;
     }
 
-    public Long getFileId() {
+    public UUID getFileId() {
         return fileId;
     }
 
-    public void setFileId(Long fileId) {
+    public void setFileId(UUID fileId) {
         this.fileId = fileId;
     }
 

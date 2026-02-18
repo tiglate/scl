@@ -1,12 +1,5 @@
 /*
 DROP TABLE flyway_schema_history;
-DROP TABLE tb_file_content;
-DROP TABLE tb_fx_settlement_steps;
-DROP TABLE tb_fx_settlement_steps_aud;
-DROP TABLE tb_fx_settlement_step;
-DROP TABLE tb_fx_settlement_step_aud;
-DROP TABLE tb_fx_step_evidence;
-DROP TABLE tb_fx_step_evidence_aud;
 DROP TABLE tb_fx_settlement;
 DROP TABLE tb_fx_settlement_aud;
 DROP TABLE tb_fx_trade;
@@ -27,6 +20,7 @@ DROP TABLE tb_user;
 DROP TABLE tb_user_aud;
 DROP TABLE tb_department;
 DROP TABLE tb_department_aud;
+DROP TABLE tb_file_content;
 DROP TABLE tb_revision_type;
 DROP TABLE tb_revision;
 */
@@ -55,6 +49,31 @@ BEGIN
     (0, 'ADD'),
     (1, 'MOD'),
     (2, 'DEL');
+END
+
+IF OBJECT_ID('tb_file_content', 'U') IS NULL
+BEGIN
+    CREATE TABLE tb_file_content (
+        id_file_content UNIQUEIDENTIFIER  NOT NULL,
+        file_name       VARCHAR(500)      NOT NULL,
+        file_type       VARCHAR(50)       NULL,
+        content         VARBINARY(MAX)    NOT NULL,
+
+        CONSTRAINT pk_file_content PRIMARY KEY (id_file_content)
+    );
+
+    CREATE TABLE tb_file_content_aud (
+        id_file_content  UNIQUEIDENTIFIER  NOT NULL,
+        id_revision      INT               NOT NULL,
+        id_revision_type TINYINT           NULL,
+        file_name        VARCHAR(500)      NULL,
+        file_type        VARCHAR(50)       NULL,
+        content          VARBINARY(MAX)    NULL,
+
+        CONSTRAINT pk_file_content_aud PRIMARY KEY (id_file_content),
+        CONSTRAINT fk_file_content_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
+        CONSTRAINT fk_file_content_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
+    );
 END
 
 IF OBJECT_ID('tb_department', 'U') IS NULL
@@ -382,24 +401,98 @@ END
 IF OBJECT_ID('tb_fx_settlement', 'U') IS NULL
 BEGIN
     CREATE TABLE tb_fx_settlement (
-        id_fx_settlement BIGINT    NOT NULL IDENTITY(1, 1),
-        id_fx_trade      BIGINT    NOT NULL,
-        created_at       DATETIME2 NOT NULL DEFAULT (SYSDATETIME()),
-        updated_at       DATETIME2 NULL,
+        id_fx_settlement BIGINT           NOT NULL IDENTITY(1, 1),
+        id_fx_trade      BIGINT           NOT NULL,
+        --
+        ins_flag         BIT              NOT NULL DEFAULT (0),
+        ins_user_id      BIGINT           NULL,
+        ins_timestamp    DATETIME2        NULL,
+        ins_comments     VARCHAR(255)     NULL,
+        ins_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        g10_flag         BIT              NOT NULL DEFAULT (0),
+        g10_user_id      BIGINT           NULL,
+        g10_timestamp    DATETIME2        NULL,
+        g10_comments     VARCHAR(255)     NULL,
+        g10_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        brl_flag         BIT              NOT NULL DEFAULT (0),
+        brl_user_id      BIGINT           NULL,
+        brl_timestamp    DATETIME2        NULL,
+        brl_comments     VARCHAR(255)     NULL,
+        brl_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        ion_flag         BIT              NOT NULL DEFAULT (0),
+        ion_user_id      BIGINT           NULL,
+        ion_timestamp    DATETIME2        NULL,
+        ion_comments     VARCHAR(255)     NULL,
+        ion_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        created_at       DATETIME2        NOT NULL DEFAULT (SYSDATETIME()),
+        updated_at       DATETIME2        NULL,
 
         CONSTRAINT pk_fx_settlement PRIMARY KEY (id_fx_settlement),
         CONSTRAINT fk_fx_settlement_trade_id FOREIGN KEY (id_fx_trade) REFERENCES tb_fx_trade (id_fx_trade)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_file_content_ins FOREIGN KEY (ins_file_id) REFERENCES tb_file_content (id_file_content)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_file_content_g10 FOREIGN KEY (g10_file_id) REFERENCES tb_file_content (id_file_content)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_file_content_brl FOREIGN KEY (brl_file_id) REFERENCES tb_file_content (id_file_content)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_file_content_ion FOREIGN KEY (ion_file_id) REFERENCES tb_file_content (id_file_content)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_user_ins FOREIGN KEY (ins_user_id) REFERENCES tb_user (id_user)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_user_g10 FOREIGN KEY (g10_user_id) REFERENCES tb_user (id_user)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_user_brl FOREIGN KEY (brl_user_id) REFERENCES tb_user (id_user)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_user_ion FOREIGN KEY (ion_user_id) REFERENCES tb_user (id_user)
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
     );
 
     CREATE TABLE tb_fx_settlement_aud (
-        id_fx_settlement BIGINT    NOT NULL,
-        id_revision      INT       NOT NULL,
-        id_revision_type TINYINT   NULL,
-        id_fx_trade      BIGINT    NULL,
-        created_at       DATETIME2 NULL,
-        updated_at       DATETIME2 NULL,
+        id_fx_settlement BIGINT           NOT NULL,
+        id_revision      INT              NOT NULL,
+        id_revision_type TINYINT          NULL,
+        id_fx_trade      BIGINT           NULL,
+        --
+        ins_flag         BIT              NULL,
+        ins_user_id      BIGINT           NULL,
+        ins_timestamp    DATETIME2        NULL,
+        ins_comments     VARCHAR(255)     NULL,
+        ins_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        g10_flag         BIT              NULL,
+        g10_user_id      BIGINT           NULL,
+        g10_timestamp    DATETIME2        NULL,
+        g10_comments     VARCHAR(255)     NULL,
+        g10_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        brl_flag         BIT              NULL,
+        brl_user_id      BIGINT           NULL,
+        brl_timestamp    DATETIME2        NULL,
+        brl_comments     VARCHAR(255)     NULL,
+        brl_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        ion_flag         BIT              NULL,
+        ion_user_id      BIGINT           NULL,
+        ion_timestamp    DATETIME2        NULL,
+        ion_comments     VARCHAR(255)     NULL,
+        ion_file_id      UNIQUEIDENTIFIER NULL,
+        --
+        created_at       DATETIME2        NULL,
+        updated_at       DATETIME2        NULL,
 
         CONSTRAINT pk_fx_settlement_aud PRIMARY KEY (id_fx_settlement, id_revision),
         CONSTRAINT fk_fx_settlement_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
@@ -407,96 +500,27 @@ BEGIN
     );
 END
 
-IF OBJECT_ID('tb_fx_step_evidence', 'U') IS NULL
+IF OBJECT_ID('tb_fx_settlement_log', 'U') IS NULL
 BEGIN
-    CREATE TABLE tb_fx_step_evidence (
-        id_fx_step_evidence BIGINT        NOT NULL,
-        [file]              NVARCHAR(MAX) NOT NULL,
+    CREATE TABLE tb_fx_settlement_log (
+        id_fx_settlement_log BIGINT           NOT NULL IDENTITY(1, 1),
+        id_fx_settlement     BIGINT           NOT NULL,
+        id_user              BIGINT           NOT NULL,
+        id_file_content      UNIQUEIDENTIFIER NULL,
+        step                 VARCHAR(30)      NOT NULL,
+        flag                 BIT              NOT NULL,
+        comments             VARCHAR(255)     NULL,
+        event_date           DATETIME2        NOT NULL DEFAULT (SYSDATETIME()),
 
-        CONSTRAINT pk_fx_step_evidence PRIMARY KEY (id_fx_step_evidence)
-    );
-
-    CREATE TABLE tb_fx_step_evidence_aud (
-        id_fx_step_evidence BIGINT        NOT NULL,
-        id_revision         INT           NOT NULL,
-        id_revision_type    TINYINT       NULL,
-        [file]              NVARCHAR(MAX) NULL,
-
-        CONSTRAINT pk_fx_step_evidence_aud PRIMARY KEY (id_fx_step_evidence, id_revision),
-        CONSTRAINT fk_fx_step_evidence_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
-        CONSTRAINT fk_fx_step_evidence_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
-    );
-END
-
-IF OBJECT_ID('tb_fx_settlement_step', 'U') IS NULL
-BEGIN
-    CREATE TABLE tb_fx_settlement_step (
-        id_fx_settlement_step BIGINT       NOT NULL IDENTITY(1, 1),
-        id_user               BIGINT       NOT NULL,
-        id_evidence           BIGINT       NULL,
-        step                  VARCHAR(100) NOT NULL,
-        event_date            DATETIME     NOT NULL DEFAULT GETDATE(),
-        comments              VARCHAR(255) NULL,
-
-        CONSTRAINT pk_fx_settlement_step PRIMARY KEY (id_fx_settlement_step),
-        CONSTRAINT fk_fx_settlement_step_user FOREIGN KEY (id_user) REFERENCES tb_user (id_user)
+        CONSTRAINT pk_fx_settlement_log PRIMARY KEY (id_fx_settlement_log),
+        CONSTRAINT fk_fx_settlement_log_fx_settlement FOREIGN KEY (id_fx_settlement) REFERENCES tb_fx_settlement (id_fx_settlement)
             ON UPDATE NO ACTION
             ON DELETE NO ACTION,
-        CONSTRAINT fk_fx_settlement_step_evidence FOREIGN KEY (id_evidence) REFERENCES tb_fx_step_evidence (id_fx_step_evidence)
+        CONSTRAINT fk_fx_settlement_log_user FOREIGN KEY (id_user) REFERENCES tb_user (id_user)
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION,
+        CONSTRAINT fk_fx_settlement_log_file_content FOREIGN KEY (id_file_content) REFERENCES tb_file_content (id_file_content)
             ON UPDATE NO ACTION
             ON DELETE NO ACTION
-    );
-    CREATE UNIQUE NONCLUSTERED INDEX unique_fx_settlement_step_evidence_id ON tb_fx_settlement_step (id_evidence) WHERE id_evidence IS NOT NULL;
-
-    CREATE TABLE tb_fx_settlement_step_aud (
-        id_fx_settlement_step BIGINT       NOT NULL,
-        id_revision           INT          NOT NULL,
-        id_revision_type      TINYINT      NULL,
-        id_user               BIGINT       NULL,
-        id_evidence           BIGINT       NULL,
-        step                  VARCHAR(100) NULL,
-        event_date            DATETIME     NULL,
-        comments              VARCHAR(255) NULL,
-
-        CONSTRAINT pk_fx_settlement_step_aud PRIMARY KEY (id_fx_settlement_step, id_revision),
-        CONSTRAINT fk_fx_settlement_step_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
-        CONSTRAINT fk_fx_settlement_step_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
-    );
-END
-
-IF OBJECT_ID('tb_fx_settlement_steps', 'U') IS NULL
-BEGIN
-    CREATE TABLE tb_fx_settlement_steps (
-        id_fx_settlement      BIGINT NOT NULL,
-        id_fx_settlement_step BIGINT NOT NULL,
-
-        CONSTRAINT pk_fx_settlement_steps PRIMARY KEY (id_fx_settlement, id_fx_settlement_step),
-        CONSTRAINT fk_fx_settlement_steps_fx_settlement FOREIGN KEY (id_fx_settlement) REFERENCES tb_fx_settlement (id_fx_settlement)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE,
-        CONSTRAINT fk_fx_settlement_steps_fx_settlement_step FOREIGN KEY (id_fx_settlement_step) REFERENCES tb_fx_settlement_step (id_fx_settlement_step)
-            ON UPDATE CASCADE
-            ON DELETE CASCADE
-    );
-
-    CREATE TABLE tb_fx_settlement_steps_aud (
-        id_fx_settlement      BIGINT  NOT NULL,
-        id_fx_settlement_step BIGINT  NOT NULL,
-        id_revision           INT     NOT NULL,
-        id_revision_type      TINYINT NULL,
-
-        CONSTRAINT pk_fx_settlement_steps_aud PRIMARY KEY (id_fx_settlement, id_fx_settlement_step, id_revision),
-        CONSTRAINT fk_fx_settlement_steps_aud_revision FOREIGN KEY (id_revision) REFERENCES tb_revision (id_revision),
-        CONSTRAINT fk_fx_settlement_steps_aud_revision_type FOREIGN KEY (id_revision_type) REFERENCES tb_revision_type (id_revision_type)
-    );
-END
-
-IF OBJECT_ID('tb_file_content', 'U') IS NULL
-BEGIN
-    CREATE TABLE tb_file_content (
-        uid     VARCHAR(255)   NOT NULL,
-        content VARBINARY(MAX) NOT NULL,
-
-        CONSTRAINT pk_file_content PRIMARY KEY (uid)
     );
 END

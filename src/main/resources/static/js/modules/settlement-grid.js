@@ -152,14 +152,16 @@ export class SettlementGrid {
 
             logs.forEach(log => {
                 const isSystem = log.userName === 'System';
+                const action = log.action === 'Set' ? `<i class="bi bi-patch-check-fill text-success"></i>` : `<i class="bi bi-x-octagon-fill text-danger"></i>`;
+                const formattedDate = new Date(log.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const chatHtml = `
                 <div class="d-flex flex-column ${isSystem ? 'align-items-center' : 'align-items-start'}">
                     <div class="d-flex align-items-center mb-1">
                         <span class="fw-bold small me-2">${log.userName}</span>
-                        <span class="text-muted" style="font-size: 0.7rem;">${log.timestamp}</span>
+                        <span class="text-muted" style="font-size: 0.7rem;">${formattedDate}</span>
                     </div>
                     <div class="p-3 rounded-3 shadow-sm border" style="max-width: 85%; background: white;">
-                        <div class="fw-bold text-primary mb-1 small">${log.action} - ${log.step}</div>
+                        <div class="fw-bold text-primary mb-1 small">${action} Step: ${log.step.toUpperCase()}</div>
                         <div class="text-dark small mb-2">${log.comments || 'No comments provided.'}</div>
                         ${log.fileName ? `
                             <div class="mt-2 pt-2 border-top">
@@ -176,7 +178,7 @@ export class SettlementGrid {
                 container.insertAdjacentHTML('beforeend', chatHtml);
             });
 
-            // Auto-scroll to bottom
+            // Auto-scroll to the bottom
             container.scrollTop = container.scrollHeight;
 
         } catch (error) {

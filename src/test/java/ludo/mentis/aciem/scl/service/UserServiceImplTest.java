@@ -1,7 +1,6 @@
 package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.Department;
-import ludo.mentis.aciem.scl.domain.FxSettlementStep;
 import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.UserDTO;
@@ -43,10 +42,6 @@ class UserServiceImplTest {
     private DepartmentRepository departmentRepository;
     @Mock
     private CounterpartyRepository counterpartyRepository;
-    @Mock
-    private FxSettlementRepository fxSettlementRepository;
-    @Mock
-    private FxSettlementStepRepository fxSettlementStepRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -169,29 +164,11 @@ class UserServiceImplTest {
         user.setId(id);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        when(fxSettlementStepRepository.findFirstByUser(user)).thenReturn(null);
         when(fxTradeRepository.findFirstByUpdatedBy(user)).thenReturn(null);
         when(counterpartyRepository.findFirstByUpdatedBy(user)).thenReturn(null);
 
         ReferencedWarning warning = userService.getReferencedWarning(id);
 
         assertNull(warning);
-    }
-
-    @Test
-    void testGetReferencedWarning_ReferencedByFxSettlementStep() {
-        Long id = 1L;
-        User user = new User();
-        user.setId(id);
-        FxSettlementStep step = new FxSettlementStep();
-        step.setId(5L);
-
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        when(fxSettlementStepRepository.findFirstByUser(user)).thenReturn(step);
-
-        ReferencedWarning warning = userService.getReferencedWarning(id);
-
-        assertNotNull(warning);
-        assertTrue(warning.toMessage().contains("referenced by Fx Settlement Step 5"));
     }
 }

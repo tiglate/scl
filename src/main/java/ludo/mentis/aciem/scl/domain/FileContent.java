@@ -1,28 +1,53 @@
 package ludo.mentis.aciem.scl.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
 
 import java.sql.Blob;
+import java.util.UUID;
 
 
+@Audited
 @Entity
 @Table(name = "tb_file_content")
 public class FileContent {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    private String uid;
+    @Column(name = "id_file_content", nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_type")
+    private String fileType;
 
     @Column(nullable = false)
     @Lob
     private Blob content;
 
-    public String getUid() {
-        return uid;
+    public UUID getId() {
+        return id;
     }
 
-    public void setUid(final String uid) {
-        this.uid = uid;
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
     public Blob getContent() {

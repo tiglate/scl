@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.FxSettlementView;
+import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
 import ludo.mentis.aciem.scl.util.StepAlreadyTaken;
 
@@ -15,4 +16,6 @@ public interface FxSettlementService {
     LocalDate getLastTradeDate();
 
     void save(FxSettlementStepDTO dto) throws StepAlreadyTaken;
+
+    List<FxSettlementHistoryDTO> getHistoryByFxTradeId(Long id);
 }

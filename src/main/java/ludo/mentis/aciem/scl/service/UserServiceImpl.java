@@ -27,22 +27,19 @@ public class UserServiceImpl implements UserService {
     private final FxTradeRepository fxTradeRepository;
     private final DepartmentRepository departmentRepository;
     private final CounterpartyRepository counterpartyRepository;
-    private final FxSettlementStepRepository fxSettlementStepRepository;
 
     public UserServiceImpl(final UserRepository userRepository,
     		               final RoleRepository roleRepository,
     		               final PasswordEncoder passwordEncoder,
     		               final FxTradeRepository fxTradeRepository,
     		               final DepartmentRepository departmentRepository,
-    		               final CounterpartyRepository counterpartyRepository,
-    		               final FxSettlementStepRepository fxSettlementStepRepository) {
+    		               final CounterpartyRepository counterpartyRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.fxTradeRepository = fxTradeRepository;
         this.departmentRepository = departmentRepository;
         this.counterpartyRepository = counterpartyRepository;
-        this.fxSettlementStepRepository = fxSettlementStepRepository;
     }
 
     @Override
@@ -143,11 +140,6 @@ public class UserServiceImpl implements UserService {
         final var referencedWarning = new ReferencedWarning();
         final var user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final var userFxSettlementStep = fxSettlementStepRepository.findFirstByUser(user);
-        if (userFxSettlementStep != null) {
-            referencedWarning.setMessage("This entity is still referenced by Fx Settlement Step %d via field User.", userFxSettlementStep.getId());
-            return referencedWarning;
-        }
         final var updatedByFxTrade = fxTradeRepository.findFirstByUpdatedBy(user);
         if (updatedByFxTrade != null) {
             referencedWarning.setMessage("This entity is still referenced by Fx Trade %d via field Updated By.", updatedByFxTrade.getId());

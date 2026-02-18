@@ -85,7 +85,7 @@ public class FileDataServiceImpl implements FileDataService {
 
         final File tempFile = new File(UPLOAD_DIRECTORY + "/" + fileData.getUid() + "/" + fileData.getFileName());
         final FileContent fileContent = new FileContent();
-        fileContent.setUid(fileData.getUid());
+        fileContent.setId(UUID.fromString(fileData.getUid()));
         try {
             fileContent.setContent(new SerialBlob(FileCopyUtils.copyToByteArray(tempFile)));
         } catch (final Exception ex) {

@@ -1,21 +1,21 @@
 package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.FxSettlement;
-import ludo.mentis.aciem.scl.domain.FxSettlementStep;
+import ludo.mentis.aciem.scl.domain.FxSettlementLog;
 import ludo.mentis.aciem.scl.domain.FxSettlementView;
+import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
-import ludo.mentis.aciem.scl.model.FxSettlementStepType;
+import ludo.mentis.aciem.scl.repos.FxSettlementLogRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
-import ludo.mentis.aciem.scl.repos.FxSettlementStepRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
+import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.StepAlreadyTaken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 
 
@@ -26,16 +26,16 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     private final FxSettlementRepository fxSettlementRepository;
     private final FxTradeRepository fxTradeRepository;
     private final UserRepository userRepository;
-    private final FxSettlementStepRepository fxSettlementStepRepository;
+    private final FxSettlementLogRepository fxSettlementLogRepository;
 
     public FxSettlementServiceImpl(final FxSettlementRepository fxSettlementRepository,
                                    final FxTradeRepository fxTradeRepository,
                                    final UserRepository userRepository,
-                                   final FxSettlementStepRepository fxSettlementStepRepository) {
+                                   final FxSettlementLogRepository fxSettlementLogRepository) {
         this.fxSettlementRepository = fxSettlementRepository;
         this.fxTradeRepository = fxTradeRepository;
         this.userRepository = userRepository;
-        this.fxSettlementStepRepository = fxSettlementStepRepository;
+        this.fxSettlementLogRepository = fxSettlementLogRepository;
     }
 
     @Override
@@ -59,44 +59,81 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         if (dto.getUserId() == null) {
             throw new IllegalArgumentException("userId must not be null");
         }
-        if (dto.getCurrentStep() == null) {
-            throw new IllegalArgumentException("currentStep must not be null");
+        if (dto.getCurrentStep() == null || dto.getCurrentStep().trim().isBlank()) {
+            throw new IllegalArgumentException("currentStep must not be null or blank");
         }
 
         final var settlement = fxSettlementRepository.findFirstByTradeIdWithLock(dto.getFxTradeId())
                 .orElseGet(FxSettlement::new);
 
-        final var stepType = FxSettlementStepType.translateStringToEnum(dto.getCurrentStep());
-        if (stepType == null) {
-            throw new IllegalArgumentException("Unknown step type: " + dto.getCurrentStep());
-        }
+        final var user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new NotFoundException("User not found for ID: " + dto.getUserId()));
 
-        if (settlement.getSteps() == null) {
-            settlement.setSteps(new HashSet<>());
-        }
-
-        final var steps = settlement.getSteps();
-        final boolean alreadyTaken = steps.stream()
-                .anyMatch(step -> stepType.equals(step.getStep()));
-
-        if (alreadyTaken) {
-            throw new StepAlreadyTaken("Step " + stepType + " already taken for trade #" + dto.getFxTradeId() + ".");
-        }
+        final var trade = fxTradeRepository.findById(dto.getFxTradeId())
+                .orElseThrow(() -> new NotFoundException("Trade not found for ID: " + dto.getFxTradeId()));
 
         if (settlement.getTrade() == null) {
-            settlement.setTrade(fxTradeRepository.getReferenceById(dto.getFxTradeId()));
+            settlement.setTrade(trade);
         }
 
-        final var newStep = new FxSettlementStep();
-        newStep.setStep(stepType);
-        newStep.setEventDate(LocalDateTime.now());
-        newStep.setComments(dto.getComments());
-        newStep.setUser(userRepository.getReferenceById(dto.getUserId()));
+        final var now = LocalDateTime.now();
 
-        final var savedNewStep = this.fxSettlementStepRepository.save(newStep);
+        final var step = dto.getCurrentStep().trim().toLowerCase();
 
-        steps.add(savedNewStep);
+        switch (step) {
+            case "ins":
+                if (settlement.isInsFlag()) {
+                    throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
+                }
+                settlement.setInsFlag(true);
+                settlement.setInsComments(dto.getComments());
+                settlement.setInsUser(user);
+                settlement.setInsTimestamp(now);
+                break;
+            case "g10":
+                if (settlement.isG10Flag()) {
+                    throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
+                }
+                settlement.setG10Flag(true);
+                settlement.setG10Comments(dto.getComments());
+                settlement.setG10User(user);
+                settlement.setG10Timestamp(now);
+                break;
+            case "brl":
+                if (settlement.isBrlFlag()) {
+                    throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
+                }
+                settlement.setBrlFlag(true);
+                settlement.setBrlComments(dto.getComments());
+                settlement.setBrlUser(user);
+                settlement.setBrlTimestamp(now);
+                break;
+            case "ion":
+                if (settlement.isIonFlag()) {
+                    throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
+                }
+                settlement.setIonFlag(true);
+                settlement.setIonComments(dto.getComments());
+                settlement.setIonUser(user);
+                settlement.setIonTimestamp(now);
+                break;
+        }
 
         fxSettlementRepository.save(settlement);
+
+        var logEntry = new FxSettlementLog();
+        logEntry.setFxSettlement(settlement);
+        logEntry.setUser(user);
+        logEntry.setStep(step.equals("ins") ? "Instruction" : step);
+        logEntry.setFlag(true);
+        logEntry.setComments(dto.getComments());
+        logEntry.setEventDate(now);
+
+        fxSettlementLogRepository.save(logEntry);
+    }
+
+    @Override
+    public List<FxSettlementHistoryDTO> getHistoryByFxTradeId(Long id) {
+        return fxSettlementLogRepository.getHistoryByFxTradeId(id);
     }
 }
