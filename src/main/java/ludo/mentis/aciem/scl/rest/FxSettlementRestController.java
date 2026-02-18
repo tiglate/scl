@@ -74,11 +74,31 @@ public class FxSettlementRestController {
         }
     }
 
+    @PostMapping("/rollbackStep")
+    public ResponseEntity<String> rollbackStep(@Valid @RequestBody final FxSettlementStepDTO dto,
+                                               Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).body("Authentication is required");
+        }
+        if (!(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(401).body("Invalid Principal. Authentication is required");
+        }
+
+        var userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        try {
+            this.fxSettlementService.rollbackStep(dto.getFxSettlementId(), dto.getCurrentStep(), userDetails.getId());
+            return ResponseEntity.ok("Settlement step rolled back successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error rolling back settlement step: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/history/{id}")
-    public ResponseEntity<Iterable<FxSettlementHistoryDTO>> getHistory(@PathVariable final Long id) {
-        if (id == null || id <= 0) {
+    public ResponseEntity<Iterable<FxSettlementHistoryDTO>> getHistory(@PathVariable(value = "id") final Long fxSettlementId) {
+        if (fxSettlementId == null || fxSettlementId <= 0) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(fxSettlementService.getHistoryByFxSettlementId(id));
+        return ResponseEntity.ok(fxSettlementService.getHistoryByFxSettlementId(fxSettlementId));
     }
 }

@@ -152,7 +152,7 @@ export class SettlementGrid {
 
             logs.forEach(log => {
                 const isSystem = log.userName === 'System';
-                const action = log.action === 'Set' ? `<i class="bi bi-patch-check-fill text-success"></i>` : `<i class="bi bi-x-octagon-fill text-danger"></i>`;
+                const action = log.action === 'SET' ? `<i class="bi bi-patch-check-fill text-success"></i>` : `<i class="bi bi-x-octagon-fill text-danger"></i>`;
                 const formattedDate = new Date(log.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const chatHtml = `
                 <div class="d-flex flex-column ${isSystem ? 'align-items-center' : 'align-items-start'}">

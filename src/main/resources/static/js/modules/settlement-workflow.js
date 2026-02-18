@@ -56,6 +56,7 @@ export class SettlementWorkflow {
 
         document.getElementById('currentStep').value = step;
         document.getElementById('fxTradeId').value = data.idFxTrade;
+        document.getElementById('fxSettlementId').value = data.id;
 
         this.syncStepperState(row, step);
         this.populateModal(modalData);
@@ -191,9 +192,24 @@ export class SettlementWorkflow {
 
     async submitWorkflow(action) {
         this.setLoadingState(true, action);
-        const formData = this.#getFormData(action);
         try {
-            const response = await fetch('/api/v1/fxSettlements/step', { method: 'POST', body: formData });
+            let response = null;
+            if (action === 'SET') {
+                const formData = this.#getFormData(action);
+                response = await fetch('/api/v1/fxSettlements/step', {
+                    method: 'POST',
+                    body: formData
+                });
+            } else {
+                response = await fetch('/api/v1/fxSettlements/rollbackStep', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fxSettlementId: this.form.elements['fxSettlementId'].value,
+                        currentStep: this.form.elements['currentStep'].value
+                    })
+                });
+            }
             if (response.ok) {
                 this.bsModal.hide();
                 this.form.reset();

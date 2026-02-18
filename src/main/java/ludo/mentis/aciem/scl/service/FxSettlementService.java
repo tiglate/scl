@@ -20,4 +20,6 @@ public interface FxSettlementService {
     FxSettlementHistoryDTO viewStep(Long fxSettlementId, String step);
 
     List<FxSettlementHistoryDTO> getHistoryByFxSettlementId(Long id);
+
+    void rollbackStep(Long fxSettlementId, String step, Long userId);
 }

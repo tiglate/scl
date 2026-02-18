@@ -10,8 +10,9 @@ public class FxSettlementStepDTO {
     @NotBlank
     private String currentStep;
 
-    @NotNull
     private Long fxTradeId;
+
+    private Long fxSettlementId;
 
     @Size(max = 255)
     private String comments;
@@ -32,6 +33,14 @@ public class FxSettlementStepDTO {
 
     public void setFxTradeId(final Long fxTradeId) {
         this.fxTradeId = fxTradeId;
+    }
+
+    public Long getFxSettlementId() {
+        return fxSettlementId;
+    }
+
+    public void setFxSettlementId(Long fxSettlementId) {
+        this.fxSettlementId = fxSettlementId;
     }
 
     public String getComments() {

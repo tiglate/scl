@@ -151,4 +151,58 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         return fxSettlementLogRepository.findHistoryByFxSettlementIdAndStep(fxSettlementId, step)
                 .orElseThrow();
     }
+
+    @Override
+    public void rollbackStep(Long fxSettlementId, String step, Long userId) {
+        if (step == null || step.trim().isBlank()) {
+            throw new IllegalArgumentException("currentStep must not be null or blank");
+        }
+
+        final var settlement = fxSettlementRepository.findById(fxSettlementId)
+                .orElseThrow(() -> new NotFoundException("Settlement not found for ID: " + fxSettlementId));
+
+        final var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found for ID: " + userId));
+
+        step = step.trim().toLowerCase().substring(0, 3);
+
+        switch (step) {
+            case "ins":
+                settlement.setInsFlag(false);
+                settlement.setInsComments(null);
+                settlement.setInsUser(null);
+                settlement.setInsTimestamp(null);
+                break;
+            case "g10":
+                settlement.setG10Flag(false);
+                settlement.setG10Comments(null);
+                settlement.setG10User(null);
+                settlement.setG10Timestamp(null);
+                break;
+            case "brl":
+                settlement.setBrlFlag(false);
+                settlement.setBrlComments(null);
+                settlement.setBrlUser(null);
+                settlement.setBrlTimestamp(null);
+                break;
+            case "ion":
+                settlement.setIonFlag(false);
+                settlement.setIonComments(null);
+                settlement.setIonUser(null);
+                settlement.setIonTimestamp(null);
+                break;
+        }
+
+        fxSettlementRepository.save(settlement);
+
+        var logEntry = new FxSettlementLog();
+        logEntry.setFxSettlement(settlement);
+        logEntry.setUser(user);
+        logEntry.setStep(step.equals("ins") ? "Instruction" : step);
+        logEntry.setFlag(false);
+        logEntry.setComments("- STEP DELETED -");
+        logEntry.setEventDate(LocalDateTime.now());
+
+        fxSettlementLogRepository.save(logEntry);
+    }
 }

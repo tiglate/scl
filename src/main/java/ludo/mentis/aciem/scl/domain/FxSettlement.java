@@ -74,7 +74,7 @@ public class FxSettlement {
     @JoinColumn(name = "brl_file_id")
     private FileContent brlFile;
 
-    @Column(name = "ion_flag", nullable = false)
+    @Column(name = "ion_flag")
     private boolean ionFlag;
 
     @ManyToOne(fetch = FetchType.LAZY)
