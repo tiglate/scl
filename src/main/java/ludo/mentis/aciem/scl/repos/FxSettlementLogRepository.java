@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FxSettlementLogRepository extends JpaRepository<FxSettlementLog, Long> {
 
-    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l.user.name, l.eventDate, CASE WHEN l.flag THEN 'Set' ELSE 'Unset' END, l.step, l.comments, null, null) FROM FxSettlementLog l WHERE l.fxSettlement.trade.id = :fxTradeId ORDER BY l.eventDate DESC")
+    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l) FROM FxSettlementLogView l WHERE l.fxTradeId = :fxTradeId ORDER BY l.timestamp DESC")
     List<FxSettlementHistoryDTO> getHistoryByFxTradeId(@Param("fxTradeId") Long fxTradeId);
+
+    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l) FROM FxSettlementLogView l WHERE l.fxTradeId = :fxTradeId ORDER BY l.timestamp DESC LIMIT 1")
+    Optional<FxSettlementHistoryDTO> findHistoryByTradeId(@Param("fxTradeId") Long fxTradeId);
 }

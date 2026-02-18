@@ -13,7 +13,7 @@ import java.util.UUID;
 public class FileContent {
 
     @Id
-    @Column(name = "id_file_content", nullable = false, updatable = false)
+    @Column(name = "id_file_content", columnDefinition = "uniqueidentifier")
     private UUID id;
 
     @Column(name = "file_name")

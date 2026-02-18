@@ -26,7 +26,7 @@ public class FxSettlementRestController {
     }
 
     @GetMapping("/steps")
-    public ResponseEntity<Iterable<FxSettlementView>> getSettlementSteps(
+    public ResponseEntity<Iterable<FxSettlementView>> list(
             @RequestParam(name = "startDate", required = false) LocalDate startDate,
             @RequestParam(name = "endDate", required = false) LocalDate endDate) {
         if (startDate == null) {
@@ -38,15 +38,20 @@ public class FxSettlementRestController {
         return ResponseEntity.ok(fxSettlementService.findAllBySearchCriteria(startDate, endDate));
     }
 
+    @GetMapping("/view/{id}")
+    public ResponseEntity<FxSettlementHistoryDTO> viewStep(@PathVariable final Long id) {
+        return null;
+    }
+
     @GetMapping("/lastTradeDate")
     public LocalDate getLastTradeDate() {
         return fxSettlementService.getLastTradeDate();
     }
 
     @PostMapping(value = "/step", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> processSettlementStep(@RequestPart(value = "file", required = false) MultipartFile file,
-                                                        @RequestPart("details") @Valid final FxSettlementStepDTO dto,
-                                                        Authentication authentication) {
+    public ResponseEntity<String> save(@RequestPart(value = "file", required = false) MultipartFile file,
+                                       @RequestPart("details") @Valid final FxSettlementStepDTO dto,
+                                       Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(401).body("Authentication is required");
         }

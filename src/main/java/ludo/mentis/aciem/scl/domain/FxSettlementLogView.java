@@ -1,40 +1,53 @@
-package ludo.mentis.aciem.scl.model;
+package ludo.mentis.aciem.scl.domain;
 
-import ludo.mentis.aciem.scl.domain.FxSettlementLogView;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class FxSettlementHistoryDTO {
+@Entity
+@Immutable
+@Table(name = "vw_fx_settlement_log")
+public class FxSettlementLogView {
 
+    @Id
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "fx_settlement_id")
     private Long fxSettlementId;
+
+    @Column(name = "fx_trade_id")
     private Long fxTradeId;
+
+    @Column(name = "user_name")
     private String userName;
+
+    // Column name in the view is "timestamp" (alias), so map it explicitly.
+    @Column(name = "timestamp")
     private LocalDateTime timestamp;
+
+    @Column(name = "action")
     private String action;
+
+    @Column(name = "step")
     private String step;
+
+    @Column(name = "comments")
     private String comments;
+
+    @Column(name = "file_id", columnDefinition = "uniqueidentifier")
     private UUID fileId;
+
+    @Column(name = "file_name")
     private String fileName;
+
+    @Column(name = "file_type")
     private String fileType;
-
-    public FxSettlementHistoryDTO() {
-    }
-
-    public FxSettlementHistoryDTO(FxSettlementLogView entity) {
-        setId(entity.getId());
-        setFxSettlementId(entity.getFxSettlementId());
-        setFxTradeId(entity.getFxTradeId());
-        setUserName(entity.getUserName());
-        setTimestamp(entity.getTimestamp());
-        setAction(entity.getAction());
-        setStep(entity.getStep());
-        setComments(entity.getComments());
-        setFileId(entity.getFileId());
-        setFileName(entity.getFileName());
-        setFileType(entity.getFileType());
-    }
 
     public Long getId() {
         return id;
