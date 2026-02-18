@@ -17,5 +17,7 @@ public interface FxSettlementService {
 
     void save(FxSettlementStepDTO dto) throws StepAlreadyTaken;
 
-    List<FxSettlementHistoryDTO> getHistoryByFxTradeId(Long id);
+    FxSettlementHistoryDTO viewStep(Long fxSettlementId, String step);
+
+    List<FxSettlementHistoryDTO> getHistoryByFxSettlementId(Long id);
 }

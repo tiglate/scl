@@ -11,9 +11,10 @@ import java.util.Optional;
 
 public interface FxSettlementLogRepository extends JpaRepository<FxSettlementLog, Long> {
 
-    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l) FROM FxSettlementLogView l WHERE l.fxTradeId = :fxTradeId ORDER BY l.timestamp DESC")
-    List<FxSettlementHistoryDTO> getHistoryByFxTradeId(@Param("fxTradeId") Long fxTradeId);
+    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l) FROM FxSettlementLogView l WHERE l.fxSettlementId = :fxSettlementId ORDER BY l.timestamp DESC")
+    List<FxSettlementHistoryDTO> getHistoryByFxSettlementId(@Param("fxSettlementId") Long fxSettlementId);
 
-    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l) FROM FxSettlementLogView l WHERE l.fxTradeId = :fxTradeId ORDER BY l.timestamp DESC LIMIT 1")
-    Optional<FxSettlementHistoryDTO> findHistoryByTradeId(@Param("fxTradeId") Long fxTradeId);
+    @Query("SELECT new ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO(l) FROM FxSettlementLogView l WHERE l.fxSettlementId = :fxSettlementId AND l.step = :step ORDER BY l.timestamp DESC LIMIT 1")
+    Optional<FxSettlementHistoryDTO> findHistoryByFxSettlementIdAndStep(@Param("fxSettlementId") Long fxSettlementId,
+                                                                        @Param("step") String step);
 }

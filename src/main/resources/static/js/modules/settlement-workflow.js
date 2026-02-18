@@ -28,19 +28,19 @@ export class SettlementWorkflow {
             const btn = e.target.closest('button[data-step]');
             if (btn) {
                 const row = btn.closest('tr');
-                this.handleWorkflowClick(row, btn.dataset.step);
+                this.handleWorkflowClick(row, btn);
             }
         });
 
-        this.btnConfirm.addEventListener('click', () => this.submitWorkflow('APPROVED'));
-        this.btnReject.addEventListener('click', () => this.submitWorkflow('REJECTED'));
+        this.btnConfirm.addEventListener('click', () => this.submitWorkflow('SET'));
+        this.btnReject.addEventListener('click', () => this.submitWorkflow('UNSET'));
     }
 
-    handleWorkflowClick(row, step) {
-        // Get the original JSON object from DataTables for this specific row
+    async handleWorkflowClick(row, btn) {
+        const step = btn.dataset.step;
         const data = this.grid.getRowData(row);
+        const isCompleted = btn.querySelector('i').classList.contains('bi-check-square-fill');
 
-        // Map the JSON properties to the structure expected by populateModal
         const modalData = {
             id: data.idFxTrade,
             counterparty: data.counterparty,
@@ -48,7 +48,6 @@ export class SettlementWorkflow {
             contract: data.contractId,
             currency: data.currency,
             type: data.tradeType,
-            // Convert numbers back to string for your existing setFormattedAmount logic
             g10Amt: data.g10Amount.toString(),
             brlAmt: data.brlAmount.toString(),
             tradeDate: data.tradeDate,
@@ -60,8 +59,42 @@ export class SettlementWorkflow {
 
         this.syncStepperState(row, step);
         this.populateModal(modalData);
+
+        this.form.reset();
+
+        if (isCompleted) {
+            await this.loadExistingStepData(data.id, step);
+            this.toggleUIState(true); // Read-only / Delete mode
+        } else {
+            this.toggleUIState(false); // Editable / Confirm mode
+        }
+
         this.resetButtons();
         this.bsModal.show();
+    }
+
+    async loadExistingStepData(id, step) {
+        try {
+            const response = await fetch(`/api/v1/fxSettlements/view?fxSettlementId=${id}&step=${step}`);
+            if (response.ok) {
+                const details = await response.json();
+
+                // Populate the comment
+                document.getElementById('comments').value = details.comments || '';
+
+                // If there's a file, show a link (You might need a placeholder div in your HTML for this)
+                this.renderExistingFile(details.fileName, details.fileId);
+
+                const formattedDate = new Date(details.timestamp).toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+                // Update modal title to reflect audit mode
+                this.modalElement.querySelector('.modal-title').innerHTML =
+                    `<i class="bi bi-info-circle me-2"></i> Step Details (by ${details.userName} on ${formattedDate})`;
+            }
+        } catch (error) {
+            console.error("Failed to fetch step details", error);
+        }
     }
 
     /**
@@ -100,6 +133,45 @@ export class SettlementWorkflow {
                 }
             }
         });
+    }
+
+    toggleUIState(isCompleted) {
+        const comments = document.getElementById('comments');
+        const fileInput = document.getElementById('fileUpload');
+
+        if (isCompleted) {
+            // Delete Mode
+            comments.readOnly = true;
+            fileInput.classList.add('d-none');
+            this.btnConfirm.classList.add('d-none');
+            this.btnReject.classList.remove('d-none');
+            this.btnReject.innerHTML = `<i class="bi bi-trash me-1"></i> DELETE STEP`;
+        } else {
+            // Confirm Mode
+            comments.readOnly = false;
+            fileInput.classList.remove('d-none');
+            this.btnConfirm.classList.remove('d-none');
+            this.btnReject.classList.add('d-none'); // Hide Reject/Delete button
+            this.btnConfirm.innerHTML = `<i class="bi bi-check2-circle me-1"></i> CONFIRM`;
+            this.modalElement.querySelector('.modal-title').innerText = "Confirm Step";
+            this.removeExistingFileLink();
+        }
+    }
+
+    renderExistingFile(name, id) {
+        this.removeExistingFileLink();
+        if (!name) return;
+        const html = `
+            <div id="existingFileLink" class="mt-2 p-2 bg-light border rounded small">
+                <i class="bi bi-paperclip me-2"></i>
+                <a href="/api/v1/download/${id}" target="_blank" class="text-decoration-none">${name}</a>
+            </div>`;
+        document.getElementById('fileUpload').insertAdjacentHTML('afterend', html);
+    }
+
+    removeExistingFileLink() {
+        const link = document.getElementById('existingFileLink');
+        if (link) link.remove();
     }
 
     async submitWorkflow(action) {
@@ -208,15 +280,15 @@ export class SettlementWorkflow {
         // 4. Visual feedback for the active button
         if (isLoading) {
             const spinner = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...`;
-            if (action === 'APPROVED') {
+            if (action === 'SET') {
                 this.btnConfirm.innerHTML = spinner;
-            } else if (action === 'REJECTED') {
+            } else if (action === 'UNSET') {
                 this.btnReject.innerHTML = spinner;
             }
         } else {
             // Restore original button labels
             this.btnConfirm.innerHTML = `<i class="bi bi-check2-circle me-1"></i> CONFIRM`;
-            this.btnReject.innerHTML = `<i class="bi bi-x-circle me-1"></i> REJECT`;
+            this.btnReject.innerHTML = `<i class="bi bi-x-circle me-1"></i> DELETE STEP`;
         }
     }
 

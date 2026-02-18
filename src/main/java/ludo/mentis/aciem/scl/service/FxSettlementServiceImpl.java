@@ -133,7 +133,22 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     }
 
     @Override
-    public List<FxSettlementHistoryDTO> getHistoryByFxTradeId(Long id) {
-        return fxSettlementLogRepository.getHistoryByFxTradeId(id);
+    public List<FxSettlementHistoryDTO> getHistoryByFxSettlementId(Long id) {
+        return fxSettlementLogRepository.getHistoryByFxSettlementId(id);
+    }
+
+    @Override
+    public FxSettlementHistoryDTO viewStep(Long fxSettlementId, String step) {
+        if (fxSettlementId == null || fxSettlementId <= 0) {
+            throw new IllegalArgumentException("fxSettlementId must not be null or <= 0");
+        }
+        if (step == null || step.isBlank()) {
+            throw new IllegalArgumentException("step must not be null or blank");
+        }
+        step = step.trim().toUpperCase();
+        step = step.equals("INS") ? "Instruction" : step;
+
+        return fxSettlementLogRepository.findHistoryByFxSettlementIdAndStep(fxSettlementId, step)
+                .orElseThrow();
     }
 }

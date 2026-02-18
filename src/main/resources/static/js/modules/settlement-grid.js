@@ -72,7 +72,7 @@ export class SettlementGrid {
                 // Get the data object from the DataTables row
                 const rowData = this.table.row(btn.closest('tr')).data();
                 // Call the page controller to handle the modal logic
-                this.showHistory(rowData.idFxTrade);
+                this.showHistory(rowData.id);
             }
         });
 
@@ -137,7 +137,7 @@ export class SettlementGrid {
     /**
      * Fetches and displays the interaction log in a chat-like format.
      */
-    async showHistory(fxTradeId) {
+    async showHistory(id) {
         const container = document.getElementById('historyChatContainer');
         container.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"></div></div>';
 
@@ -145,7 +145,7 @@ export class SettlementGrid {
         hModal.show();
 
         try {
-            const response = await fetch(`/api/v1/fxSettlements/history/${fxTradeId}`);
+            const response = await fetch(`/api/v1/fxSettlements/history/${id}`);
             const logs = await response.json();
 
             container.innerHTML = ''; // Clear spinner

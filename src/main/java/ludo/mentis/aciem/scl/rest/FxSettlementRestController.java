@@ -38,9 +38,13 @@ public class FxSettlementRestController {
         return ResponseEntity.ok(fxSettlementService.findAllBySearchCriteria(startDate, endDate));
     }
 
-    @GetMapping("/view/{id}")
-    public ResponseEntity<FxSettlementHistoryDTO> viewStep(@PathVariable final Long id) {
-        return null;
+    @GetMapping("/view")
+    public ResponseEntity<FxSettlementHistoryDTO> viewStep(@RequestParam Long fxSettlementId,
+                                                           @RequestParam String step) {
+        if (fxSettlementId <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(fxSettlementService.viewStep(fxSettlementId, step));
     }
 
     @GetMapping("/lastTradeDate")
@@ -75,6 +79,6 @@ public class FxSettlementRestController {
         if (id == null || id <= 0) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(fxSettlementService.getHistoryByFxTradeId(id));
+        return ResponseEntity.ok(fxSettlementService.getHistoryByFxSettlementId(id));
     }
 }
