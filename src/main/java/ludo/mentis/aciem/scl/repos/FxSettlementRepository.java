@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 public interface FxSettlementRepository extends JpaRepository<FxSettlement, Long> {
@@ -27,4 +28,15 @@ public interface FxSettlementRepository extends JpaRepository<FxSettlement, Long
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM FxSettlement s WHERE s.trade.id = :tradeId")
     Optional<FxSettlement> findFirstByTradeIdWithLock(@Param("tradeId") Long tradeId);
+
+
+    @Query("""
+           SELECT CASE WHEN COUNT(f) > 0 THEN TRUE ELSE FALSE END
+           FROM   FxSettlement f
+           WHERE  (f.insFile IS NOT NULL AND f.insFile.id = :fileContentId)
+              OR  (f.brlFile IS NOT NULL AND f.brlFile.id = :fileContentId)
+              OR  (f.g10File IS NOT NULL AND f.g10File.id = :fileContentId)
+              OR  (f.ionFile IS NOT NULL AND f.ionFile.id = :fileContentId)
+           """)
+    boolean existsSettlementByFileContentId(@Param("fileContentId") UUID fileContentId);
 }

@@ -1,22 +1,29 @@
 package ludo.mentis.aciem.scl.service;
 
+import ludo.mentis.aciem.scl.domain.FileContent;
 import ludo.mentis.aciem.scl.domain.FxSettlement;
 import ludo.mentis.aciem.scl.domain.FxSettlementLog;
 import ludo.mentis.aciem.scl.domain.FxSettlementView;
+import ludo.mentis.aciem.scl.model.FileContentDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
 import ludo.mentis.aciem.scl.repos.FxSettlementLogRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
+import ludo.mentis.aciem.scl.util.FileUploadException;
 import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.util.SecurityViolationException;
 import ludo.mentis.aciem.scl.util.StepAlreadyTaken;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -27,15 +34,18 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     private final FxTradeRepository fxTradeRepository;
     private final UserRepository userRepository;
     private final FxSettlementLogRepository fxSettlementLogRepository;
+    private final FileDataService fileDataService;
 
     public FxSettlementServiceImpl(final FxSettlementRepository fxSettlementRepository,
                                    final FxTradeRepository fxTradeRepository,
                                    final UserRepository userRepository,
-                                   final FxSettlementLogRepository fxSettlementLogRepository) {
+                                   final FxSettlementLogRepository fxSettlementLogRepository,
+                                   final FileDataService fileDataService) {
         this.fxSettlementRepository = fxSettlementRepository;
         this.fxTradeRepository = fxTradeRepository;
         this.userRepository = userRepository;
         this.fxSettlementLogRepository = fxSettlementLogRepository;
+        this.fileDataService = fileDataService;
     }
 
     @Override
@@ -49,7 +59,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     }
 
     @Override
-    public void save(FxSettlementStepDTO dto) throws StepAlreadyTaken {
+    public void save(FxSettlementStepDTO dto, MultipartFile file) throws StepAlreadyTaken, FileUploadException {
         if (dto == null) {
             throw new IllegalArgumentException("dto must not be null");
         }
@@ -76,6 +86,11 @@ public class FxSettlementServiceImpl implements FxSettlementService {
             settlement.setTrade(trade);
         }
 
+        FileContent fileContent = null;
+        if (file != null) {
+            fileContent = fileDataService.create(file);
+        }
+
         final var now = LocalDateTime.now();
 
         final var step = dto.getCurrentStep().trim().toLowerCase();
@@ -89,6 +104,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setInsComments(dto.getComments());
                 settlement.setInsUser(user);
                 settlement.setInsTimestamp(now);
+                settlement.setInsFile(fileContent);
                 break;
             case "g10":
                 if (settlement.isG10Flag()) {
@@ -98,6 +114,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setG10Comments(dto.getComments());
                 settlement.setG10User(user);
                 settlement.setG10Timestamp(now);
+                settlement.setG10File(fileContent);
                 break;
             case "brl":
                 if (settlement.isBrlFlag()) {
@@ -107,6 +124,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setBrlComments(dto.getComments());
                 settlement.setBrlUser(user);
                 settlement.setBrlTimestamp(now);
+                settlement.setBrlFile(fileContent);
                 break;
             case "ion":
                 if (settlement.isIonFlag()) {
@@ -116,7 +134,10 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setIonComments(dto.getComments());
                 settlement.setIonUser(user);
                 settlement.setIonTimestamp(now);
+                settlement.setIonFile(fileContent);
                 break;
+            default:
+                throw new IllegalArgumentException("Invalid step: " + step);
         }
 
         fxSettlementRepository.save(settlement);
@@ -126,6 +147,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         logEntry.setUser(user);
         logEntry.setStep(step.equals("ins") ? "Instruction" : step);
         logEntry.setFlag(true);
+        logEntry.setFile(fileContent);
         logEntry.setComments(dto.getComments());
         logEntry.setEventDate(now);
 
@@ -204,5 +226,13 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         logEntry.setEventDate(LocalDateTime.now());
 
         fxSettlementLogRepository.save(logEntry);
+    }
+
+    @Override
+    public FileContentDTO getFile(UUID id) {
+        if (!fxSettlementRepository.existsSettlementByFileContentId(id)) {
+            throw new SecurityViolationException("Access denied: no settlement record associated with this file.");
+        }
+        return fileDataService.get(id);
     }
 }

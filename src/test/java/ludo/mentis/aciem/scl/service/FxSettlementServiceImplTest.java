@@ -16,6 +16,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -47,6 +48,8 @@ class FxSettlementServiceImplTest {
     @Captor
     private ArgumentCaptor<FxSettlementLog> logCaptor;
 
+    private MultipartFile file;
+
     @Test
     void findAllBySearchCriteria_shouldDelegateToRepository() {
         LocalDate start = LocalDate.of(2024, 1, 1);
@@ -73,21 +76,21 @@ class FxSettlementServiceImplTest {
 
     @Test
     void save_shouldValidateInputs() {
-        assertThatThrownBy(() -> service.save(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.save(null, file)).isInstanceOf(IllegalArgumentException.class);
 
         FxSettlementStepDTO dto = new FxSettlementStepDTO();
         dto.setCurrentStep("ins");
         dto.setUserId(1L);
         // missing trade id
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(IllegalArgumentException.class);
 
         dto.setFxTradeId(2L);
         dto.setUserId(null);
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(IllegalArgumentException.class);
 
         dto.setUserId(1L);
         dto.setCurrentStep("   ");
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -109,7 +112,7 @@ class FxSettlementServiceImplTest {
 
         when(fxSettlementRepository.save(any(FxSettlement.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        service.save(dto);
+        service.save(dto, file);
 
         verify(fxSettlementRepository).save(settlementCaptor.capture());
         FxSettlement saved = settlementCaptor.getValue();
@@ -145,7 +148,7 @@ class FxSettlementServiceImplTest {
         trade.setTradeId("T-10");
         when(fxTradeRepository.findById(10L)).thenReturn(Optional.of(trade));
 
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(StepAlreadyTaken.class);
+        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(StepAlreadyTaken.class);
 
         verify(fxSettlementRepository, never()).save(any());
         verify(fxSettlementLogRepository, never()).save(any());
@@ -161,13 +164,13 @@ class FxSettlementServiceImplTest {
         when(fxSettlementRepository.findFirstByTradeIdWithLock(10L)).thenReturn(Optional.of(new FxSettlement()));
         when(userRepository.findById(20L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(NotFoundException.class);
 
         // user present, trade missing
         when(userRepository.findById(20L)).thenReturn(Optional.of(new User()));
         when(fxTradeRepository.findById(10L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(NotFoundException.class);
     }
 
     @Test

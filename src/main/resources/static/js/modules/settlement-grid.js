@@ -165,7 +165,7 @@ export class SettlementGrid {
                         <div class="text-dark small mb-2">${log.comments || 'No comments provided.'}</div>
                         ${log.fileName ? `
                             <div class="mt-2 pt-2 border-top">
-                                <a href="/api/v1/download/${log.fileId}" class="text-decoration-none d-flex align-items-center bg-light p-2 rounded">
+                                <a href="/fxSettlements/download/${log.fileId}" class="text-decoration-none d-flex align-items-center bg-light p-2 rounded">
                                     <i class="bi bi-file-earmark-pdf-fill text-danger fs-5 me-2"></i>
                                     <span class="small text-truncate">${log.fileName}</span>
                                     <i class="bi bi-download ms-auto text-primary"></i>

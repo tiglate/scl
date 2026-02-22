@@ -1,31 +1,23 @@
-package ludo.mentis.aciem.scl.domain;
-
-import jakarta.persistence.*;
-import org.hibernate.envers.Audited;
+package ludo.mentis.aciem.scl.model;
 
 import java.sql.Blob;
 import java.util.UUID;
 
-
-@Audited
-@Entity
-@Table(name = "tb_file_content")
-public class FileContent {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_file_content", columnDefinition = "uniqueidentifier")
+public class FileContentDTO {
     private UUID id;
-
-    @Column(name = "file_name")
     private String fileName;
-
-    @Column(name = "file_type")
     private String fileType;
-
-    @Column(nullable = false)
-    @Lob
     private Blob content;
+
+    public FileContentDTO() {
+    }
+
+    public FileContentDTO(UUID id, String fileName, String fileType, Blob content) {
+        this.id = id;
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.content = content;
+    }
 
     public UUID getId() {
         return id;
@@ -55,8 +47,7 @@ public class FileContent {
         return content;
     }
 
-    public void setContent(final Blob content) {
+    public void setContent(Blob content) {
         this.content = content;
     }
-
 }

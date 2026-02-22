@@ -67,7 +67,7 @@ public class FxSettlementRestController {
         dto.setUserId(userDetails.getId());
 
         try {
-            this.fxSettlementService.save(dto);
+            this.fxSettlementService.save(dto, file);
             return ResponseEntity.ok("Settlement step processed successfully");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error processing settlement step: " + e.getMessage());

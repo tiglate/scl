@@ -1,23 +1,18 @@
 package ludo.mentis.aciem.scl.service;
 
-import ludo.mentis.aciem.scl.model.FileData;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
+import ludo.mentis.aciem.scl.domain.FileContent;
+import ludo.mentis.aciem.scl.model.FileContentDTO;
+import ludo.mentis.aciem.scl.util.FileUploadException;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 
 public interface FileDataService {
 
-    FileData saveUpload(MultipartFile uploadFile);
+    FileContent create(MultipartFile uploadFile) throws FileUploadException;
 
-    void persistUpload(FileData fileData);
+    void delete(UUID id) throws FileUploadException;
 
-    void removeFileContent(FileData fileData);
-
-    void handleUpdate(FileData oldFileData, FileData newFileData);
-
-    ResponseEntity<InputStreamResource> provideDownload(FileData fileData);
-
-    void cleanUploadDir();
-
+    FileContentDTO get(UUID id);
 }

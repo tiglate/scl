@@ -170,7 +170,7 @@ export class SettlementWorkflow {
             html = `
                 <div id="existingFileContainer" class="mt-2 p-2 bg-light border rounded small">
                     <i class="bi bi-paperclip me-2 text-primary"></i>
-                    <a href="/api/v1/download/${id}" target="_blank" class="text-decoration-none fw-bold">${name}</a>
+                    <a href="/fxSettlements/download/${id}" target="_blank" class="text-decoration-none fw-bold">${name}</a>
                 </div>`;
         } else {
             // No file: Show informative text
