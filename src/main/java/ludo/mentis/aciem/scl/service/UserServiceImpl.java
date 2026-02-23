@@ -5,7 +5,7 @@ import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.UserDTO;
 import ludo.mentis.aciem.scl.model.UserSearchDTO;
 import ludo.mentis.aciem.scl.repos.*;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

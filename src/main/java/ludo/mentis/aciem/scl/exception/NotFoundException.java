@@ -1,4 +1,4 @@
-package ludo.mentis.aciem.scl.util;
+package ludo.mentis.aciem.scl.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

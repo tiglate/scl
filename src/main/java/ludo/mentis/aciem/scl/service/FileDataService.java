@@ -2,7 +2,7 @@ package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.FileContent;
 import ludo.mentis.aciem.scl.model.FileContentDTO;
-import ludo.mentis.aciem.scl.util.FileUploadException;
+import ludo.mentis.aciem.scl.exception.FileUploadException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;

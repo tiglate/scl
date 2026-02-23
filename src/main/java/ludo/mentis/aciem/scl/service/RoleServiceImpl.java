@@ -4,7 +4,7 @@ import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.model.RoleDTO;
 import ludo.mentis.aciem.scl.repos.RoleRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

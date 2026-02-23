@@ -9,7 +9,7 @@ import ludo.mentis.aciem.scl.model.DocumentDTO;
 import ludo.mentis.aciem.scl.repos.CounterpartyRepository;
 import ludo.mentis.aciem.scl.repos.DocumentTypeRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

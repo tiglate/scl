@@ -2,7 +2,7 @@ package ludo.mentis.aciem.scl.controller;
 
 import ludo.mentis.aciem.scl.model.FileContentDTO;
 import ludo.mentis.aciem.scl.service.FxSettlementService;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

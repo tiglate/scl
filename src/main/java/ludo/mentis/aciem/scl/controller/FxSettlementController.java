@@ -1,7 +1,7 @@
 package ludo.mentis.aciem.scl.controller;
 
 import ludo.mentis.aciem.scl.service.FxSettlementService;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import ludo.mentis.aciem.scl.util.UserRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

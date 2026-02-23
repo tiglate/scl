@@ -4,7 +4,7 @@ import ludo.mentis.aciem.scl.domain.*;
 import ludo.mentis.aciem.scl.model.FxTradeDTO;
 import ludo.mentis.aciem.scl.model.FxTradeSearchDTO;
 import ludo.mentis.aciem.scl.repos.*;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

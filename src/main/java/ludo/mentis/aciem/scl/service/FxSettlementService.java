@@ -4,8 +4,8 @@ import ludo.mentis.aciem.scl.domain.FxSettlementView;
 import ludo.mentis.aciem.scl.model.FileContentDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
-import ludo.mentis.aciem.scl.util.FileUploadException;
-import ludo.mentis.aciem.scl.util.StepAlreadyTaken;
+import ludo.mentis.aciem.scl.exception.FileUploadException;
+import ludo.mentis.aciem.scl.exception.StepAlreadyTaken;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;

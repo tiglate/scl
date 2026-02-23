@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.config.MailProperties;
+import ludo.mentis.aciem.scl.util.LogSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,7 +27,7 @@ public class MailServiceImpl implements MailService {
     @Override
     @Async
     public void sendMail(final String mailTo, final String subject, final String html) {
-        log.info("sending mail {} to {}", subject, mailTo);
+        log.info("sending mail {} to {}", LogSafe.of(subject), LogSafe.of(mailTo));
 
         javaMailSender.send(mimeMessage -> {
             final MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");

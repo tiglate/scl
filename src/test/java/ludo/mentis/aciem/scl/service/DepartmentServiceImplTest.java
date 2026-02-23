@@ -5,7 +5,7 @@ import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.DepartmentDTO;
 import ludo.mentis.aciem.scl.repos.DepartmentRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
-import ludo.mentis.aciem.scl.util.NotFoundException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

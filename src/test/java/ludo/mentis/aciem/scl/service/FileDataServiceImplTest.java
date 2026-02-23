@@ -2,7 +2,7 @@ package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.FileContent;
 import ludo.mentis.aciem.scl.repos.FileContentRepository;
-import ludo.mentis.aciem.scl.util.FileUploadException;
+import ludo.mentis.aciem.scl.exception.FileUploadException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
