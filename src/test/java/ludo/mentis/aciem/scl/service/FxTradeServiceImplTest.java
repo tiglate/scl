@@ -45,7 +45,7 @@ class FxTradeServiceImplTest {
         Pageable pageable = mock(Pageable.class);
         Page<FxTradeView> expectedPage = new PageImpl<>(Collections.emptyList());
 
-        when(fxTradeRepository.findAllBySearchCriteria(eq(searchDTO), eq(pageable)))
+        when(fxTradeRepository.findAllBySearchCriteria(searchDTO, pageable))
                 .thenReturn(expectedPage);
 
         Page<FxTradeView> result = fxTradeService.findAll(searchDTO, pageable);

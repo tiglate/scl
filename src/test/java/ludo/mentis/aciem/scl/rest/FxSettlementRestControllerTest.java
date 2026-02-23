@@ -126,7 +126,7 @@ class FxSettlementRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Settlement step rolled back successfully"));
 
-        verify(fxSettlementService).rollbackStep(eq(1L), eq(Step.RECEIVED_OR_PAID_FOREIGN_CURRENCY), eq(1L));
+        verify(fxSettlementService).rollbackStep(1L, Step.RECEIVED_OR_PAID_FOREIGN_CURRENCY, 1L);
     }
 
     @Test

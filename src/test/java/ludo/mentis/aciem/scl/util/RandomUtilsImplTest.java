@@ -71,8 +71,7 @@ class RandomUtilsImplTest {
     void testPickRandomBoolean() {
         // Since it's random, we just check if it returns. 
         // We could run it many times to see if we get both, but it's not strictly necessary for a simple unit test.
-        boolean result = randomUtils.pickRandomBoolean();
-        // No assertion needed other than it doesn't throw.
+        assertDoesNotThrow(() -> randomUtils.pickRandomBoolean());
     }
 
     @Test

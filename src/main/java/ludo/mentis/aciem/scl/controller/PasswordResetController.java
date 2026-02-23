@@ -17,6 +17,7 @@ import java.util.UUID;
 @RequestMapping("/passwordReset")
 public class PasswordResetController {
 
+    private static final String REDIRECT_TO_LOGIN = "redirect:/login";
     private final PasswordResetService passwordResetService;
 
     public PasswordResetController(final PasswordResetService passwordResetService) {
@@ -34,7 +35,7 @@ public class PasswordResetController {
         if (!bindingResult.hasErrors()) {
             passwordResetService.startProcess(passwordResetRequest);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, "Password reset process started. Please check your e-mail.");
-            return "redirect:/login";
+            return REDIRECT_TO_LOGIN;
         }
         return "passwordReset/start";
     }
@@ -46,7 +47,7 @@ public class PasswordResetController {
         passwordResetCompleteRequest.setUid(passwordResetUid);
         if (!passwordResetService.isValidPasswordResetUid(passwordResetUid)) {
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, "Invalid or expired password reset request.");
-            return "redirect:/login";
+            return REDIRECT_TO_LOGIN;
         }
         return "passwordReset/complete";
     }
@@ -58,7 +59,7 @@ public class PasswordResetController {
         if (!bindingResult.hasErrors()) {
             passwordResetService.completeProcess(passwordResetCompleteRequest);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, "Password was updated successfully.");
-            return "redirect:/login";
+            return REDIRECT_TO_LOGIN;
         }
         return "passwordReset/complete";
     }

@@ -50,7 +50,7 @@ class MailServiceImplTest {
         verify(mailProperties).getMailFrom();
         verify(mailProperties).getMailDisplayName();
 
-        verify(mimeMessage).setSubject(eq(subject), eq("UTF-8"));
+        verify(mimeMessage).setSubject(subject, "UTF-8");
         verify(mimeMessage).setFrom(argThat((Address address) -> {
             InternetAddress internetAddress = (InternetAddress) address;
             return internetAddress.getAddress().equals(mailFrom) && internetAddress.getPersonal().equals(displayName);
