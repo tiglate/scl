@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class UsersLoader implements DataLoaderCommand {
@@ -24,8 +25,7 @@ public class UsersLoader implements DataLoaderCommand {
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final DepartmentRepository departmentRepository;
-	private static final String DEV_DEFAULT_PASSWORD = "12345";
-	
+
 	public UsersLoader(final RandomUtils randomUtils,
 			           final UserRepository userRepository,
 			           final RoleRepository roleRepository,
@@ -59,6 +59,7 @@ public class UsersLoader implements DataLoaderCommand {
 	}
 	
 	protected int createAdmin() {
+		final String DEV_DEFAULT_PASSWORD = UUID.randomUUID().toString();
 		final var user = new User();
 		final var department = departmentRepository.findByNameIgnoreCase("IT").orElseThrow();
 		user.setName("admin");
@@ -70,6 +71,7 @@ public class UsersLoader implements DataLoaderCommand {
         user.setDepartment(department);
         user.setRoles(new HashSet<>(roleRepository.findAll()));
         userRepository.save(user);
+		System.out.println("Admin user created with password: " + DEV_DEFAULT_PASSWORD);
         return 1;
 	}
 	
