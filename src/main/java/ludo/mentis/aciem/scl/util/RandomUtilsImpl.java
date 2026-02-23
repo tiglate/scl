@@ -2,21 +2,21 @@ package ludo.mentis.aciem.scl.util;
 
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class RandomUtilsImpl implements RandomUtils {
 	
-	private final Random random;
+	private final SecureRandom random;
 	
 	public RandomUtilsImpl() {
-		this.random = new Random();
+		this.random = new SecureRandom();
 	}
 	
 	@Override
