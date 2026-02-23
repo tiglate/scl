@@ -190,10 +190,10 @@
                         <version>0.8.14</version>
                         <configuration>
                             <excludes>
-                                <exclude>ludo/mentis/aciem/scl/model/*</exclude>
-                                <exclude>ludo/mentis/aciem/scl/domain/*</exclude>
-                                <exclude>ludo/mentis/aciem/scl/config/*</exclude>
-                                <exclude>ludo/mentis/aciem/scl/exception/*</exclude>
+                                <exclude>ludo/mentis/aciem/scl/model/**/*</exclude>
+                                <exclude>ludo/mentis/aciem/scl/domain/**/*</exclude>
+                                <exclude>ludo/mentis/aciem/scl/config/**/*</exclude>
+                                <exclude>ludo/mentis/aciem/scl/exception/**/*</exclude>
                             </excludes>
                         </configuration>
                         <executions>
