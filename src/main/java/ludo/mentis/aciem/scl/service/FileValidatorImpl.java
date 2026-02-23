@@ -50,17 +50,12 @@ public class FileValidatorImpl implements FileValidator {
         try {
             detectedMimeType = tika.detect(uploadFile.getInputStream(), fileName);
             if ("application/zip".equals(detectedMimeType)) {
-                switch (extension) {
-                    case "docx":
-                        detectedMimeType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                        break;
-                    case "xlsx":
-                        detectedMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        break;
-                    case "pptx":
-                        detectedMimeType = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-                        break;
-                }
+                detectedMimeType = switch (extension) {
+                    case "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    case "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    case "pptx" -> "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                    default -> detectedMimeType;
+                };
             }
         } catch (IOException e) {
             detectedMimeType = uploadFile.getContentType();

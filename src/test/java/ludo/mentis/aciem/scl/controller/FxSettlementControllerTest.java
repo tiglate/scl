@@ -1,8 +1,8 @@
 package ludo.mentis.aciem.scl.controller;
 
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import ludo.mentis.aciem.scl.model.FileContentDTO;
 import ludo.mentis.aciem.scl.service.FxSettlementService;
-import ludo.mentis.aciem.scl.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -85,7 +85,7 @@ class FxSettlementControllerTest {
 
         mockMvc.perform(get("/fxSettlements/download/" + id))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NotFoundException));
+                .andExpect(result -> assertInstanceOf(NotFoundException.class, result.getResolvedException()));
     }
 
     @Test

@@ -30,9 +30,6 @@ public class RandomUtilsImpl implements RandomUtils {
 		if (n == 0) {
 			return new ArrayList<>();
 		}
-		if (list.isEmpty()) {
-			throw new IllegalArgumentException("Cannot pick elements from an empty list.");
-		}
 		List<T> tempList = new ArrayList<>(list);
 		Collections.shuffle(tempList, random);
 		return tempList.subList(0, n);
