@@ -166,7 +166,7 @@ export class SettlementWorkflow {
 
         let html = "";
         if (name && id) {
-            // File exists: Show download link
+            // File exists: Show a download link
             html = `
                 <div id="existingFileContainer" class="mt-2 p-2 bg-light border rounded small">
                     <i class="bi bi-paperclip me-2 text-primary"></i>

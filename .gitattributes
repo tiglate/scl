@@ -1,0 +1,55 @@
+## ----------------------------------------------------------------------------
+## Text Files - Automatic Line Ending Normalization
+## ----------------------------------------------------------------------------
+# Handle line endings automatically for files detected as text.
+* text=auto
+
+# Java Source files
+*.java    text diff=java
+*.html    text
+*.css     text
+*.js      text
+*.json    text
+*.sql     text
+*.xml     text
+*.yaml    text
+*.yml     text
+*.properties text
+
+# Build Scripts (Ensure Unix-style LF for execution on Linux/Docker)
+mvnw      text eol=lf
+gradlew   text eol=lf
+*.sh      text eol=lf
+
+# Windows Batch scripts (Ensure CRLF)
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+
+## ----------------------------------------------------------------------------
+## Binary Files - Do Not Modify
+## ----------------------------------------------------------------------------
+# MS Office Documents
+*.xlsx    binary
+*.xls     binary
+*.docx    binary
+*.doc     binary
+*.pptx    binary
+
+# Archive Files
+*.zip     binary
+*.7z      binary
+*.tar     binary
+*.gz      binary
+
+# Images
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.svg     text
+
+# Java Executables/Archives
+*.jar     binary
+*.war     binary
+*.class   binary

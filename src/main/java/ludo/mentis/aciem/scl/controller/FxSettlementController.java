@@ -55,7 +55,7 @@ public class FxSettlementController {
                 contentType = "application/octet-stream";
             }
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileContent.getFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileContent.getFileName() + "\"")
                     .contentType(MediaType.parseMediaType(contentType))
                     .contentLength(blob.length())
                     .body(inputStreamResource);

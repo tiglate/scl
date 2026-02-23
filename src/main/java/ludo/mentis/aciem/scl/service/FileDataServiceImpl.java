@@ -21,23 +21,45 @@ import java.util.UUID;
 @Transactional(rollbackFor = Exception.class)
 public class FileDataServiceImpl implements FileDataService {
 
+    private final FileValidator fileValidator;
+    private final FileContentRepository fileContentRepository;
     private static final Logger log = LoggerFactory.getLogger(FileDataServiceImpl.class);
 
-    private final FileContentRepository fileContentRepository;
-
-    public FileDataServiceImpl(final FileContentRepository fileContentRepository) {
+    public FileDataServiceImpl(final FileContentRepository fileContentRepository,
+                               final FileValidator fileValidator) {
         this.fileContentRepository = fileContentRepository;
+        this.fileValidator = fileValidator;
     }
 
     @Override
     public FileContent create(final MultipartFile uploadFile) throws FileUploadException {
-        if (uploadFile.isEmpty()) {
+        if (uploadFile == null || uploadFile.isEmpty()) {
             return null;
         }
 
+        var originalFilename = uploadFile.getOriginalFilename();
+        if (originalFilename == null || originalFilename.trim().isBlank()) {
+            throw new FileUploadException("File name is required");
+        }
+        var sanitizedFilename = fileValidator.sanitizeFileName(originalFilename);
+
+        var extension = fileValidator.getFileExtension(sanitizedFilename);
+        if (extension == null) {
+            throw new FileUploadException("File must have an extension");
+        }
+
+        var detectedMimeType = fileValidator.getMimeType(uploadFile);
+        if (!fileValidator.isFileTypeAllowed(detectedMimeType)) {
+            throw new FileUploadException("File type not allowed: " + detectedMimeType);
+        }
+
+        if (!fileValidator.isFileExtensionAllowed(detectedMimeType, extension)) {
+            throw new FileUploadException("File extension '%s' does not match detected content type '%s'".formatted(extension, detectedMimeType));
+        }
+
         var fileContent = new FileContent();
-        fileContent.setFileName(uploadFile.getOriginalFilename());
-        fileContent.setFileType(uploadFile.getContentType());
+        fileContent.setFileName(sanitizedFilename);
+        fileContent.setFileType(detectedMimeType);
         try {
             fileContent.setContent(new SerialBlob(uploadFile.getBytes()));
         } catch (IOException | SQLException e) {
@@ -50,7 +72,7 @@ public class FileDataServiceImpl implements FileDataService {
     @Override
     public void delete(final UUID id) throws FileUploadException {
         if (id == null) {
-            log.warn("File ID <{}> is null, nothing to delete", id.toString());
+            log.warn("File ID is null, nothing to delete");
             return;
         }
         var fileContent = fileContentRepository

@@ -154,6 +154,7 @@ export class SettlementGrid {
                 const isSystem = log.userName === 'System';
                 const action = log.action === 'SET' ? `<i class="bi bi-patch-check-fill text-success"></i>` : `<i class="bi bi-x-octagon-fill text-danger"></i>`;
                 const formattedDate = new Date(log.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const iconClass = log.fileType ? this.getIconByFileType(log.fileType) : '';
                 const chatHtml = `
                 <div class="d-flex flex-column ${isSystem ? 'align-items-center' : 'align-items-start'}">
                     <div class="d-flex align-items-center mb-1">
@@ -166,8 +167,8 @@ export class SettlementGrid {
                         ${log.fileName ? `
                             <div class="mt-2 pt-2 border-top">
                                 <a href="/fxSettlements/download/${log.fileId}" class="text-decoration-none d-flex align-items-center bg-light p-2 rounded">
-                                    <i class="bi bi-file-earmark-pdf-fill text-danger fs-5 me-2"></i>
-                                    <span class="small text-truncate">${log.fileName}</span>
+                                    <i class="bi ${iconClass} fs-5 me-2"></i>
+                                    <span class="small text-truncate me-2">${log.fileName}</span>
                                     <i class="bi bi-download ms-auto text-primary"></i>
                                 </a>
                             </div>
@@ -183,6 +184,27 @@ export class SettlementGrid {
 
         } catch (error) {
             container.innerHTML = '<div class="alert alert-danger m-3 small">Failed to load history.</div>';
+        }
+    }
+
+    getIconByFileType(fileType) {
+        switch (fileType) {
+            case 'image/png':
+            case 'image/jpeg':
+            case 'image/bmp':
+                return 'bi-image-fill';
+            case 'application/zip':
+                return 'bi-file-earmark-zip-fill text-warning';
+            case 'application/pdf':
+                return 'bi-file-earmark-pdf-fill text-danger';
+            case 'application/vnd.ms-excel':
+            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                return 'bi-file-earmark-excel-fill text-success';
+            case 'application/msword':
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                return 'bi-file-earmark-word-fill text-primary';
+            default:
+                return 'bi-file-earmark-text-fill';
         }
     }
 }
