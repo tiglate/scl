@@ -1,12 +1,12 @@
 package ludo.mentis.aciem.scl.model;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class FxSettlementStepDTO {
 
-    @NotBlank
-    private String currentStep;
+    @NotNull
+    private Step currentStep;
 
     private Long fxTradeId;
 
@@ -17,11 +17,11 @@ public class FxSettlementStepDTO {
 
     private Long userId;
 
-    public String getCurrentStep() {
+    public Step getCurrentStep() {
         return currentStep;
     }
 
-    public void setCurrentStep(final String currentStep) {
+    public void setCurrentStep(final Step currentStep) {
         this.currentStep = currentStep;
     }
 

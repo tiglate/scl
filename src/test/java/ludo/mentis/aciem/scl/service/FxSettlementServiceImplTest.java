@@ -1,14 +1,15 @@
 package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.*;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
+import ludo.mentis.aciem.scl.exception.StepAlreadyTaken;
 import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
+import ludo.mentis.aciem.scl.model.Step;
 import ludo.mentis.aciem.scl.repos.FxSettlementLogRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
-import ludo.mentis.aciem.scl.exception.NotFoundException;
-import ludo.mentis.aciem.scl.exception.StepAlreadyTaken;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +49,7 @@ class FxSettlementServiceImplTest {
     @Captor
     private ArgumentCaptor<FxSettlementLog> logCaptor;
 
-    private MultipartFile file;
+    private final MultipartFile file = null;
 
     @Test
     void findAllBySearchCriteria_shouldDelegateToRepository() {
@@ -79,7 +80,7 @@ class FxSettlementServiceImplTest {
         assertThatThrownBy(() -> service.save(null, file)).isInstanceOf(IllegalArgumentException.class);
 
         FxSettlementStepDTO dto = new FxSettlementStepDTO();
-        dto.setCurrentStep("ins");
+        dto.setCurrentStep(Step.INSTRUCTION_RECEIVED);
         dto.setUserId(1L);
         // missing trade id
         assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(IllegalArgumentException.class);
@@ -87,16 +88,12 @@ class FxSettlementServiceImplTest {
         dto.setFxTradeId(2L);
         dto.setUserId(null);
         assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(IllegalArgumentException.class);
-
-        dto.setUserId(1L);
-        dto.setCurrentStep("   ");
-        assertThatThrownBy(() -> service.save(dto, file)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void save_shouldCreateNewSettlementAndLog_whenStepINS() throws Exception {
         FxSettlementStepDTO dto = new FxSettlementStepDTO();
-        dto.setCurrentStep("ins");
+        dto.setCurrentStep(Step.INSTRUCTION_RECEIVED);
         dto.setFxTradeId(10L);
         dto.setUserId(20L);
         dto.setComments("ok");
@@ -126,7 +123,7 @@ class FxSettlementServiceImplTest {
         FxSettlementLog log = logCaptor.getValue();
         assertThat(log.getFxSettlement()).isSameAs(saved);
         assertThat(log.getUser()).isSameAs(user);
-        assertThat(log.getStep()).isEqualTo("Instruction");
+        assertThat(log.getStep()).isEqualTo(Step.INSTRUCTION_RECEIVED.getValue());
         assertThat(log.isFlag()).isTrue();
         assertThat(log.getComments()).isEqualTo("ok");
         assertThat(log.getEventDate()).isNotNull();
@@ -135,7 +132,7 @@ class FxSettlementServiceImplTest {
     @Test
     void save_shouldThrowStepAlreadyTaken_whenFlagAlreadyTrue() {
         FxSettlementStepDTO dto = new FxSettlementStepDTO();
-        dto.setCurrentStep("g10");
+        dto.setCurrentStep(Step.RECEIVED_OR_PAID_FOREIGN_CURRENCY);
         dto.setFxTradeId(10L);
         dto.setUserId(20L);
 
@@ -157,7 +154,7 @@ class FxSettlementServiceImplTest {
     @Test
     void save_shouldThrowNotFound_whenUserOrTradeMissing() {
         FxSettlementStepDTO dto = new FxSettlementStepDTO();
-        dto.setCurrentStep("ins");
+        dto.setCurrentStep(Step.INSTRUCTION_RECEIVED);
         dto.setFxTradeId(10L);
         dto.setUserId(20L);
 
@@ -183,21 +180,21 @@ class FxSettlementServiceImplTest {
 
     @Test
     void viewStep_shouldValidateInputs() {
-        assertThatThrownBy(() -> service.viewStep(null, "INS")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> service.viewStep(0L, "INS")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> service.viewStep(1L, " ")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.viewStep(null, Step.INSTRUCTION_RECEIVED)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.viewStep(0L, Step.INSTRUCTION_RECEIVED)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.viewStep(1L, null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void viewStep_shouldReturnDto_whenFound() {
         FxSettlementHistoryDTO dto = new FxSettlementHistoryDTO();
-        when(fxSettlementLogRepository.findHistoryByFxSettlementIdAndStep(7L, "Instruction"))
+        when(fxSettlementLogRepository.findHistoryByFxSettlementIdAndStep(7L, Step.INSTRUCTION_RECEIVED.getValue()))
                 .thenReturn(Optional.of(dto));
 
-        FxSettlementHistoryDTO result = service.viewStep(7L, "ins");
+        FxSettlementHistoryDTO result = service.viewStep(7L, Step.INSTRUCTION_RECEIVED);
 
         assertThat(result).isSameAs(dto);
-        verify(fxSettlementLogRepository).findHistoryByFxSettlementIdAndStep(7L, "Instruction");
+        verify(fxSettlementLogRepository).findHistoryByFxSettlementIdAndStep(7L, Step.INSTRUCTION_RECEIVED.getValue());
     }
 
     @Test
@@ -214,7 +211,7 @@ class FxSettlementServiceImplTest {
 
         when(fxSettlementRepository.save(any(FxSettlement.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        service.rollbackStep(100L, "g10", 9L);
+        service.rollbackStep(100L, Step.RECEIVED_OR_PAID_FOREIGN_CURRENCY, 9L);
 
         verify(fxSettlementRepository).save(settlementCaptor.capture());
         FxSettlement saved = settlementCaptor.getValue();
@@ -227,7 +224,7 @@ class FxSettlementServiceImplTest {
         FxSettlementLog log = logCaptor.getValue();
         assertThat(log.getFxSettlement()).isSameAs(saved);
         assertThat(log.getUser()).isSameAs(user);
-        assertThat(log.getStep()).isEqualTo("g10");
+        assertThat(log.getStep()).isEqualTo(Step.RECEIVED_OR_PAID_FOREIGN_CURRENCY.getValue());
         assertThat(log.isFlag()).isFalse();
         assertThat(log.getComments()).isEqualTo("- STEP DELETED -");
         assertThat(log.getEventDate()).isNotNull();
@@ -236,11 +233,11 @@ class FxSettlementServiceImplTest {
     @Test
     void rollbackStep_shouldThrowNotFound_whenSettlementOrUserMissing() {
         when(fxSettlementRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> service.rollbackStep(1L, "ins", 2L)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.rollbackStep(1L, Step.INSTRUCTION_RECEIVED, 2L)).isInstanceOf(NotFoundException.class);
 
         FxSettlement existing = new FxSettlement();
         when(fxSettlementRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(userRepository.findById(2L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> service.rollbackStep(1L, "ins", 2L)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.rollbackStep(1L, Step.INSTRUCTION_RECEIVED, 2L)).isInstanceOf(NotFoundException.class);
     }
 }

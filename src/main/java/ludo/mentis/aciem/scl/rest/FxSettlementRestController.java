@@ -5,6 +5,7 @@ import ludo.mentis.aciem.scl.domain.FxSettlementView;
 import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
+import ludo.mentis.aciem.scl.model.Step;
 import ludo.mentis.aciem.scl.service.FxSettlementService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class FxSettlementRestController {
 
     @GetMapping("/view")
     public ResponseEntity<FxSettlementHistoryDTO> viewStep(@RequestParam Long fxSettlementId,
-                                                           @RequestParam String step) {
+                                                           @RequestParam Step step) {
         if (fxSettlementId <= 0) {
             return ResponseEntity.badRequest().build();
         }

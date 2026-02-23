@@ -7,6 +7,7 @@ import ludo.mentis.aciem.scl.domain.FxSettlementView;
 import ludo.mentis.aciem.scl.model.FileContentDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
+import ludo.mentis.aciem.scl.model.Step;
 import ludo.mentis.aciem.scl.repos.FxSettlementLogRepository;
 import ludo.mentis.aciem.scl.repos.FxSettlementRepository;
 import ludo.mentis.aciem.scl.repos.FxTradeRepository;
@@ -68,8 +69,8 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         if (dto.getUserId() == null) {
             throw new IllegalArgumentException("userId must not be null");
         }
-        if (dto.getCurrentStep() == null || dto.getCurrentStep().trim().isBlank()) {
-            throw new IllegalArgumentException("currentStep must not be null or blank");
+        if (dto.getCurrentStep() == null) {
+            throw new IllegalArgumentException("currentStep must not be null");
         }
 
         final var settlement = fxSettlementRepository.findFirstByTradeIdWithLock(dto.getFxTradeId())
@@ -92,10 +93,10 @@ public class FxSettlementServiceImpl implements FxSettlementService {
 
         final var now = LocalDateTime.now();
 
-        final var step = dto.getCurrentStep().trim().toLowerCase();
+        final var step = dto.getCurrentStep();
 
         switch (step) {
-            case "ins":
+            case INSTRUCTION_RECEIVED:
                 if (settlement.isInsFlag()) {
                     throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
                 }
@@ -105,7 +106,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setInsTimestamp(now);
                 settlement.setInsFile(fileContent);
                 break;
-            case "g10":
+            case RECEIVED_OR_PAID_FOREIGN_CURRENCY:
                 if (settlement.isG10Flag()) {
                     throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
                 }
@@ -115,7 +116,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setG10Timestamp(now);
                 settlement.setG10File(fileContent);
                 break;
-            case "brl":
+            case RECEIVED_OR_PAID_LOCAL_CURRENCY:
                 if (settlement.isBrlFlag()) {
                     throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
                 }
@@ -125,7 +126,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
                 settlement.setBrlTimestamp(now);
                 settlement.setBrlFile(fileContent);
                 break;
-            case "ion":
+            case UPSTREAM_RELEASE_OR_CONFIRMATION:
                 if (settlement.isIonFlag()) {
                     throw new StepAlreadyTaken("Step already taken for trade #" + trade.getTradeId() + ".");
                 }
@@ -144,7 +145,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         var logEntry = new FxSettlementLog();
         logEntry.setFxSettlement(settlement);
         logEntry.setUser(user);
-        logEntry.setStep(step.equals("ins") ? "Instruction" : step);
+        logEntry.setStep(step.getValue());
         logEntry.setFlag(true);
         logEntry.setFile(fileContent);
         logEntry.setComments(dto.getComments());
@@ -159,24 +160,22 @@ public class FxSettlementServiceImpl implements FxSettlementService {
     }
 
     @Override
-    public FxSettlementHistoryDTO viewStep(Long fxSettlementId, String step) {
+    public FxSettlementHistoryDTO viewStep(Long fxSettlementId, Step step) {
         if (fxSettlementId == null || fxSettlementId <= 0) {
             throw new IllegalArgumentException("fxSettlementId must not be null or <= 0");
         }
-        if (step == null || step.isBlank()) {
-            throw new IllegalArgumentException("step must not be null or blank");
+        if (step == null) {
+            throw new IllegalArgumentException("step must not be null");
         }
-        step = step.trim().toUpperCase();
-        step = step.equals("INS") ? "Instruction" : step;
 
-        return fxSettlementLogRepository.findHistoryByFxSettlementIdAndStep(fxSettlementId, step)
+        return fxSettlementLogRepository.findHistoryByFxSettlementIdAndStep(fxSettlementId, step.getValue())
                 .orElseThrow();
     }
 
     @Override
-    public void rollbackStep(Long fxSettlementId, String step, Long userId) {
-        if (step == null || step.trim().isBlank()) {
-            throw new IllegalArgumentException("currentStep must not be null or blank");
+    public void rollbackStep(Long fxSettlementId, Step step, Long userId) {
+        if (step == null) {
+            throw new IllegalArgumentException("step must not be null");
         }
 
         final var settlement = fxSettlementRepository.findById(fxSettlementId)
@@ -185,33 +184,33 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         final var user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found for ID: " + userId));
 
-        step = step.trim().toLowerCase().substring(0, 3);
-
         switch (step) {
-            case "ins":
+            case INSTRUCTION_RECEIVED:
                 settlement.setInsFlag(false);
                 settlement.setInsComments(null);
                 settlement.setInsUser(null);
                 settlement.setInsTimestamp(null);
                 break;
-            case "g10":
+            case RECEIVED_OR_PAID_FOREIGN_CURRENCY:
                 settlement.setG10Flag(false);
                 settlement.setG10Comments(null);
                 settlement.setG10User(null);
                 settlement.setG10Timestamp(null);
                 break;
-            case "brl":
+            case RECEIVED_OR_PAID_LOCAL_CURRENCY:
                 settlement.setBrlFlag(false);
                 settlement.setBrlComments(null);
                 settlement.setBrlUser(null);
                 settlement.setBrlTimestamp(null);
                 break;
-            case "ion":
+            case UPSTREAM_RELEASE_OR_CONFIRMATION:
                 settlement.setIonFlag(false);
                 settlement.setIonComments(null);
                 settlement.setIonUser(null);
                 settlement.setIonTimestamp(null);
                 break;
+            default:
+                throw new IllegalArgumentException("Invalid step: " + step);
         }
 
         fxSettlementRepository.save(settlement);
@@ -219,7 +218,7 @@ public class FxSettlementServiceImpl implements FxSettlementService {
         var logEntry = new FxSettlementLog();
         logEntry.setFxSettlement(settlement);
         logEntry.setUser(user);
-        logEntry.setStep(step.equals("ins") ? "Instruction" : step);
+        logEntry.setStep(step.getValue());
         logEntry.setFlag(false);
         logEntry.setComments("- STEP DELETED -");
         logEntry.setEventDate(LocalDateTime.now());

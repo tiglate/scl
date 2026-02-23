@@ -2,6 +2,7 @@ package ludo.mentis.aciem.scl.rest;
 
 import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
+import ludo.mentis.aciem.scl.model.Step;
 import ludo.mentis.aciem.scl.service.FxSettlementService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,11 +95,11 @@ class FxSettlementRestControllerTest {
 
     @Test
     void viewStep_shouldReturnHistory() throws Exception {
-        when(fxSettlementService.viewStep(anyLong(), anyString())).thenReturn(null);
+        when(fxSettlementService.viewStep(anyLong(), any(Step.class))).thenReturn(null);
 
         mockMvc.perform(get("/api/v1/fxSettlements/view")
                         .param("fxSettlementId", "1")
-                        .param("step", "INS"))
+                        .param("step", Step.INSTRUCTION_RECEIVED.name()))
                 .andExpect(status().isOk());
     }
 
@@ -125,7 +126,7 @@ class FxSettlementRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Settlement step rolled back successfully"));
 
-        verify(fxSettlementService).rollbackStep(eq(1L), eq("G10"), eq(1L));
+        verify(fxSettlementService).rollbackStep(eq(1L), eq(Step.RECEIVED_OR_PAID_FOREIGN_CURRENCY), eq(1L));
     }
 
     @Test

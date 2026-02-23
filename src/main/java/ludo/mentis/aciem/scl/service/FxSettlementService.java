@@ -6,6 +6,7 @@ import ludo.mentis.aciem.scl.model.FxSettlementHistoryDTO;
 import ludo.mentis.aciem.scl.model.FxSettlementStepDTO;
 import ludo.mentis.aciem.scl.exception.FileUploadException;
 import ludo.mentis.aciem.scl.exception.StepAlreadyTaken;
+import ludo.mentis.aciem.scl.model.Step;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -21,11 +22,11 @@ public interface FxSettlementService {
 
     void save(FxSettlementStepDTO dto, MultipartFile file) throws StepAlreadyTaken, FileUploadException;
 
-    FxSettlementHistoryDTO viewStep(Long fxSettlementId, String step);
+    FxSettlementHistoryDTO viewStep(Long fxSettlementId, Step step);
 
     List<FxSettlementHistoryDTO> getHistoryByFxSettlementId(Long id);
 
-    void rollbackStep(Long fxSettlementId, String step, Long userId);
+    void rollbackStep(Long fxSettlementId, Step step, Long userId);
 
     FileContentDTO getFile(UUID id);
 }
