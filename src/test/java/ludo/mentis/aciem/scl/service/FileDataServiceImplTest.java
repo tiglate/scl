@@ -29,6 +29,8 @@ class FileDataServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        // This method is intentionally empty as all test dependencies are initialized
+        // via @Mock and @InjectMocks annotations, requiring no additional setup
     }
 
     @Test
@@ -73,9 +75,7 @@ class FileDataServiceImplTest {
         when(fileValidator.getMimeType(any())).thenReturn("application/x-msdownload");
         when(fileValidator.isFileTypeAllowed(anyString())).thenReturn(false);
 
-        FileUploadException exception = assertThrows(FileUploadException.class, () -> {
-            fileDataService.create(file);
-        });
+        FileUploadException exception = assertThrows(FileUploadException.class, () -> fileDataService.create(file));
 
         assertTrue(exception.getMessage().contains("File type not allowed"));
     }
@@ -89,9 +89,7 @@ class FileDataServiceImplTest {
         when(fileValidator.isFileTypeAllowed(anyString())).thenReturn(true);
         when(fileValidator.isFileExtensionAllowed(anyString(), anyString())).thenReturn(false);
 
-        FileUploadException exception = assertThrows(FileUploadException.class, () -> {
-            fileDataService.create(file);
-        });
+        FileUploadException exception = assertThrows(FileUploadException.class, () -> fileDataService.create(file));
 
         assertTrue(exception.getMessage().contains("does not match detected content type"));
     }
@@ -102,16 +100,14 @@ class FileDataServiceImplTest {
         when(fileValidator.sanitizeFileName(anyString())).thenReturn("testfile");
         when(fileValidator.getFileExtension(anyString())).thenReturn(null);
 
-        FileUploadException exception = assertThrows(FileUploadException.class, () -> {
-            fileDataService.create(file);
-        });
+        FileUploadException exception = assertThrows(FileUploadException.class, () -> fileDataService.create(file));
 
         assertEquals("File must have an extension", exception.getMessage());
     }
 
     @Test
     void create_shouldAllowDocxFile() throws FileUploadException {
-        // Mocking a docx file (ZIP based)
+        // Mocking a docx file (ZIP-based)
         byte[] docxContent = new byte[]{'P', 'K', 3, 4, 0, 0, 0, 0};
         MockMultipartFile file = new MockMultipartFile("file", "test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", docxContent);
         when(fileValidator.sanitizeFileName(anyString())).thenReturn("test.docx");
