@@ -1,9 +1,7 @@
 package ludo.mentis.aciem.scl.model;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.web.multipart.MultipartFile;
 
 public class FxSettlementStepDTO {
 

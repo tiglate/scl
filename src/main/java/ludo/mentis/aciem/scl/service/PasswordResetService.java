@@ -4,6 +4,7 @@ import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.PasswordResetCompleteRequest;
 import ludo.mentis.aciem.scl.model.PasswordResetRequest;
 import ludo.mentis.aciem.scl.repos.UserRepository;
+import ludo.mentis.aciem.scl.util.LogSafe;
 import ludo.mentis.aciem.scl.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +39,11 @@ public class PasswordResetService {
     }
 
     public void startProcess(final PasswordResetRequest passwordResetRequest) {
-        log.info("received password reset request for {}", passwordResetRequest.getEmail());
+        log.info("received password reset request for {}", LogSafe.of(passwordResetRequest.getEmail()));
 
         final User user = userRepository.findByEmailIgnoreCase(passwordResetRequest.getEmail());
         if (user == null) {
-            log.warn("user {} not found", passwordResetRequest.getEmail());
+            log.warn("user {} not found", LogSafe.of(passwordResetRequest.getEmail()));
             return;
         }
 

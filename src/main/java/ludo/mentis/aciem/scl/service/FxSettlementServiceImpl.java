@@ -15,7 +15,6 @@ import ludo.mentis.aciem.scl.util.FileUploadException;
 import ludo.mentis.aciem.scl.util.NotFoundException;
 import ludo.mentis.aciem.scl.util.SecurityViolationException;
 import ludo.mentis.aciem.scl.util.StepAlreadyTaken;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
