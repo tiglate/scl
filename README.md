@@ -2,6 +2,8 @@
 
 Simple application for settlement control.
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tiglate_scl&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=tiglate_scl)
+
 ## Prerequisites
 
 - Java 17
