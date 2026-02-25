@@ -76,6 +76,7 @@ export class SettlementWorkflow {
 
     async loadExistingStepData(id, step) {
         try {
+            step = this.#convertStepToEnum(step);
             const response = await fetch(`/api/v1/fxSettlements/view?fxSettlementId=${id}&step=${step}`);
             if (response.ok) {
                 const details = await response.json();
@@ -95,6 +96,24 @@ export class SettlementWorkflow {
             }
         } catch (error) {
             console.error("Failed to fetch step details", error);
+        }
+    }
+
+    #convertStepToEnum(step) {
+        if (step == null || step.trim().length === 0) {
+            throw new Error('Step code cannot be null');
+        }
+        switch (step.toLowerCase()) {
+            case 'ins':
+                return 'INSTRUCTION_RECEIVED';
+            case 'g10':
+                return 'RECEIVED_OR_PAID_FOREIGN_CURRENCY';
+            case 'brl':
+                return 'RECEIVED_OR_PAID_LOCAL_CURRENCY';
+            case 'ion':
+                return 'UPSTREAM_RELEASE_OR_CONFIRMATION';
+            default:
+                throw new Error(`Invalid step code: ${step}`);
         }
     }
 
@@ -164,7 +183,7 @@ export class SettlementWorkflow {
     renderExistingFile(name, id) {
         this.removeExistingFileLink();
 
-        let html = "";
+        let html;
         if (name && id) {
             // File exists: Show a download link
             html = `
@@ -193,7 +212,7 @@ export class SettlementWorkflow {
     async submitWorkflow(action) {
         this.setLoadingState(true, action);
         try {
-            let response = null;
+            let response;
             if (action === 'SET') {
                 const formData = this.#getFormData(action);
                 response = await fetch('/api/v1/fxSettlements/step', {
@@ -262,7 +281,7 @@ export class SettlementWorkflow {
         const elements = this.modalElement.querySelectorAll('.col-md-3, .col-md-4, .col-md-6');
         elements.forEach(el => {
             const labelSpan = el.querySelector('.detail-label');
-            if (labelSpan && labelSpan.innerText.includes(label)) {
+            if (labelSpan?.innerText.includes(label)) {
                 el.querySelector('.detail-value').innerText = value;
             }
         });
@@ -272,13 +291,14 @@ export class SettlementWorkflow {
         const elements = this.modalElement.querySelectorAll('.col-md-4');
         elements.forEach(el => {
             const labelSpan = el.querySelector('.detail-label');
-            if (labelSpan && labelSpan.innerText.includes(label)) {
+            if (labelSpan?.innerText.includes(label)) {
+                const formatted = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(value);
                 const valueEl = el.querySelector('.detail-value');
-                valueEl.innerText = value;
+                valueEl.innerText = formatted;
 
                 valueEl.classList.remove('text-success', 'text-danger');
 
-                const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                const numericValue = Number.parseFloat(value.replaceAll('.', '').replace(',', '.'));
 
                 if (numericValue < 0) {
                     valueEl.classList.add('text-danger');
