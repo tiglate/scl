@@ -57,7 +57,42 @@ export class SettlementGrid {
                     }
                 }
             ],
-            createdRow: (row, data) => $(row).attr('data-fx-trade-id', data.idFxTrade)
+            createdRow: (row, data) => $(row).attr('data-fx-trade-id', data.idFxTrade),
+            footerCallback: function (row, data, start, end, display) {
+                const api = this.api();
+
+                // Helper to strip formatting and get numeric value
+                const intVal = (i) => {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ? i : 0;
+                };
+
+                // 1. Total G10 AMT (Column Index 5)
+                const totalG10 = api
+                    .column(5, { page: 'current' }) // 'current' sums only visible rows
+                    .data()
+                    .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+                // 2. Total BRL AMT (Column Index 6)
+                const totalBRL = api
+                    .column(6, { page: 'current' })
+                    .data()
+                    .reduce((a, b) => intVal(a) + intVal(b), 0);
+
+                // Update footers with formatted numbers
+                const format = (val) => new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(val);
+
+                $(api.column(5).footer()).html(format(totalG10));
+                $(api.column(6).footer()).html(format(totalBRL));
+
+                // Color logic for totals
+                $(api.column(5).footer()).css('color', totalG10 < 0 ? 'red' : 'green');
+                $(api.column(6).footer()).css('color', totalBRL < 0 ? 'red' : 'green');
+            }
         });
 
         // Detect when the user is interacting with the grid to prevent it from refreshing and annoying the person

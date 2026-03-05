@@ -62,7 +62,9 @@ function initCharts() {
 
     const statusColors = {
         done: '#001AFF',
-        pending: '#E5E5EA'
+        pending: '#E5E5EA',
+        responsive: true,
+        maintainAspectRatio: false
     };
 
     const createPie = (id, data) => {
