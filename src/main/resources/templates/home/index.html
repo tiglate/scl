@@ -7,63 +7,158 @@
     <title>Home</title>
 </head>
 <body>
-<div layout:fragment="content">
-    <div class="app-container">
-        <a th:href="@{/departments}" class="app-icon-wrapper">
-            <div class="app-icon grad-dept">
-                <i class="bi bi-diagram-3"></i>
+<div layout:fragment="content" id="home-content">
+    <div class="container mt-4">
+        <div class="row g-3 mb-4">
+            <div class="col-md-2 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-primary border-4">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">FX Deals (Today)</small>
+                    <h3 class="fw-bold mb-0">42</h3>
+                    <div class="text-success small"><i class="bi bi-caret-up-fill"></i> 12%</div>
+                </div>
             </div>
-            <span class="app-label">Departments</span>
-        </a>
+            <div class="col-md-3 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">BRL Volume</small>
+                    <h3 class="fw-bold mb-0">R$ 14.2M</h3>
+                    <div class="progress mt-2" style="height: 4px;"><div class="progress-bar" style="width: 70%"></div></div>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">USD Volume</small>
+                    <h4 class="fw-bold mb-0">$ 2.8M</h4>
+                    <small class="text-muted" style="font-size: 0.7rem;">Avg: $ 2.1M</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.65rem;">G10 Volume</small>
+                    <h4 class="fw-bold mb-0">€ 1.5M</h4>
+                    <small class="text-muted" style="font-size: 0.7rem;">EUR, GBP, JPY</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-12">
+                <div class="card border-0 shadow-sm rounded-4 p-3 bg-danger text-white">
+                    <small class="fw-bold text-uppercase" style="font-size: 0.65rem; opacity: 0.8;">Pending (USD)</small>
+                    <h3 class="fw-bold mb-0">$ 842K</h3>
+                    <small style="font-size: 0.7rem;"><i class="bi bi-clock"></i> 3 critical items</small>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <a th:href="@{/users}" class="app-icon-wrapper">
-            <div class="app-icon">
-                <i class="bi bi-people-fill"></i>
-            </div>
-            <span class="app-label">Users</span>
-        </a>
+    <div class="container my-5">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card border-0 bg-transparent">
+                    <h6 class="fw-bold mb-4 text-secondary text-uppercase small tracking-wider">Quick Access</h6>
+                    <div class="app-container">
+                        <a th:href="@{/departments}" class="app-icon-wrapper">
+                            <div class="app-icon grad-dept">
+                                <i class="bi bi-diagram-3"></i>
+                            </div>
+                            <span class="app-label">Departments</span>
+                        </a>
 
-        <a th:href="@{/roles}" class="app-icon-wrapper">
-            <div class="app-icon">
-                <i class="bi bi-shield-lock"></i>
-            </div>
-            <span class="app-label">Roles</span>
-        </a>
+                        <a th:href="@{/users}" class="app-icon-wrapper">
+                            <div class="app-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <span class="app-label">Users</span>
+                        </a>
 
-        <a th:href="@{/counterparties}" class="app-icon-wrapper">
-            <div class="app-icon">
-                <i class="bi bi-building-up"></i>
-            </div>
-            <span class="app-label">Counterparties</span>
-        </a>
+                        <a th:href="@{/roles}" class="app-icon-wrapper">
+                            <div class="app-icon">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <span class="app-label">Roles</span>
+                        </a>
 
-        <a th:href="@{/currencies}" class="app-icon-wrapper">
-            <div class="app-icon">
-                <i class="bi bi-currency-exchange"></i>
-            </div>
-            <span class="app-label">Currencies</span>
-        </a>
+                        <a th:href="@{/counterparties}" class="app-icon-wrapper">
+                            <div class="app-icon">
+                                <i class="bi bi-building-up"></i>
+                            </div>
+                            <span class="app-label">Counterparties</span>
+                        </a>
 
-        <a th:href="@{/fxTrades}" class="app-icon-wrapper">
-            <div class="app-icon">
-                <i class="bi bi-graph-up-arrow"></i>
-            </div>
-            <span class="app-label">Fx Trades</span>
-        </a>
+                        <a th:href="@{/currencies}" class="app-icon-wrapper">
+                            <div class="app-icon">
+                                <i class="bi bi-currency-exchange"></i>
+                            </div>
+                            <span class="app-label">Currencies</span>
+                        </a>
 
-        <a th:href="@{/fxSettlements}" class="app-icon-wrapper" hx-boost="false">
-            <div class="app-icon grad-settle">
-                <i class="bi bi-check-all"></i>
-            </div>
-            <span class="app-label">Fx Settlements</span>
-        </a>
+                        <a th:href="@{/fxTrades}" class="app-icon-wrapper">
+                            <div class="app-icon">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <span class="app-label">Fx Trades</span>
+                        </a>
 
-        <a th:href="@{/documentTypes}" class="app-icon-wrapper">
-            <div class="app-icon">
-                <i class="bi bi-files"></i>
+                        <a th:href="@{/fxSettlements}" class="app-icon-wrapper" hx-boost="false">
+                            <div class="app-icon grad-settle">
+                                <i class="bi bi-check-all"></i>
+                            </div>
+                            <span class="app-label">Fx Settlements</span>
+                        </a>
+
+                        <a th:href="@{/documentTypes}" class="app-icon-wrapper">
+                            <div class="app-icon">
+                                <i class="bi bi-files"></i>
+                            </div>
+                            <span class="app-label">Document Types</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <span class="app-label">Document Types</span>
-        </a>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <h6 class="fw-bold mb-4 text-dark"><i class="bi bi-heart-pulse me-2"></i>Workflow Health by Stage</h6>
+                    <div class="row text-center">
+                        <div class="col-md-3 border-end">
+                            <div style="height: 120px;"><canvas id="chartINS"></canvas></div>
+                            <div class="mt-2 fw-bold small">Instruction (INS)</div>
+                        </div>
+                        <div class="col-md-3 border-end">
+                            <div style="height: 120px;"><canvas id="chartG10"></canvas></div>
+                            <div class="mt-2 fw-bold small">G10 Currency</div>
+                        </div>
+                        <div class="col-md-3 border-end">
+                            <div style="height: 120px;"><canvas id="chartBRL"></canvas></div>
+                            <div class="mt-2 fw-bold small">BRL Local</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div style="height: 120px;"><canvas id="chartION"></canvas></div>
+                            <div class="mt-2 fw-bold small">ION Network</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-4 col-md-12">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white h-100">
+                    <h6 class="fw-bold mb-4 text-dark">Weekly Volume Trend</h6>
+                    <div style="height: 220px;">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-dark mb-0">Counterparty Exposure Mapping</h6>
+                        <i class="bi bi-info-circle text-muted" title="BRL Equivalent Exposure"></i>
+                    </div>
+                    <div style="height: 200px;">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
