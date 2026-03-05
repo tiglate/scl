@@ -17,6 +17,13 @@ export class SettlementGrid {
 
     init() {
         this.table = $(`#${this.tableId}`).DataTable({
+            layout: {
+                topStart: 'pageLength',
+                topEnd: 'search',
+                bottomStart: 'info',
+                bottomEnd: 'paging',
+                bottom2: 'buttons'
+            },
             pageLength: 50,
             ajax: {
                 url: '/api/v1/fxSettlements/steps',
@@ -92,7 +99,11 @@ export class SettlementGrid {
                 // Color logic for totals
                 $(api.column(5).footer()).css('color', totalG10 < 0 ? 'red' : 'green');
                 $(api.column(6).footer()).css('color', totalBRL < 0 ? 'red' : 'green');
-            }
+            },
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+            ]
         });
 
         // Detect when the user is interacting with the grid to prevent it from refreshing and annoying the person
