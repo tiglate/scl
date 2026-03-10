@@ -45,7 +45,22 @@
                             <p th:each="error : ${#fields.errors('username')}" class="mb-0">[[${error}]]</p>
                         </div>
                     </div>
-                    <div class="col-md-4" th:if="${mode != 'view'}">
+                    <div class="col-md-2">
+                        <label for="cboUseAD" class="form-label">Use AD?*</label>
+                        <select id="cboUseAD"
+                                class="form-select"
+                                th:field="*{useAD}"
+                                th:disabled="${mode == 'view'}"
+                                th:classappend="${#fields.hasErrors('useAD') ? 'is-invalid' : ''}">
+                            <option value="">Please select</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('useAD')}" class="invalid-feedback d-block">
+                            <p th:each="error : ${#fields.errors('useAD')}" class="mb-0">[[${error}]]</p>
+                        </div>
+                    </div>
+                    <div class="col-md-2" th:if="${mode != 'view'}">
                         <label for="txtPassword" class="form-label">Password<th:block th:if="${mode == 'add'}">*</th:block></label>
                         <input type="password"
                                id="txtPassword"

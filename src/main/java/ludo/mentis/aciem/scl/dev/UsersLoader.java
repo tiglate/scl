@@ -71,6 +71,7 @@ public class UsersLoader implements DataLoaderCommand {
         user.setUsername("admin");
         user.setPassword(passwordEncoder.encode(DEV_DEFAULT_PASSWORD));
         user.setEnabled(true);
+		user.setUseAD(false);
         user.setDepartment(department);
         user.setRoles(new HashSet<>(roleRepository.findAll()));
         userRepository.save(user);
@@ -103,6 +104,7 @@ public class UsersLoader implements DataLoaderCommand {
         user.setPassword(passwordEncoder.encode(faker.internet().password()));
         user.setEnabled(randomUtils.pickRandomBoolean());
         user.setDepartment(department);
+		user.setUseAD(randomUtils.pickRandomBoolean());
         user.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
         userRepository.save(user);
 	}

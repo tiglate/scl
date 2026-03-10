@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import ludo.mentis.aciem.scl.domain.Department;
+import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.validation.UserEmailUnique;
 import ludo.mentis.aciem.scl.validation.UserUsernameUnique;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,7 +44,10 @@ public class UserDTO {
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class})
     private Boolean enabled;
-    
+
+    @NotNull(groups = {OnCreate.class, OnUpdate.class})
+    private Boolean useAD;
+
     @NotNull(groups = {OnCreate.class, OnUpdate.class})
     private Long departmentId;
 
@@ -62,20 +67,19 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String name, String email, Gender gender, String username, String password,
-                   Boolean enabled, Long departmentId, String departmentName, LocalDateTime createdAt,
-                   LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.gender = gender;
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    public UserDTO(User user, Department department) {
+        this.id = user.getId();
+        this.name = user.getEmail();
+        this.email = user.getEmail();
+        this.gender = user.getGender();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.enabled = user.getEnabled();
+        this.useAD = user.getUseAD();
+        this.departmentId = department.getId();
+        this.departmentName = department.getName();
+        this.createdAt = user.getCreatedAt();
+        this.updatedAt = user.getUpdatedAt();
     }
 
     public Long getId() {
@@ -132,6 +136,14 @@ public class UserDTO {
 
     public void setEnabled(final Boolean isActive) {
         this.enabled = isActive;
+    }
+
+    public Boolean getUseAD() {
+        return useAD;
+    }
+
+    public void setUseAD(final Boolean useAD) {
+        this.useAD = useAD;
     }
 
     public UUID getResetUID() {

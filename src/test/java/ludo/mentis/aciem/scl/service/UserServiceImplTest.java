@@ -68,6 +68,7 @@ class UserServiceImplTest {
         user.setId(id);
         user.setName("John Doe");
         user.setRoles(Collections.emptySet());
+        user.setUseAD(true);
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -75,6 +76,7 @@ class UserServiceImplTest {
 
         assertEquals(id, result.getId());
         assertEquals("John Doe", result.getName());
+        assertTrue(result.getUseAD());
     }
 
     @Test
@@ -92,6 +94,7 @@ class UserServiceImplTest {
         userDTO.setPassword("secret");
         userDTO.setRoles(List.of(1L));
         userDTO.setDepartmentId(1L);
+        userDTO.setUseAD(true);
 
         Department department = new Department();
         department.setId(1L);
@@ -104,7 +107,11 @@ class UserServiceImplTest {
         when(departmentRepository.findById(1L)).thenReturn(Optional.of(department));
         when(roleRepository.findAllById(anyList())).thenReturn(List.of(role));
         when(passwordEncoder.encode("secret")).thenReturn("encodedSecret");
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User savedUser = invocation.getArgument(0);
+            assertTrue(savedUser.getUseAD());
+            return user;
+        });
 
         Long result = userService.create(userDTO);
 

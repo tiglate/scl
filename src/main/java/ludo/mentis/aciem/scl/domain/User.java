@@ -52,6 +52,9 @@ public class User implements Serializable {
     @Column(nullable = false)
     private Boolean enabled;
 
+    @Column(name = "use_ad", nullable = false)
+    private Boolean useAD;
+
     @Column(columnDefinition = "uniqueidentifier")
     private UUID resetUID;
 
@@ -136,6 +139,14 @@ public class User implements Serializable {
 
     public void setEnabled(final Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Boolean getUseAD() {
+        return useAD;
+    }
+
+    public void setUseAD(final Boolean useAD) {
+        this.useAD = useAD;
     }
 
     public UUID getResetUID() {

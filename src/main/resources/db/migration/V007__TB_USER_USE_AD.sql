@@ -1,0 +1,2 @@
+ALTER TABLE tb_user ADD use_ad BIT NOT NULL DEFAULT 0;
+ALTER TABLE tb_user_aud ADD use_ad BIT NULL;

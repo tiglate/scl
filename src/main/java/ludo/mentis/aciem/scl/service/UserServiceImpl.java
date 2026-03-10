@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setGender(user.getGender());
         userDTO.setUsername(user.getUsername());
         userDTO.setEnabled(user.getEnabled());
+        userDTO.setUseAD(user.getUseAD());
         userDTO.setDepartmentId(user.getDepartment() == null ? null : user.getDepartment().getId());
         userDTO.setResetUID(user.getResetUID());
         userDTO.setResetStart(user.getResetStart());
@@ -109,6 +110,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty() ? user.getPassword() : passwordEncoder.encode(userDTO.getPassword()));
         user.setEnabled(userDTO.getEnabled());
+        user.setUseAD(userDTO.getUseAD());
         user.setResetUID(userDTO.getResetUID());
         user.setResetStart(userDTO.getResetStart());
 

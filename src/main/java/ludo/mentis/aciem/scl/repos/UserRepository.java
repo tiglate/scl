@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
-    @Query("SELECT new ludo.mentis.aciem.scl.model.UserDTO(u.id, u.name, u.email, u.gender, u.username, u.password, u.enabled, d.id, d.name, u.createdAt, u.updatedAt) " +
+    @Query("SELECT new ludo.mentis.aciem.scl.model.UserDTO(u, d) " +
             "FROM User u " +
             "LEFT JOIN u.department d " +
             "WHERE (:username IS NULL OR u.username LIKE %:username%) " +
