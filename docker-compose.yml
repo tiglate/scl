@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # O Padrinho (Banco de Dados)
   sql-server:
