@@ -9,7 +9,10 @@
       "backend": "IntelliJ",
       "plugins": [
         "com.intellij.database",
-        "org.jetbrains.kotlin"
+        "org.jetbrains.kotlin",
+        "org.jetbrains.junie",
+        "ru.adelf.idea.dotenv",
+        "com.ktlwap.ldap-explorer"
       ]
     }
   },

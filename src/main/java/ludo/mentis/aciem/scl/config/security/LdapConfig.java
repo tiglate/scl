@@ -18,7 +18,7 @@ public class LdapConfig {
                                                 @Value("${spring.ldap.base}") String ldapBase) {
         var groupSearchBase = "ou=groups";
         var authorities = new DefaultLdapAuthoritiesPopulator(contextSource, groupSearchBase);
-        authorities.setGroupSearchFilter("(member=uid={1}," + ldapBase + ")");
+        authorities.setGroupSearchFilter("(member=uid={1},ou=users," + ldapBase + ")");
         return authorities;
     }
 

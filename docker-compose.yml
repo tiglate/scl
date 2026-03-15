@@ -47,6 +47,38 @@ services:
     volumes:
       - mail_data:/data
 
+  ldap-server:
+    build: ./docker/ldap
+    container_name: ldap_dev
+    restart: always
+    ports:
+      - "1389:389"
+    environment:
+      - LDAP_BASE_DN=${SPRING_LDAP_BASE}
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "ldapsearch -x -H ldap://localhost:389 -b \"\" -s base \"objectclass=*\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ldap-seed:
+    build: ./docker/ldap
+    container_name: ldap_seed
+    depends_on:
+      ldap-server:
+        condition: service_healthy
+    restart: "no"
+    environment:
+      - SPRING_LDAP_BASE=${SPRING_LDAP_BASE}
+      - SPRING_LDAP_USERNAME=${SPRING_LDAP_USERNAME}
+      - SPRING_LDAP_PASSWORD=${SPRING_LDAP_PASSWORD}
+      - LDAP_USER1_PASSWORD=${LDAP_USER1_PASSWORD}
+      - LDAP_USER2_PASSWORD=${LDAP_USER2_PASSWORD}
+    entrypoint: ["/bin/sh", "/seed/startup.sh"]
+    volumes:
+      - ./docker/ldap/bootstrap/startup.sh:/seed/startup.sh:ro
+
   # Dev Container Application
   app:
     image: mcr.microsoft.com/devcontainers/java:17
@@ -62,12 +94,22 @@ services:
       - SMTP_USERNAME=${SMTP_USERNAME}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_PORT=${SMTP_PORT}
+      - SPRING_LDAP_URLS=ldap://ldap_dev:389
+      - SPRING_LDAP_BASE=${SPRING_LDAP_BASE}
+      - SPRING_LDAP_USERNAME=${SPRING_LDAP_USERNAME}
+      - SPRING_LDAP_PASSWORD=${SPRING_LDAP_PASSWORD}
     depends_on:
       sql-server:
         condition: service_healthy
       mail-server:
         condition: service_started
+      ldap-server:
+        condition: service_healthy
+      ldap-seed:
+        condition: service_completed_successfully
 
 volumes:
   mssql_data:
   mail_data:
+  ldap_data:
+  ldap_config:
