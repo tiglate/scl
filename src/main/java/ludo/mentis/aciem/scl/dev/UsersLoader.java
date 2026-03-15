@@ -12,6 +12,7 @@ import ludo.mentis.aciem.scl.util.UserRoles;
 import net.datafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,15 @@ public class UsersLoader implements DataLoaderCommand {
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final DepartmentRepository departmentRepository;
+	private List<Department> departments;
+	private List<Role> roles;
 	private static final Logger log = LoggerFactory.getLogger(UsersLoader.class);
+
+	@Value("${LDAP_USER1_PASSWORD}")
+	private String user1Password;
+
+	@Value("${LDAP_USER2_PASSWORD}")
+	private String user2Password;
 
 	public UsersLoader(final RandomUtils randomUtils,
 			           final UserRepository userRepository,
@@ -58,7 +67,7 @@ public class UsersLoader implements DataLoaderCommand {
 	
 	@Override
 	public int run() {
-		return createAdmin() + createRegularUsers();
+		return createAdmin() + createRegularUsers() + createLdapUsers();
 	}
 	
 	protected int createAdmin() {
@@ -80,11 +89,9 @@ public class UsersLoader implements DataLoaderCommand {
 	}
 	
 	protected int createRegularUsers() {
-		var departments = departmentRepository.findAll();
-		var roles = roleRepository.findAll()
-				                  .stream()
-				                  .filter(p -> !UserRoles.ADMIN.equals(p.getCode()))
-				                  .toList();
+		final var departments = getDepartments();
+		final var roles = getRoles();
+
 		var count = 0;
 		for (var department : departments) {
 			createFakeUser(department, roles);
@@ -104,8 +111,55 @@ public class UsersLoader implements DataLoaderCommand {
         user.setPassword(passwordEncoder.encode(faker.internet().password()));
         user.setEnabled(randomUtils.pickRandomBoolean());
         user.setDepartment(department);
-		user.setUseAD(randomUtils.pickRandomBoolean());
+		user.setUseAD(false);
         user.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
         userRepository.save(user);
+	}
+
+	protected int createLdapUsers() {
+		final var faker = new Faker();
+		final var departments = getDepartments();
+		final var roles = getRoles();
+
+		final var user1 = new User();
+		user1.setName("LDAP User 1");
+		user1.setEmail(faker.internet().emailAddress());
+		user1.setGender(randomUtils.pickRandomEnumValue(Gender.class));
+		user1.setUsername("user1");
+		user1.setPassword(user1Password);
+		user1.setEnabled(randomUtils.pickRandomBoolean());
+		user1.setDepartment(departments.get(0));
+		user1.setUseAD(true);
+		user1.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
+		userRepository.save(user1);
+
+		final var user2 = new User();
+		user2.setName("LDAP User 2");
+		user2.setEmail(faker.internet().emailAddress());
+		user2.setGender(randomUtils.pickRandomEnumValue(Gender.class));
+		user2.setUsername("user2");
+		user2.setPassword(user2Password);
+		user2.setEnabled(randomUtils.pickRandomBoolean());
+		user2.setDepartment(departments.get(0));
+		user2.setUseAD(true);
+		user2.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
+		userRepository.save(user2);
+
+		return 2;
+	}
+
+	protected List<Department> getDepartments() {
+		return departments == null
+				? departments = departmentRepository.findAll()
+				: departments;
+	}
+
+	protected List<Role> getRoles() {
+		return roles == null
+				? roles = roleRepository.findAll()
+					.stream()
+					.filter(p -> !UserRoles.ADMIN.equals(p.getCode()))
+					.toList()
+				: roles;
 	}
 }
