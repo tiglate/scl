@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.config.security;
 
 import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.model.CustomUserDetails;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +37,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         if (Boolean.TRUE.equals(user.getUseAD())) {
-            return ldapAuthenticationProvider.authenticate(authentication);
+            Authentication ldapAuthentication = ldapAuthenticationProvider.authenticate(authentication);
+            CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
+            UsernamePasswordAuthenticationToken authenticatedToken =
+                    new UsernamePasswordAuthenticationToken(
+                            customUserDetails,
+                            ldapAuthentication.getCredentials(),
+                            customUserDetails.getAuthorities()
+                    );
+            authenticatedToken.setDetails(ldapAuthentication.getDetails());
+
+            return authenticatedToken;
         } else {
             return daoAuthenticationProvider.authenticate(authentication);
         }
