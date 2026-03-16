@@ -61,6 +61,7 @@ class UserRepositoryTest {
         user.setPassword("password");
         user.setGender(Gender.MALE);
         user.setEnabled(true);
+        user.setUseAD(false);
         user.setDepartment(department);
         user.setRoles(new HashSet<>(Collections.singletonList(role)));
         user.setResetUID(UUID.randomUUID());
@@ -78,6 +79,7 @@ class UserRepositoryTest {
         newUser.setPassword("password");
         newUser.setGender(Gender.FEMALE);
         newUser.setEnabled(true);
+        newUser.setUseAD(false);
         newUser.setDepartment(department);
 
         User savedUser = userRepository.save(newUser);

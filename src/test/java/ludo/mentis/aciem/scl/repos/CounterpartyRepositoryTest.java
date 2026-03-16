@@ -56,6 +56,7 @@ class CounterpartyRepositoryTest {
         user.setGender(Gender.MALE);
         user.setDepartment(department);
         user.setEnabled(true);
+        user.setUseAD(false);
         entityManager.persist(user);
         entityManager.flush();
 

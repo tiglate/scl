@@ -15,6 +15,14 @@
         "org.jetbrains.junie",
         "org.sonarlint.idea"
       ]
+    },
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack",
+        "dbaeumer.vscode-eslint",
+        "sonarsource.sonarlint-vscode"
+      ],
     }
   },
 

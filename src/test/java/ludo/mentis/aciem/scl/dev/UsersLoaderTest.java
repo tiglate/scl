@@ -87,8 +87,8 @@ class UsersLoaderTest {
 
         int result = usersLoader.run();
 
-        // 1 admin + 2 users per department (2 departments) = 1 + 4 = 5
-        assertEquals(5, result);
-        verify(userRepository, times(5)).save(any(User.class));
+        // 1 admin + 2 users per department (2 departments) + 2 ad users = 1 + 4 + 2 = 7
+        assertEquals(7, result);
+        verify(userRepository, times(7)).save(any(User.class));
     }
 }

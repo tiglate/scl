@@ -1,8 +1,10 @@
 package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.FileContent;
+import ludo.mentis.aciem.scl.model.FileContentDTO;
 import ludo.mentis.aciem.scl.repos.FileContentRepository;
 import ludo.mentis.aciem.scl.exception.FileUploadException;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -175,5 +183,92 @@ class FileDataServiceImplTest {
 
         assertNotNull(result);
         assertEquals("test.xls", result.getFileName());
+    }
+
+    @Test
+    void create_shouldReturnNull_whenFileIsNull() throws FileUploadException {
+        assertNull(fileDataService.create(null));
+    }
+
+    @Test
+    void create_shouldReturnNull_whenFileIsEmpty() throws FileUploadException {
+        MockMultipartFile file = new MockMultipartFile("file", "", "text/plain", new byte[0]);
+        assertNull(fileDataService.create(file));
+    }
+
+    @Test
+    void create_shouldThrowException_whenFileNameIsBlank() {
+        MockMultipartFile file = new MockMultipartFile("file", "  ", "text/plain", "content".getBytes());
+        FileUploadException exception = assertThrows(FileUploadException.class, () -> fileDataService.create(file));
+        assertEquals("File name is required", exception.getMessage());
+    }
+
+    @Test
+    void create_shouldThrowException_whenIOExceptionOccurs() throws IOException {
+        MockMultipartFile file = mock(MockMultipartFile.class);
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getOriginalFilename()).thenReturn("test.txt");
+        when(file.getBytes()).thenThrow(new IOException("Read error"));
+        when(fileValidator.sanitizeFileName(anyString())).thenReturn("test.txt");
+        when(fileValidator.getFileExtension(anyString())).thenReturn("txt");
+        when(fileValidator.getMimeType(any())).thenReturn("text/plain");
+        when(fileValidator.isFileTypeAllowed(anyString())).thenReturn(true);
+        when(fileValidator.isFileExtensionAllowed(anyString(), anyString())).thenReturn(true);
+
+        FileUploadException exception = assertThrows(FileUploadException.class, () -> fileDataService.create(file));
+        assertEquals("Failed to save file", exception.getMessage());
+        assertInstanceOf(IOException.class, exception.getCause());
+    }
+
+    @Test
+    void delete_shouldDoNothing_whenIdIsNull() throws FileUploadException {
+        fileDataService.delete(null);
+        verifyNoInteractions(fileContentRepository);
+    }
+
+    @Test
+    void delete_shouldDeleteFile_whenExists() throws FileUploadException {
+        UUID id = UUID.randomUUID();
+        FileContent fileContent = new FileContent();
+        when(fileContentRepository.findById(id)).thenReturn(Optional.of(fileContent));
+
+        fileDataService.delete(id);
+
+        verify(fileContentRepository).delete(fileContent);
+    }
+
+    @Test
+    void delete_shouldThrowException_whenNotFound() {
+        UUID id = UUID.randomUUID();
+        when(fileContentRepository.findById(id)).thenReturn(Optional.empty());
+
+        FileUploadException exception = assertThrows(FileUploadException.class, () -> fileDataService.delete(id));
+        assertTrue(exception.getMessage().contains("File not found for ID: " + id));
+    }
+
+    @Test
+    void get_shouldReturnDTO_whenExists() throws SQLException {
+        UUID id = UUID.randomUUID();
+        FileContent fileContent = new FileContent();
+        fileContent.setId(id);
+        fileContent.setFileName("test.txt");
+        fileContent.setFileType("text/plain");
+        fileContent.setContent(new SerialBlob("content".getBytes()));
+        when(fileContentRepository.findById(id)).thenReturn(Optional.of(fileContent));
+
+        FileContentDTO result = fileDataService.get(id);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals("test.txt", result.getFileName());
+        assertEquals("text/plain", result.getFileType());
+    }
+
+    @Test
+    void get_shouldThrowNotFoundException_whenNotFound() {
+        UUID id = UUID.randomUUID();
+        when(fileContentRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> fileDataService.get(id));
     }
 }

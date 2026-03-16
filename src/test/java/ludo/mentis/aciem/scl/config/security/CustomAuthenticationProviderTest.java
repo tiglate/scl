@@ -55,12 +55,20 @@ class CustomAuthenticationProviderTest {
     void testAuthenticate_UseAD_True() {
         user.setUseAD(true);
         when(userRepository.findByUsernameIgnoreCase("user1")).thenReturn(user);
-        Authentication expectedAuth = mock(Authentication.class);
-        when(ldapAuthenticationProvider.authenticate(authRequest)).thenReturn(expectedAuth);
+        Authentication ldapAuth = mock(Authentication.class);
+        when(ldapAuth.getCredentials()).thenReturn("pass1");
+        Object details = new Object();
+        when(ldapAuth.getDetails()).thenReturn(details);
+        when(ldapAuthenticationProvider.authenticate(authRequest)).thenReturn(ldapAuth);
 
         Authentication result = customAuthenticationProvider.authenticate(authRequest);
 
-        assertEquals(expectedAuth, result);
+        assertInstanceOf(UsernamePasswordAuthenticationToken.class, result);
+        UsernamePasswordAuthenticationToken resultToken = (UsernamePasswordAuthenticationToken) result;
+        assertInstanceOf(ludo.mentis.aciem.scl.model.CustomUserDetails.class, resultToken.getPrincipal());
+        assertEquals("user1", ((ludo.mentis.aciem.scl.model.CustomUserDetails) resultToken.getPrincipal()).getUsername());
+        assertEquals("pass1", resultToken.getCredentials());
+        assertEquals(details, resultToken.getDetails());
         verify(ldapAuthenticationProvider).authenticate(authRequest);
         verifyNoInteractions(daoAuthenticationProvider);
     }

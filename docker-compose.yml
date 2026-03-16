@@ -83,7 +83,7 @@ services:
   app:
     image: mcr.microsoft.com/devcontainers/java:17
     volumes:
-      - ..:/workspaces/scl:cached
+      - .:/workspaces/scl:cached
     command: sleep infinity
     environment:
       - JDBC_DATABASE_PASSWORD=${JDBC_DATABASE_PASSWORD}
