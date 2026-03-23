@@ -1,0 +1,20 @@
+{
+  "name": "scl",
+  "version": "1.0.0",
+  "description": "Settlement Control System",
+  "homepage": "https://github.com/tiglate/scl#readme",
+  "bugs": {
+    "url": "https://github.com/tiglate/scl/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiglate/scl.git"
+  },
+  "license": "GPL-3.0",
+  "author": "tiglate",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
