@@ -104,16 +104,16 @@ export class SettlementWorkflow {
             throw new Error('Step code cannot be null');
         }
         switch (step.toLowerCase()) {
-            case 'ins':
-                return 'INSTRUCTION_RECEIVED';
-            case 'g10':
-                return 'RECEIVED_OR_PAID_FOREIGN_CURRENCY';
-            case 'brl':
-                return 'RECEIVED_OR_PAID_LOCAL_CURRENCY';
-            case 'ion':
-                return 'UPSTREAM_RELEASE_OR_CONFIRMATION';
-            default:
-                throw new Error(`Invalid step code: ${step}`);
+        case 'ins':
+            return 'INSTRUCTION_RECEIVED';
+        case 'g10':
+            return 'RECEIVED_OR_PAID_FOREIGN_CURRENCY';
+        case 'brl':
+            return 'RECEIVED_OR_PAID_LOCAL_CURRENCY';
+        case 'ion':
+            return 'UPSTREAM_RELEASE_OR_CONFIRMATION';
+        default:
+            throw new Error(`Invalid step code: ${step}`);
         }
     }
 

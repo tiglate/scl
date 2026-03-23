@@ -33,6 +33,7 @@ export class SettlementGrid {
                     d.endDate = document.getElementById('endDateEdit').value;
                 },
                 error: (xhr, error, thrown) => {
+                    console.error('Error fetching settlement data: ', error, thrown);
                     this.handleServerError(xhr.status);
                 }
             },
@@ -65,14 +66,15 @@ export class SettlementGrid {
                 }
             ],
             createdRow: (row, data) => $(row).attr('data-fx-trade-id', data.idFxTrade),
-            footerCallback: function (row, data, start, end, display) {
+            footerCallback: function () {
                 const api = this.api();
 
                 // Helper to strip formatting and get numeric value
                 const intVal = (i) => {
-                    return typeof i === 'string' ?
-                        i.replace(/[\$,]/g, '') * 1 :
-                        typeof i === 'number' ? i : 0;
+                    if (typeof i === 'string') {
+                        return i.replaceAll(/[$,]/, '') * 1;
+                    }
+                    return typeof i === 'number' ? i : 0;
                 };
 
                 // 1. Total G10 AMT (Column Index 5)
@@ -230,27 +232,28 @@ export class SettlementGrid {
 
         } catch (error) {
             container.innerHTML = '<div class="alert alert-danger m-3 small">Failed to load history.</div>';
+            console.error('Error fetching history data: ', error);
         }
     }
 
     getIconByFileType(fileType) {
         switch (fileType) {
-            case 'image/png':
-            case 'image/jpeg':
-            case 'image/bmp':
-                return 'bi-image-fill';
-            case 'application/zip':
-                return 'bi-file-earmark-zip-fill text-warning';
-            case 'application/pdf':
-                return 'bi-file-earmark-pdf-fill text-danger';
-            case 'application/vnd.ms-excel':
-            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-                return 'bi-file-earmark-excel-fill text-success';
-            case 'application/msword':
-            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                return 'bi-file-earmark-word-fill text-primary';
-            default:
-                return 'bi-file-earmark-text-fill';
+        case 'image/png':
+        case 'image/jpeg':
+        case 'image/bmp':
+            return 'bi-image-fill';
+        case 'application/zip':
+            return 'bi-file-earmark-zip-fill text-warning';
+        case 'application/pdf':
+            return 'bi-file-earmark-pdf-fill text-danger';
+        case 'application/vnd.ms-excel':
+        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            return 'bi-file-earmark-excel-fill text-success';
+        case 'application/msword':
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            return 'bi-file-earmark-word-fill text-primary';
+        default:
+            return 'bi-file-earmark-text-fill';
         }
     }
 }

@@ -45,11 +45,11 @@ class CounterpartyDocumentsManager {
 
     #renderDocumentRow(doc) {
         let html = this.#template.innerHTML
-            .replace(/__INDEX__/g, this.#index)
-            .replace(/__ID__/g, doc.id ?? "")
-            .replace(/__VALUE__/g, doc.value ?? "")
-            .replace(/__EXPIRATION__/g, doc.expiration ?? "")
-            .replace(/__ACTION__/g, doc.action ?? "update");
+            .replaceAll('__INDEX__', this.#index)
+            .replaceAll('__ID__', doc.id ?? "")
+            .replaceAll('__VALUE__', doc.value ?? "")
+            .replaceAll('__EXPIRATION__', doc.expiration ?? "")
+            .replaceAll('__ACTION__', doc.action ?? "update");
 
         const wrapper = document.createElement("div");
         wrapper.innerHTML = html.trim();

@@ -5,28 +5,28 @@ function __getFormIdFromDataSet(caller) {
         return null;
     }
     const form = document.getElementById(formId);
-    if (!form || form.tagName.toLowerCase() !== 'form') {
+    if (form?.tagName.toLowerCase() !== 'form') {
         console.error("Error: Element with ID '" + formId + "' is not a form or does not exist.");
         return null;
     }
     return form;
 }
 
-window.resetForm = function(caller) {
+globalThis.resetForm = function(caller) {
     const form = __getFormIdFromDataSet(caller);
     if (form != null) {
         form.reset();
     }
 };
 
-window.submitForm = function(caller) {
+globalThis.submitForm = function(caller) {
     const form = __getFormIdFromDataSet(caller);
     if (form != null) {
         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     }
 };
 
-window.clearForm = function() {
+globalThis.clearForm = function() {
     const form = document.getElementById('searchForm');
     const inputElements = form.querySelectorAll('input, select, textarea');
 
