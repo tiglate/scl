@@ -7,6 +7,7 @@ import ludo.mentis.aciem.scl.model.Gender;
 import ludo.mentis.aciem.scl.repos.DepartmentRepository;
 import ludo.mentis.aciem.scl.repos.RoleRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
+import ludo.mentis.aciem.scl.util.PasswordEncoderFactory;
 import ludo.mentis.aciem.scl.util.RandomUtils;
 import ludo.mentis.aciem.scl.util.UserRoles;
 import net.datafaker.Faker;
@@ -41,12 +42,12 @@ public class UsersLoader implements DataLoaderCommand {
 	public UsersLoader(final RandomUtils randomUtils,
 			           final UserRepository userRepository,
 			           final RoleRepository roleRepository,
-			           final PasswordEncoder passwordEncoder,
+					   final PasswordEncoderFactory passwordEncoderFactory,
 			           final DepartmentRepository departmentRepository) {
 		this.randomUtils = randomUtils;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
-		this.passwordEncoder = passwordEncoder;
+		this.passwordEncoder = passwordEncoderFactory.create();
 		this.departmentRepository = departmentRepository;
 	}
 	

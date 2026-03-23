@@ -7,13 +7,15 @@ import ludo.mentis.aciem.scl.model.Gender;
 import ludo.mentis.aciem.scl.repos.DepartmentRepository;
 import ludo.mentis.aciem.scl.repos.RoleRepository;
 import ludo.mentis.aciem.scl.repos.UserRepository;
+import ludo.mentis.aciem.scl.util.FakePasswordEncoderFactory;
+import ludo.mentis.aciem.scl.util.PasswordEncoderFactory;
 import ludo.mentis.aciem.scl.util.RandomUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +36,8 @@ class UsersLoaderTest {
     @Mock
     private RoleRepository roleRepository;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+    @Spy
+    private PasswordEncoderFactory passwordEncoderFactory = new FakePasswordEncoderFactory();
 
     @Mock
     private DepartmentRepository departmentRepository;
@@ -80,7 +82,6 @@ class UsersLoaderTest {
         when(departmentRepository.findByNameIgnoreCase("IT")).thenReturn(Optional.of(itDept));
         when(departmentRepository.findAll()).thenReturn(List.of(itDept, hrDept));
         when(roleRepository.findAll()).thenReturn(List.of(adminRole, userRole));
-        when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
         when(randomUtils.pickRandomEnumValue(Gender.class)).thenReturn(Gender.MALE);
         when(randomUtils.pickRandomBoolean()).thenReturn(true);
         when(randomUtils.createRandomSublist(any(), anyInt())).thenReturn(List.of(userRole));

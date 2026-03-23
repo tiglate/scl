@@ -25,8 +25,8 @@ public class LdapConfig {
     @Bean
     public LdapAuthenticationProvider ldapAuthenticationProvider(BaseLdapPathContextSource contextSource,
                                                                  LdapAuthoritiesPopulator authorities) {
-        FilterBasedLdapUserSearch userSearch = new FilterBasedLdapUserSearch("ou=users", "(uid={0})", contextSource);
-        BindAuthenticator authenticator = new BindAuthenticator(contextSource);
+        var userSearch = new FilterBasedLdapUserSearch("ou=users", "(uid={0})", contextSource);
+        var authenticator = new BindAuthenticator(contextSource);
         authenticator.setUserSearch(userSearch);
         
         return new LdapAuthenticationProvider(authenticator, authorities);

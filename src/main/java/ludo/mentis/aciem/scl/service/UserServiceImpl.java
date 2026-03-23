@@ -2,10 +2,11 @@ package ludo.mentis.aciem.scl.service;
 
 import ludo.mentis.aciem.scl.domain.Role;
 import ludo.mentis.aciem.scl.domain.User;
+import ludo.mentis.aciem.scl.exception.NotFoundException;
 import ludo.mentis.aciem.scl.model.UserDTO;
 import ludo.mentis.aciem.scl.model.UserSearchDTO;
 import ludo.mentis.aciem.scl.repos.*;
-import ludo.mentis.aciem.scl.exception.NotFoundException;
+import ludo.mentis.aciem.scl.util.PasswordEncoderFactory;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,14 +30,14 @@ public class UserServiceImpl implements UserService {
     private final CounterpartyRepository counterpartyRepository;
 
     public UserServiceImpl(final UserRepository userRepository,
-    		               final RoleRepository roleRepository,
-    		               final PasswordEncoder passwordEncoder,
+                           final RoleRepository roleRepository,
+                           final PasswordEncoderFactory passwordEncoderFactory,
     		               final FxTradeRepository fxTradeRepository,
-    		               final DepartmentRepository departmentRepository,
-    		               final CounterpartyRepository counterpartyRepository) {
+                           final DepartmentRepository departmentRepository,
+                           final CounterpartyRepository counterpartyRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoderFactory.create();
         this.fxTradeRepository = fxTradeRepository;
         this.departmentRepository = departmentRepository;
         this.counterpartyRepository = counterpartyRepository;

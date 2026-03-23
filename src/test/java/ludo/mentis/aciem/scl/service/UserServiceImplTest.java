@@ -7,11 +7,14 @@ import ludo.mentis.aciem.scl.model.UserDTO;
 import ludo.mentis.aciem.scl.model.UserSearchDTO;
 import ludo.mentis.aciem.scl.repos.*;
 import ludo.mentis.aciem.scl.exception.NotFoundException;
+import ludo.mentis.aciem.scl.util.FakePasswordEncoderFactory;
+import ludo.mentis.aciem.scl.util.PasswordEncoderFactory;
 import ludo.mentis.aciem.scl.util.ReferencedWarning;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,8 +37,8 @@ class UserServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private RoleRepository roleRepository;
-    @Mock
-    private PasswordEncoder passwordEncoder;
+    @Spy
+    private PasswordEncoderFactory passwordEncoderFactory = new FakePasswordEncoderFactory();
     @Mock
     private FxTradeRepository fxTradeRepository;
     @Mock
@@ -106,7 +109,6 @@ class UserServiceImplTest {
 
         when(departmentRepository.findById(1L)).thenReturn(Optional.of(department));
         when(roleRepository.findAllById(anyList())).thenReturn(List.of(role));
-        when(passwordEncoder.encode("secret")).thenReturn("encodedSecret");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
             assertTrue(savedUser.getUseAD());

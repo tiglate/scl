@@ -4,12 +4,15 @@ import ludo.mentis.aciem.scl.domain.User;
 import ludo.mentis.aciem.scl.model.PasswordResetCompleteRequest;
 import ludo.mentis.aciem.scl.model.PasswordResetRequest;
 import ludo.mentis.aciem.scl.repos.UserRepository;
+import ludo.mentis.aciem.scl.util.FakePasswordEncoderFactory;
+import ludo.mentis.aciem.scl.util.PasswordEncoderFactory;
 import ludo.mentis.aciem.scl.util.WebUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,8 +30,8 @@ class PasswordResetServiceTest {
     @Mock
     private MailService mailService;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+    @Spy
+    private PasswordEncoderFactory passwordEncoderFactory = new FakePasswordEncoderFactory();
 
     @Mock
     private UserRepository userRepository;
@@ -141,7 +144,6 @@ class PasswordResetServiceTest {
         user.setResetStart(OffsetDateTime.now());
 
         when(userRepository.findByResetUID(uid)).thenReturn(user);
-        when(passwordEncoder.encode(request.getNewPassword())).thenReturn("encodedPassword");
 
         passwordResetService.completeProcess(request);
 

@@ -5,6 +5,7 @@ import ludo.mentis.aciem.scl.model.PasswordResetCompleteRequest;
 import ludo.mentis.aciem.scl.model.PasswordResetRequest;
 import ludo.mentis.aciem.scl.repos.UserRepository;
 import ludo.mentis.aciem.scl.util.LogSafe;
+import ludo.mentis.aciem.scl.util.PasswordEncoderFactory;
 import ludo.mentis.aciem.scl.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,10 @@ public class PasswordResetService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public PasswordResetService(final MailService mailService,
-            final PasswordEncoder passwordEncoder, final UserRepository userRepository) {
+    public PasswordResetService(final MailService mailService, final UserRepository userRepository,
+                                final PasswordEncoderFactory passwordEncoderFactory) {
         this.mailService = mailService;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoderFactory.create();
         this.userRepository = userRepository;
     }
 
