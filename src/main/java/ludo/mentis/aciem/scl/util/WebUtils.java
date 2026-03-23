@@ -31,7 +31,11 @@ public class WebUtils {
     }
 
     public static HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        final var requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            throw new IllegalStateException("No request attributes found");
+        }
+        return ((ServletRequestAttributes)requestAttributes).getRequest();
     }
 
 

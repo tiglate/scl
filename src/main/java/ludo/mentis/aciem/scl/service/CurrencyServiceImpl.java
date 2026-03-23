@@ -34,6 +34,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public CurrencyDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return currencyRepository.findById(id)
                 .map(currency -> mapToDTO(currency, new CurrencyDTO()))
                 .orElseThrow(NotFoundException::new);
@@ -47,6 +50,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public void update(final Long id, final CurrencyDTO currencyDTO) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
         final Currency currency = currencyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(currencyDTO, currency);
@@ -55,6 +61,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public void delete(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null");
+        }
         currencyRepository.deleteById(id);
     }
 
@@ -93,6 +102,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when checking for references.");
+        }
         final var referencedWarning = new ReferencedWarning();
         final var currency = currencyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);

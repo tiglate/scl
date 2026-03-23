@@ -50,6 +50,9 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
     @Override
     public CounterpartyDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return counterpartyRepository.findById(id)
                 .map(counterparty -> mapToDTO(counterparty, new CounterpartyDTO()))
                 .orElseThrow(NotFoundException::new);
@@ -63,6 +66,9 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
     @Override
     public void update(final Long id, final CounterpartyDTO counterpartyDTO) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
         final Counterparty counterparty = counterpartyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(counterpartyDTO, counterparty);
@@ -71,6 +77,9 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
     @Override
     public void delete(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when deleting an entity.");
+        }
         counterpartyRepository.deleteById(id);
     }
 
@@ -135,6 +144,9 @@ public class CounterpartyServiceImpl implements CounterpartyService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when checking for references.");
+        }
         final var referencedWarning = new ReferencedWarning();
         final var counterparty = counterpartyRepository.findById(id)
                 .orElseThrow(NotFoundException::new);

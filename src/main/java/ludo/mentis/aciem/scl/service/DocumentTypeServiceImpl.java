@@ -33,6 +33,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public DocumentTypeDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return documentTypeRepository.findById(id)
                 .map(documenttype -> mapToDTO(documenttype, new DocumentTypeDTO()))
                 .orElseThrow(NotFoundException::new);
@@ -46,10 +49,13 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public void update(final Long id, final DocumentTypeDTO documenttypeDTO) {
-        final DocumentType documenttype = documentTypeRepository.findById(id)
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
+        final var documentType = documentTypeRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(documenttypeDTO, documenttype);
-        documentTypeRepository.save(documenttype);
+        mapToEntity(documenttypeDTO, documentType);
+        documentTypeRepository.save(documentType);
     }
 
     @Override
@@ -81,10 +87,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
-        final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final DocumentType documentType = documentTypeRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        final Document documentTypeDocument = documentRepository.findFirstByDocumentType(documentType);
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when checking for references.");
+        }
+        final var referencedWarning    = new ReferencedWarning();
+        final var documentType         = documentTypeRepository.findById(id).orElseThrow(NotFoundException::new);
+        final var documentTypeDocument = documentRepository.findFirstByDocumentType(documentType);
         if (documentTypeDocument != null) {
             referencedWarning.setMessage("This entity is still referenced by Document %d via field Document Type.", documentTypeDocument.getId());
             return referencedWarning;

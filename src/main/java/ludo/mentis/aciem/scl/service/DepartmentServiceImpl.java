@@ -33,6 +33,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return departmentRepository.findById(id)
                 .map(department -> mapToDTO(department, new DepartmentDTO()))
                 .orElseThrow(NotFoundException::new);
@@ -46,6 +49,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void update(final Long id, final DepartmentDTO departmentDTO) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
         final Department department = departmentRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(departmentDTO, department);
@@ -54,6 +60,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void delete(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null");
+        }
         departmentRepository.deleteById(id);
     }
 
@@ -83,6 +92,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when checking for references.");
+        }
         final var referencedWarning = new ReferencedWarning();
         final var department        = departmentRepository.findById(id).orElseThrow(NotFoundException::new);
         final var departmentUser    = userRepository.findFirstByDepartment(department);

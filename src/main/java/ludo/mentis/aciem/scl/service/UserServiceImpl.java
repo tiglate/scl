@@ -56,6 +56,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return userRepository.findById(id)
                 .map(this::mapToDTO)
                 .orElseThrow(NotFoundException::new);
@@ -69,6 +72,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(final Long id, final UserDTO userDTO) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
         final var user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(userDTO, user);
@@ -77,6 +83,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when deleting an entity.");
+        }
         userRepository.deleteById(id);
     }
 

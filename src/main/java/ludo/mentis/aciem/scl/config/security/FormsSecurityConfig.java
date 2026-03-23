@@ -20,8 +20,7 @@ public class FormsSecurityConfig {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(final UserDetailsService userDetailsService,
                                                                final PasswordEncoderFactory passwordEncoderFactory) {
-        var authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+        var authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoderFactory.create());
         return authProvider;
     }

@@ -35,6 +35,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return roleRepository.findById(id)
                 .map(role -> mapToDTO(role, new RoleDTO()))
                 .orElseThrow(NotFoundException::new);
@@ -48,6 +51,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void update(final Long id, final RoleDTO roleDTO) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
         final Role role = roleRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(roleDTO, role);
@@ -56,6 +62,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when deleting an entity.");
+        }
         roleRepository.deleteById(id);
     }
 
@@ -85,13 +94,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
-        final var referencedWarning = new ReferencedWarning();
-        final var role        = roleRepository.findById(id).orElseThrow(NotFoundException::new);
-        final var roleUser    = userRepository.findFirstByRoles(Set.of(role));
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when checking for references.");
+        }
+        final var refWarning = new ReferencedWarning();
+        final var role       = roleRepository.findById(id).orElseThrow(NotFoundException::new);
+        final var roleUser   = userRepository.findFirstByRoles(Set.of(role));
 
         if (roleUser != null) {
-            referencedWarning.setMessage("This entity is still referenced by User %d via field Roles.", roleUser.getId());
-            return referencedWarning;
+            refWarning.setMessage("This entity is still referenced by User %d via field Roles.", roleUser.getId());
+            return refWarning;
         }
 
         return null;

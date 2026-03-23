@@ -174,6 +174,12 @@ public class FxSettlementServiceImpl implements FxSettlementService {
 
     @Override
     public void rollbackStep(Long fxSettlementId, Step step, Long userId) {
+        if (fxSettlementId == null || fxSettlementId <= 0) {
+            throw new IllegalArgumentException("fxSettlementId must not be null or <= 0");
+        }
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException("userId must not be null or <= 0");
+        }
         if (step == null) {
             throw new IllegalArgumentException("step must not be null");
         }

@@ -83,6 +83,9 @@ public class FileDataServiceImpl implements FileDataService {
 
     @Override
     public FileContentDTO get(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving a file.");
+        }
         return fileContentRepository
                 .findById(id)
                 .map(fileContent -> new FileContentDTO(

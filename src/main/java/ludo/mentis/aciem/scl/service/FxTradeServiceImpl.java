@@ -41,6 +41,9 @@ public class FxTradeServiceImpl implements FxTradeService {
 
     @Override
     public FxTradeDTO get(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when retrieving an entity.");
+        }
         return fxTradeRepository.findById(id)
                 .map(fxTrade -> mapToDTO(fxTrade, new FxTradeDTO()))
                 .orElseThrow(NotFoundException::new);
@@ -54,7 +57,10 @@ public class FxTradeServiceImpl implements FxTradeService {
 
     @Override
     public void update(final Long id, final FxTradeDTO fxTradeDTO) {
-        final FxTrade fxTrade = fxTradeRepository.findById(id)
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when updating an entity.");
+        }
+        final var fxTrade = fxTradeRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(fxTradeDTO, fxTrade);
         fxTradeRepository.save(fxTrade);
@@ -62,6 +68,9 @@ public class FxTradeServiceImpl implements FxTradeService {
 
     @Override
     public void delete(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null");
+        }
         fxTradeRepository.deleteById(id);
     }
 
@@ -121,6 +130,9 @@ public class FxTradeServiceImpl implements FxTradeService {
 
     @Override
     public ReferencedWarning getReferencedWarning(final Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id must not be null when checking for references.");
+        }
         final var referencedWarning = new ReferencedWarning();
         final var fxTrade = fxTradeRepository.findById(id).orElseThrow(NotFoundException::new);
         final var tradeFxSettlement = fxSettlementRepository.findFirstByTrade(fxTrade);
