@@ -48,7 +48,7 @@ class SettlementPage {
     async initializeDates() {
         const response = await fetch('/api/v1/fxSettlements/lastTradeDate');
         const lastDate = await response.text();
-        this.startDateInput.value = lastDate?.toString().replace(/"/g, "");
+        this.startDateInput.value = lastDate?.toString().replaceAll('"', '');
         this.endDateInput.value = new Date().toISOString().split('T')[0];
     }
 }
