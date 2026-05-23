@@ -40,87 +40,87 @@ public class UsersLoader implements DataLoaderCommand {
 	private String user2Password;
 
 	public UsersLoader(final RandomUtils randomUtils,
-			           final UserRepository userRepository,
-			           final RoleRepository roleRepository,
-					   final PasswordEncoderFactory passwordEncoderFactory,
-			           final DepartmentRepository departmentRepository) {
+			final UserRepository userRepository,
+			final RoleRepository roleRepository,
+			final PasswordEncoderFactory passwordEncoderFactory,
+			final DepartmentRepository departmentRepository) {
 		this.randomUtils = randomUtils;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoderFactory.create();
 		this.departmentRepository = departmentRepository;
 	}
-	
+
 	@Override
 	public int getOrder() {
 		return 0;
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Users";
 	}
-	
+
 	@Override
 	public boolean canItRun() {
 		return userRepository.count() == 0;
 	}
-	
+
 	@Override
 	public int run() {
 		return createAdmin() + createRegularUsers() + createLdapUsers();
 	}
-	
+
 	protected int createAdmin() {
 		final String DEV_DEFAULT_PASSWORD = UUID.randomUUID().toString();
 		final var user = new User();
 		final var department = departmentRepository.findByNameIgnoreCase("IT").orElseThrow();
 		user.setName("admin");
-        user.setEmail("admin@ampliar.dev.br");
-        user.setGender(Gender.MALE);
-        user.setUsername("admin");
-        user.setPassword(passwordEncoder.encode(DEV_DEFAULT_PASSWORD));
-        user.setEnabled(true);
+		user.setEmail("admin@ampliar.dev.br");
+		user.setGender(Gender.MALE);
+		user.setUsername("admin");
+		user.setPassword(passwordEncoder.encode(DEV_DEFAULT_PASSWORD));
+		user.setEnabled(true);
 		user.setUseAD(false);
-        user.setDepartment(department);
-        user.setRoles(new HashSet<>(roleRepository.findAll()));
-        userRepository.save(user);
-        log.info("Admin user created with password: {}", DEV_DEFAULT_PASSWORD);
-        return 1;
+		user.setDepartment(department);
+		user.setRoles(new HashSet<>(roleRepository.findAll()));
+		userRepository.save(user);
+		log.info("Admin user created with password: {}", DEV_DEFAULT_PASSWORD);
+		return 1;
 	}
-	
+
 	protected int createRegularUsers() {
-		final var departments = getDepartments();
-		final var roles = getRoles();
+		final var departmentsList = getDepartments();
+		final var rolesList = getRoles();
 
 		var count = 0;
-		for (var department : departments) {
-			createFakeUser(department, roles);
-			createFakeUser(department, roles);
+		for (var department : departmentsList) {
+			createFakeUser(department, rolesList);
+			createFakeUser(department, rolesList);
 			count += 2;
 		}
 		return count;
 	}
-	
+
 	protected void createFakeUser(Department department, List<Role> roles) {
 		final var user = new User();
 		final var faker = new Faker();
 		user.setName(faker.name().fullName());
-        user.setEmail(faker.internet().emailAddress());
-        user.setGender(randomUtils.pickRandomEnumValue(Gender.class));
-        user.setUsername(faker.internet().username());
-        user.setPassword(passwordEncoder.encode(faker.internet().password()));
-        user.setEnabled(randomUtils.pickRandomBoolean());
-        user.setDepartment(department);
+		user.setEmail(faker.internet().emailAddress());
+		user.setGender(randomUtils.pickRandomEnumValue(Gender.class));
+		user.setUsername(faker.internet().username());
+		user.setPassword(passwordEncoder.encode(faker.internet().password()));
+		user.setEnabled(randomUtils.pickRandomBoolean());
+		user.setDepartment(department);
 		user.setUseAD(false);
-        user.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
-        userRepository.save(user);
+		user.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
+		userRepository.save(user);
 	}
 
 	protected int createLdapUsers() {
 		final var faker = new Faker();
-		final var departments = getDepartments();
-		final var roles = getRoles();
+		final var departmentsList = getDepartments();
+		final var rolesList = getRoles();
 
 		final var user1 = new User();
 		user1.setName("LDAP User 1");
@@ -129,9 +129,9 @@ public class UsersLoader implements DataLoaderCommand {
 		user1.setUsername("user1");
 		user1.setPassword(user1Password);
 		user1.setEnabled(randomUtils.pickRandomBoolean());
-		user1.setDepartment(departments.get(0));
+		user1.setDepartment(departmentsList.get(0));
 		user1.setUseAD(true);
-		user1.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
+		user1.setRoles(new HashSet<>(randomUtils.createRandomSublist(rolesList, 2)));
 		userRepository.save(user1);
 
 		final var user2 = new User();
@@ -141,26 +141,28 @@ public class UsersLoader implements DataLoaderCommand {
 		user2.setUsername("user2");
 		user2.setPassword(user2Password);
 		user2.setEnabled(randomUtils.pickRandomBoolean());
-		user2.setDepartment(departments.get(0));
+		user2.setDepartment(departmentsList.get(0));
 		user2.setUseAD(true);
-		user2.setRoles(new HashSet<>(randomUtils.createRandomSublist(roles, 2)));
+		user2.setRoles(new HashSet<>(randomUtils.createRandomSublist(rolesList, 2)));
 		userRepository.save(user2);
 
 		return 2;
 	}
 
 	protected List<Department> getDepartments() {
-		return departments == null
-				? departments = departmentRepository.findAll()
-				: departments;
+		if (departments == null) {
+			departments = departmentRepository.findAll();
+		}
+		return departments;
 	}
 
 	protected List<Role> getRoles() {
-		return roles == null
-				? roles = roleRepository.findAll()
+		if (roles == null) {
+			roles = roleRepository.findAll()
 					.stream()
 					.filter(p -> !UserRoles.ADMIN.equals(p.getCode()))
-					.toList()
-				: roles;
+					.toList();
+		}
+		return roles;
 	}
 }

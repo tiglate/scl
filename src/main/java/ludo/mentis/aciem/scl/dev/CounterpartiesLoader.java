@@ -13,14 +13,14 @@ import java.util.HashSet;
 
 @Component
 public class CounterpartiesLoader implements DataLoaderCommand {
-	
+
 	private final RandomUtils randomUtils;
 	private final CounterpartyRepository counterpartyRepository;
 	private final DocumentTypeRepository documentTypeRepository;
-	
+
 	public CounterpartiesLoader(final RandomUtils randomUtils,
-			                    final CounterpartyRepository counterpartyRepository,
-			                    final DocumentTypeRepository documentTypeRepository) {
+			final CounterpartyRepository counterpartyRepository,
+			final DocumentTypeRepository documentTypeRepository) {
 		this.randomUtils = randomUtils;
 		this.counterpartyRepository = counterpartyRepository;
 		this.documentTypeRepository = documentTypeRepository;
@@ -45,8 +45,8 @@ public class CounterpartiesLoader implements DataLoaderCommand {
 	public int run() {
 		var count = 0;
 		var faker = new Faker();
-		
-		for (;count < 100; count++) {
+
+		for (; count < 100; count++) {
 			var randomInt = faker.random().nextInt(100, 10000);
 			var counterparty = new Counterparty();
 			var longName = faker.company().name();
@@ -54,30 +54,30 @@ public class CounterpartiesLoader implements DataLoaderCommand {
 			if (shortName == null || shortName.isEmpty()) {
 				shortName = longName.contains("-") ? longName.split("-")[0].replace(",", "") : null;
 			}
-	        counterparty.setOriginId(faker.random().nextInt(1000, 10000));
-	        counterparty.setLongName(longName);
-	        counterparty.setShortName(shortName);
-	        counterparty.setIsActive(randomUtils.pickRandomBoolean());
-	        counterparty.setDocuments(new HashSet<>());
-	        var doc = new Document();
-	        doc.setCounterparty(counterparty);
-	        if (randomInt % 5 == 0) {
-	        	doc.setDocumentType(documentTypeRepository.findByNameIgnoreCase("CPF").orElseThrow());
-	        	doc.setValue(faker.cpf().valid());
-	        } else if (randomInt % 2 == 0) {
-	        	doc.setDocumentType(documentTypeRepository.findByNameIgnoreCase("CNPJ").orElseThrow());
-	        	doc.setValue(faker.cnpj().valid());
-	        } else {
-	        	doc.setDocumentType(documentTypeRepository.findByNameIgnoreCase("EIN").orElseThrow());
-	        	doc.setValue(faker.number().digits(2) + "-" + faker.number().digits(7));
-	        }
-	        if (randomInt % 13 == 0) {
-	        	doc.setExpiration(randomUtils.getRandomDate(LocalDate.now().minusMonths(6), LocalDate.now()));
-	        }
-	        counterparty.getDocuments().add(doc);
-	        counterpartyRepository.save(counterparty);
+			counterparty.setOriginId(faker.random().nextInt(1000, 10000));
+			counterparty.setLongName(longName);
+			counterparty.setShortName(shortName);
+			counterparty.setIsActive(randomUtils.pickRandomBoolean());
+			counterparty.setDocuments(new HashSet<>());
+			var doc = new Document();
+			doc.setCounterparty(counterparty);
+			if (randomInt % 5 == 0) {
+				doc.setDocumentType(documentTypeRepository.findByNameIgnoreCase("CPF").orElseThrow());
+				doc.setValue(faker.cpf().valid());
+			} else if (randomInt % 2 == 0) {
+				doc.setDocumentType(documentTypeRepository.findByNameIgnoreCase("CNPJ").orElseThrow());
+				doc.setValue(faker.cnpj().valid());
+			} else {
+				doc.setDocumentType(documentTypeRepository.findByNameIgnoreCase("EIN").orElseThrow());
+				doc.setValue(faker.number().digits(2) + "-" + faker.number().digits(7));
+			}
+			if (randomInt % 13 == 0) {
+				doc.setExpiration(randomUtils.getRandomDate(LocalDate.now().minusMonths(6), LocalDate.now()));
+			}
+			counterparty.getDocuments().add(doc);
+			counterpartyRepository.save(counterparty);
 		}
-		
+
 		return count;
 	}
 
