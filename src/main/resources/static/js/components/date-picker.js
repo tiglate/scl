@@ -28,5 +28,5 @@ export function initDatepicker() {
     });
 }
 
-document.addEventListener('htmx:afterSwap', initDatepicker);
+document.addEventListener('htmx:after:swap', initDatepicker);
 document.addEventListener('DOMContentLoaded', initDatepicker);

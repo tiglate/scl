@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -99,7 +98,7 @@ public class RoleServiceImpl implements RoleService {
         }
         final var refWarning = new ReferencedWarning();
         final var role       = roleRepository.findById(id).orElseThrow(NotFoundException::new);
-        final var roleUser   = userRepository.findFirstByRoles(Set.of(role));
+        final var roleUser   = userRepository.findFirstByRoles(role);
 
         if (roleUser != null) {
             refWarning.setMessage("This entity is still referenced by User %d via field Roles.", roleUser.getId());

@@ -52,7 +52,7 @@ Copy `.env.example` to `.env` and fill in values before starting the app. Key va
 - **SMTP**: `SMTP_HOST/PORT/USERNAME/PASSWORD/MAIL_FROM`
 - **App**: `BASE_HOST`, `REMEMBER_ME_KEY`
 
-The devcontainer (`.devcontainer/devcontainer.json`) targets JDK 17 and pre-installs Node LTS. It mounts and starts all `docker-compose.yml` services automatically.
+The devcontainer (`.devcontainer/devcontainer.json`) targets JDK 25 and pre-installs Node LTS. It mounts and starts all `docker-compose.yml` services automatically.
 
 ## Architecture
 

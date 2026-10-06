@@ -133,7 +133,7 @@ class RoleServiceImplTest {
         role.setId(id);
 
         when(roleRepository.findById(id)).thenReturn(Optional.of(role));
-        when(userRepository.findFirstByRoles(anySet())).thenReturn(null);
+        when(userRepository.findFirstByRoles(any(Role.class))).thenReturn(null);
 
         ReferencedWarning warning = roleService.getReferencedWarning(id);
 
@@ -150,7 +150,7 @@ class RoleServiceImplTest {
         user.setId(10L);
 
         when(roleRepository.findById(id)).thenReturn(Optional.of(role));
-        when(userRepository.findFirstByRoles(anySet())).thenReturn(user);
+        when(userRepository.findFirstByRoles(any(Role.class))).thenReturn(user);
 
         ReferencedWarning warning = roleService.getReferencedWarning(id);
 

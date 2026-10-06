@@ -4,4 +4,4 @@ export function initTooltips() {
 }
 
 document.addEventListener('DOMContentLoaded', initTooltips);
-document.addEventListener('htmx:afterSwap', initTooltips);
+document.addEventListener('htmx:after:swap', initTooltips);

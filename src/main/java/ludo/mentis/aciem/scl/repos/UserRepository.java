@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -32,9 +31,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsernameIgnoreCase(String username);
 
-    User findFirstByRoles(Set<Role> roles);
+    User findFirstByRoles(Role role);
 
-    List<User> findAllByRoles(Set<Role> roles);
+    List<User> findAllByRoles(Role role);
 
     boolean existsByEmailIgnoreCase(String email);
 

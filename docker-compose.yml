@@ -81,7 +81,7 @@ services:
 
   # Dev Container Application
   app:
-    image: mcr.microsoft.com/devcontainers/java:17
+    image: mcr.microsoft.com/devcontainers/java:25
     volumes:
       - .:/workspaces/scl:cached
     command: sleep infinity

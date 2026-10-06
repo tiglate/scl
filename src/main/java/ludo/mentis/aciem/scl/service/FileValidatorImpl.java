@@ -1,6 +1,7 @@
 package ludo.mentis.aciem.scl.service;
 
 import org.apache.tika.Tika;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -48,7 +49,8 @@ public class FileValidatorImpl implements FileValidator {
         final var extension = getFileExtension(fileName);
         String detectedMimeType;
         try {
-            detectedMimeType = tika.detect(uploadFile.getInputStream(), fileName);
+            // Tika may append parameters (e.g. "image/bmp; format=compressed"); keep only the base type
+            detectedMimeType = MediaType.parse(tika.detect(uploadFile.getInputStream(), fileName)).getBaseType().toString();
             if ("application/zip".equals(detectedMimeType)) {
                 detectedMimeType = switch (extension) {
                     case "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document";

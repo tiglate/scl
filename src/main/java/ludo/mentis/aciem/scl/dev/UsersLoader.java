@@ -108,8 +108,8 @@ public class UsersLoader implements DataLoaderCommand {
 		user.setName(faker.name().fullName());
 		user.setEmail(faker.internet().emailAddress());
 		user.setGender(randomUtils.pickRandomEnumValue(Gender.class));
-		user.setUsername(faker.internet().username());
-		user.setPassword(passwordEncoder.encode(faker.internet().password()));
+		user.setUsername(faker.credentials().username());
+		user.setPassword(passwordEncoder.encode(faker.credentials().password()));
 		user.setEnabled(randomUtils.pickRandomBoolean());
 		user.setDepartment(department);
 		user.setUseAD(false);

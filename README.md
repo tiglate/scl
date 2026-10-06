@@ -6,7 +6,7 @@ Simple application for settlement control.
 
 ## Prerequisites
 
-- Java 17
+- Java 25
 - Maven
 - Docker and Docker Compose
 

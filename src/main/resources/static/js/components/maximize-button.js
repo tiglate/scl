@@ -26,4 +26,4 @@ export function initMaximizeButtons() {
 }
 
 document.addEventListener('DOMContentLoaded', initMaximizeButtons);
-document.addEventListener('htmx:afterSwap', initMaximizeButtons);
+document.addEventListener('htmx:after:swap', initMaximizeButtons);

@@ -110,7 +110,7 @@ class FxSettlementRestControllerTest {
 
         mockMvc.perform(get("/api/v1/fxSettlements/lastTradeDate"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
+                .andExpect(jsonPath("$").value(now.toString()));
     }
 
     @Test

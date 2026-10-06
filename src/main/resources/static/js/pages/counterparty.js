@@ -128,7 +128,7 @@ function initCounterpartyDocuments() {
     }
 }
 
-document.addEventListener("htmx:load", (e) => {
+document.addEventListener("htmx:after:process", (e) => {
     if (e.target.querySelector("#documents-container")) {
         initCounterpartyDocuments();
     }

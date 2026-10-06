@@ -10,4 +10,4 @@ function initToasts() {
         });
     }
 }
-document.addEventListener("htmx:load", initToasts);
+document.addEventListener("htmx:after:process", initToasts);

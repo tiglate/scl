@@ -1,5 +1,5 @@
 {
-    "name": "SCL Java 17 Development",
+    "name": "SCL Java 25 Development",
     "dockerComposeFile": "../docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspaces/scl",
@@ -30,7 +30,7 @@
         "version": "lts"
         },
         "ghcr.io/devcontainers/features/java:1": {
-            "version": "17",
+            "version": "none",
             "installMaven": "true",
             "installGradle": "false"
         }

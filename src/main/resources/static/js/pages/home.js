@@ -89,7 +89,7 @@ function initCharts() {
     createPie('chartION', [45, 55]); // 45% Done (Bottleneck identified!)
 }
 
-document.addEventListener("htmx:load", () => {
+document.addEventListener("htmx:after:process", () => {
     const home = document.getElementById('home-content');
     if (!home || home.dataset.loaded === 'true') return;
     initCharts();
